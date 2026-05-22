@@ -47,6 +47,6 @@ ip2region.xdb
 bbs-go.db
 bbs-go.db*
 
-docker-data/uploads/
+docker-data/
 
 __debug_bin*
