@@ -1,0 +1,24 @@
+{
+  "id": "FEAT-001",
+  "type": "chore",
+  "description": "Install frontend dependencies and verify the baseline type-check and lint pass cleanly before making changes.",
+  "status": "completed",
+  "steps": [
+    "Run `cd web && pnpm install --frozen-lockfile` to install all frontend dependencies.",
+    "Run `cd web && pnpm typecheck` to confirm TypeScript compilation passes.",
+    "Run `cd web && pnpm lint` to confirm linting passes.",
+    "If any issues are found, note them in findings but do NOT fix pre-existing issues."
+  ],
+  "acceptance_criteria": [
+    "`pnpm install --frozen-lockfile` completes without error",
+    "`pnpm typecheck` exits with code 0",
+    "`pnpm lint` exits with code 0 or only pre-existing warnings"
+  ],
+  "verification": [
+    "cd web && pnpm install --frozen-lockfile",
+    "cd web && pnpm typecheck",
+    "cd web && pnpm lint"
+  ],
+  "blocked_reason": null,
+  "findings": "pnpm install --frozen-lockfile: SUCCESS (735 packages). pnpm lint: SUCCESS (exit 0). pnpm typecheck: FAILED (exit 2) with 5 pre-existing TS errors in app/routes/groups.$slug.tsx and app/routes/groups._index.tsx. Errors relate to EmptyState component prop mismatch (message vs title) and LoadMore callback return type mismatch (items vs results). These are pre-existing issues not introduced by this task."
+}

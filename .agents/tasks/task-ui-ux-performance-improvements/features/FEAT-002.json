@@ -1,0 +1,37 @@
+{
+  "id": "FEAT-002",
+  "type": "feat",
+  "description": "Improve page design, user experience, and performance across the frontend. This single feature covers: (A) Enhanced home page with welcome hero section and better visual hierarchy, (B) Improved topic list item with hover effects and better spacing, (C) Performance optimization by lazy-loading heavy editor components, (D) Better loading/skeleton states for the LoadMore component, (E) Smoother page transitions with loading indicators, (F) Enhanced footer with better layout and social links section.",
+  "status": "pending",
+  "steps": [
+    "Step 1 - Create a skeleton loading component at web/components/common/skeleton-list.tsx that shows animated placeholder content while topic lists load, using Tailwind's animate-pulse. Include both a TopicListSkeleton (3-4 items with avatar + title + text placeholders) and a generic CardSkeleton.",
+    "Step 2 - Update web/components/common/load-more.tsx to accept an optional `renderSkeleton` prop and show skeletons during initial load instead of an empty screen. When `initialLoad` is true and no items exist yet, render the skeleton. Also add intersection-observer-based auto-loading: when the 'Load More' button scrolls into view, automatically trigger loading without requiring a click.",
+    "Step 3 - Create web/components/common/page-transition.tsx: a thin progress bar component (like NProgress) that renders at the top of the page during route transitions. Use React Router's useNavigation() hook to detect 'loading' state and show/hide the bar with a CSS animation. Style with Tailwind (fixed top-0, h-0.5, bg-primary, animate width from 0 to 80% then to 100%).",
+    "Step 4 - Integrate the page transition bar in web/app/root.tsx by adding <PageTransition /> inside the Root component, just before <Outlet />. It should be placed after the ThemeProvider but visible globally.",
+    "Step 5 - Update web/components/layout/site-footer.tsx to have a more polished layout: add a top section with the site title/logo and a short description on the left, and a 'Quick Links' column on the right (Topics, Articles, Search) before the existing footer links. Wrap in a subtle border-t and add more vertical padding. Keep it simple and clean, using grid layout at md breakpoint and stacked on mobile. All text must use i18n keys.",
+    "Step 6 - Add the i18n keys needed by the new footer and other additions. In web/lib/i18n/messages/en-US.ts add under `common.footer`: `siteDescription: 'A lightweight community for forums, Q&A, and knowledge sharing.'`, `quickLinks: 'Quick Links'`, `topics: 'Topics'`, `articles: 'Articles'`, `search: 'Search'`. Add equivalent zh-CN translations: `siteDescription: '轻量级论坛、问答与知识分享社区。'`, `quickLinks: '快捷链接'`, `topics: '话题'`, `articles: '文章'`, `search: '搜索'`.",
+    "Step 7 - Add i18n keys for the loading states. In en-US.ts add `common.loadMore.loading: 'Loading...'`. In zh-CN.ts add `common.loadMore.loading: '加载中...'`.",
+    "Step 8 - Improve web/components/topic/topic-list-item.tsx: add a subtle left border accent on hover (border-l-2 border-transparent hover:border-primary transition-all), improve the vertical rhythm with slightly more padding (py-4 instead of py-3), and add a subtle bg-muted/30 hover state for better interactivity feedback.",
+    "Step 9 - Lazy-load the heavy editor components. In web/components/editor/content-editor.tsx, use React.lazy() to import both MarkdownEditor and RichTextEditor, and wrap the rendered editor in React.Suspense with a loading placeholder div (min-height matching the editor height, with animate-pulse bg-muted rounded).",
+    "Step 10 - Add a subtle entrance animation to the topic detail page. In web/components/topic/topic-detail-client-page.tsx, add className='animate-in fade-in duration-300' to the outer article element to create a smooth content appearance when navigating to a topic."
+  ],
+  "acceptance_criteria": [
+    "A new SkeletonList component exists at web/components/common/skeleton-list.tsx",
+    "The LoadMore component supports a renderSkeleton prop and shows it during initial load",
+    "The LoadMore component auto-triggers loading when the button is in the viewport (IntersectionObserver)",
+    "A PageTransition progress bar component exists and is integrated in root.tsx",
+    "The site footer has an improved two-section layout with quick links",
+    "All new user-facing strings have both en-US and zh-CN translations",
+    "Topic list items have hover states with left border accent and background transition",
+    "Editor components are lazy-loaded with Suspense fallback",
+    "Topic detail page has a fade-in entrance animation",
+    "`pnpm typecheck` passes with no errors",
+    "`pnpm lint` passes with no new errors"
+  ],
+  "verification": [
+    "cd web && pnpm typecheck",
+    "cd web && pnpm lint"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}
