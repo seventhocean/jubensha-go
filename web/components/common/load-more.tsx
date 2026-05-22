@@ -185,18 +185,18 @@ function LoadMoreContent<T>({
     return () => window.clearTimeout(timer)
   }, [initialItems.length, initialLoad, loadMore, loaded, loading])
 
-  async function onLoadMore() {
+  const onLoadMore = React.useCallback(async () => {
     if (inFlightRef.current || !hasMore) {
       return
     }
     await loadMore()
-  }
+  }, [hasMore, loadMore])
 
   const showButton = alwaysShowButton || items.length > 0 || hasMore || loading
 
   return (
     <>
-      {loading && items.length === 0 && !loaded && renderSkeleton
+      {!loaded && items.length === 0 && renderSkeleton
         ? renderSkeleton()
         : null}
       {items.length
@@ -208,6 +208,7 @@ function LoadMoreContent<T>({
         <LoadMoreButton
           loading={loading}
           hasMore={hasMore}
+          cursor={cursor}
           loadingLabel={labels.loading}
           labels={labels}
           onClick={onLoadMore}
@@ -225,22 +226,35 @@ function LoadMoreContent<T>({
 export function LoadMoreButton({
   loading,
   hasMore,
+  cursor,
   loadingLabel,
   labels,
   onClick,
 }: {
   loading: boolean
   hasMore: boolean
+  cursor?: string
   loadingLabel?: string
   labels: LoadMoreLabels
   onClick: () => void
 }) {
   const containerRef = React.useRef<HTMLDivElement>(null)
   const triggeredRef = React.useRef(false)
+  const loadingRef = React.useRef(loading)
+  const prevCursorRef = React.useRef<string | undefined>(undefined)
+
+  loadingRef.current = loading
+
+  // Reset triggeredRef when cursor changes (new data was fetched)
+  React.useEffect(() => {
+    if (prevCursorRef.current !== undefined && prevCursorRef.current !== cursor) {
+      triggeredRef.current = false
+    }
+    prevCursorRef.current = cursor
+  }, [cursor])
 
   React.useEffect(() => {
     if (!hasMore || loading) {
-      triggeredRef.current = false
       return
     }
 
@@ -250,7 +264,11 @@ export function LoadMoreButton({
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0]
-        if (entry?.isIntersecting && !triggeredRef.current) {
+        if (
+          entry?.isIntersecting &&
+          !triggeredRef.current &&
+          !loadingRef.current
+        ) {
           triggeredRef.current = true
           onClick()
         }
