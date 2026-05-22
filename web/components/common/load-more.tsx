@@ -27,6 +27,7 @@ export function LoadMore<T>({
   loadPage,
   renderItems,
   renderEmpty,
+  renderSkeleton,
   alwaysShowButton = false,
 }: {
   initialItems?: T[] | null
@@ -38,6 +39,7 @@ export function LoadMore<T>({
   loadPage: (request: LoadMoreRequest) => Promise<PageData<T>>
   renderItems: (items: T[]) => React.ReactNode
   renderEmpty?: () => React.ReactNode
+  renderSkeleton?: () => React.ReactNode
   alwaysShowButton?: boolean
 }) {
   const safeInitialItems = Array.isArray(initialItems) ? initialItems : []
@@ -70,6 +72,7 @@ export function LoadMore<T>({
       loadPage={loadPage}
       renderItems={renderItems}
       renderEmpty={renderEmpty}
+      renderSkeleton={renderSkeleton}
       alwaysShowButton={alwaysShowButton}
     />
   )
@@ -84,6 +87,7 @@ function LoadMoreContent<T>({
   loadPage,
   renderItems,
   renderEmpty,
+  renderSkeleton,
   alwaysShowButton,
 }: {
   initialItems: T[]
@@ -94,6 +98,7 @@ function LoadMoreContent<T>({
   loadPage: (request: LoadMoreRequest) => Promise<PageData<T>>
   renderItems: (items: T[]) => React.ReactNode
   renderEmpty?: () => React.ReactNode
+  renderSkeleton?: () => React.ReactNode
   alwaysShowButton: boolean
 }) {
   const [cursor, setCursor] = React.useState(initialCursor || "")
@@ -191,6 +196,9 @@ function LoadMoreContent<T>({
 
   return (
     <>
+      {loading && items.length === 0 && !loaded && renderSkeleton
+        ? renderSkeleton()
+        : null}
       {items.length
         ? renderItems(items)
         : loaded && !loading && !error
@@ -227,8 +235,35 @@ export function LoadMoreButton({
   labels: LoadMoreLabels
   onClick: () => void
 }) {
+  const containerRef = React.useRef<HTMLDivElement>(null)
+  const triggeredRef = React.useRef(false)
+
+  React.useEffect(() => {
+    if (!hasMore || loading) {
+      triggeredRef.current = false
+      return
+    }
+
+    const el = containerRef.current
+    if (!el) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0]
+        if (entry?.isIntersecting && !triggeredRef.current) {
+          triggeredRef.current = true
+          onClick()
+        }
+      },
+      { threshold: 0.1 }
+    )
+
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [hasMore, loading, onClick])
+
   return (
-    <div className="p-5 text-center">
+    <div ref={containerRef} className="p-5 text-center">
       <Button
         type="button"
         variant="link"

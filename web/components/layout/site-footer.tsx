@@ -34,6 +34,41 @@ export function SiteFooter() {
     <section className="main">
       <div className="container">
         <footer className="footer">
+          <div className="grid grid-cols-1 gap-6 border-b pb-6 md:grid-cols-2">
+            <div>
+              <h3 className="text-sm font-semibold text-foreground">
+                {config?.siteTitle || "BBS-GO"}
+              </h3>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {t("common.footer.siteDescription")}
+              </p>
+            </div>
+            <div className="md:text-right">
+              <h4 className="text-sm font-semibold text-foreground">
+                {t("common.footer.quickLinks")}
+              </h4>
+              <nav className="mt-1 flex flex-wrap gap-3 md:justify-end">
+                <Link
+                  href="/topics"
+                  className="text-xs text-muted-foreground hover:text-foreground"
+                >
+                  {t("common.footer.topics")}
+                </Link>
+                <Link
+                  href="/articles"
+                  className="text-xs text-muted-foreground hover:text-foreground"
+                >
+                  {t("common.footer.articles")}
+                </Link>
+                <Link
+                  href="/search"
+                  className="text-xs text-muted-foreground hover:text-foreground"
+                >
+                  {t("common.footer.search")}
+                </Link>
+              </nav>
+            </div>
+          </div>
           {links.length ? (
             <div className="footer-links">
               {links.map((item, index) => {

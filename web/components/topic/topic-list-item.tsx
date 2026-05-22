@@ -33,7 +33,7 @@ export function TopicListItem({
   const imageSizeClass = getTopicImageSizeClass(topic.imageList?.length || 0)
 
   return (
-    <li className="px-4 py-3">
+    <li className="px-4 py-4 border-l-2 border-transparent hover:border-primary hover:bg-muted/30 transition-all duration-200">
       <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-2">
           <UserAvatar user={topic.user} size={24} className="shrink-0" />

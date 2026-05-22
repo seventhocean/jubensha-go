@@ -8,7 +8,7 @@ const zhCN = {
     loadMore: {
       loadMore: "查看更多",
       noMore: "到底啦",
-      loading: "加载中",
+      loading: "加载中...",
       error: "加载更多失败",
     },
     createBtn: {
@@ -31,6 +31,11 @@ const zhCN = {
     },
     footer: {
       poweredBy: "Powered by",
+      siteDescription: "轻量级论坛、问答与知识分享社区。",
+      quickLinks: "快捷链接",
+      topics: "话题",
+      articles: "文章",
+      search: "搜索",
     },
     theme: {
       toggle: "切换主题",

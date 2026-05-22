@@ -8,7 +8,7 @@ const enUS = {
     loadMore: {
       loadMore: "Load more",
       noMore: "You're all caught up",
-      loading: "Loading",
+      loading: "Loading...",
       error: "Couldn't load more items. Try again.",
     },
     createBtn: {
@@ -31,6 +31,12 @@ const enUS = {
     },
     footer: {
       poweredBy: "Powered by",
+      siteDescription:
+        "A lightweight community for forums, Q&A, and knowledge sharing.",
+      quickLinks: "Quick Links",
+      topics: "Topics",
+      articles: "Articles",
+      search: "Search",
     },
     theme: {
       toggle: "Switch theme",

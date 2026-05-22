@@ -13,6 +13,7 @@ import {
 
 import { AppProvider, useAppConfig } from "@/components/app/app-provider"
 import { ErrorPage } from "@/components/common/error-page"
+import { PageTransition } from "@/components/common/page-transition"
 import {
   InstallRequiredFallback,
   isInstallRequiredRouteError,
@@ -146,6 +147,7 @@ export default function Root() {
         <ThemeProvider>
           <TooltipProvider>
             <GoogleOneTapGate />
+            <PageTransition />
             <LayoutChrome>
               <Outlet />
             </LayoutChrome>

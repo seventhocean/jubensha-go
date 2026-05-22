@@ -1,7 +1,18 @@
 "use client"
 
-import { MarkdownEditor } from "@/components/editor/markdown-editor"
-import { RichTextEditor } from "@/components/editor/rich-text-editor"
+import * as React from "react"
+
+const MarkdownEditor = React.lazy(() =>
+  import("@/components/editor/markdown-editor").then((mod) => ({
+    default: mod.MarkdownEditor,
+  }))
+)
+
+const RichTextEditor = React.lazy(() =>
+  import("@/components/editor/rich-text-editor").then((mod) => ({
+    default: mod.RichTextEditor,
+  }))
+)
 
 export type ContentEditorType = "html" | "markdown"
 
@@ -9,7 +20,7 @@ export function ContentEditor({
   contentType,
   value,
   placeholder,
-  height,
+  height = "400px",
   onChange,
 }: {
   contentType: ContentEditorType
@@ -18,23 +29,34 @@ export function ContentEditor({
   height?: string
   onChange: (value: string) => void
 }) {
+  const fallback = (
+    <div
+      className="animate-pulse bg-muted rounded-md"
+      style={{ minHeight: height }}
+    />
+  )
+
   if (contentType === "markdown") {
     return (
-      <MarkdownEditor
+      <React.Suspense fallback={fallback}>
+        <MarkdownEditor
+          value={value}
+          placeholder={placeholder}
+          height={height}
+          onChange={onChange}
+        />
+      </React.Suspense>
+    )
+  }
+
+  return (
+    <React.Suspense fallback={fallback}>
+      <RichTextEditor
         value={value}
         placeholder={placeholder}
         height={height}
         onChange={onChange}
       />
-    )
-  }
-
-  return (
-    <RichTextEditor
-      value={value}
-      placeholder={placeholder}
-      height={height}
-      onChange={onChange}
-    />
+    </React.Suspense>
   )
 }
