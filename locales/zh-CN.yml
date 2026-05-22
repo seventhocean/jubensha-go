@@ -146,6 +146,14 @@ favorite:
   article_not_found: "收藏的文章不存在"
   topic_not_found: "收藏的话题不存在"
 
+group:
+  not_found: "群组不存在"
+  already_joined: "你已经加入了这个群组"
+  not_joined: "你不是这个群组的成员"
+  owner_cannot_leave: "群主不能退出群组，请先转让群主"
+  private_group: "这是私有群组，仅成员可以发帖"
+  disabled: "群组功能未启用"
+
 check_in:
   already_checked_in: "你已签到"
 

@@ -67,6 +67,7 @@ function dashboardBreadcrumbs(
           url: "/dashboard/articles",
         },
         nodes: { title: t("dashboard.nav.nodes"), url: "/dashboard/nodes" },
+        groups: { title: t("dashboard.nav.groups"), url: "/dashboard/groups" },
         links: { title: t("dashboard.nav.links"), url: "/dashboard/links" },
         "forbidden-words": {
           title: t("dashboard.nav.forbiddenWords"),

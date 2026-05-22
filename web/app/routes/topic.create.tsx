@@ -44,6 +44,7 @@ export default function TopicCreateRoute() {
       ? searchParams.get("contentType")!
       : "html"
   const nodeId = Number(searchParams.get("nodeId") || 0)
+  const groupId = Number(searchParams.get("groupId") || 0)
   const type = Number(searchParams.get("type") || 0)
   const title =
     type === 1
@@ -71,11 +72,12 @@ export default function TopicCreateRoute() {
     <main className="main">
       <div className="container">
         <TopicCreateForm
-          key={`${type}:${contentType}:${nodeId}`}
+          key={`${type}:${contentType}:${nodeId}:${groupId}`}
           contentType={contentType as "html" | "markdown" | "text"}
           currentUser={currentUser}
           config={config}
           nodeId={nodeId}
+          groupId={groupId || undefined}
           nodes={nodes || []}
           type={type}
         />

@@ -118,4 +118,8 @@ func init() {
 	register(16, "front moderation permissions", migrate_front_moderation_permissions)
 	register(17, "search reindex permission", migrate_search_reindex_permission)
 	register(18, "forbidden word delete permission", migrate_forbidden_word_delete_permission)
+	register(19, "create default public group", migrate_create_default_group)
+	register(20, "group permissions seed", migrate_group_permissions)
+	register(21, "update default group is_default flag", migrate_update_default_group)
+	register(22, "add group module config", migrate_group_module_config)
 }

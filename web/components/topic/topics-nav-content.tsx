@@ -5,7 +5,8 @@ import * as React from "react"
 
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { apiFetch } from "@/lib/api/client"
-import type { TopicNode } from "@/lib/api/types"
+import { getGroupNavs } from "@/lib/api/groups"
+import type { GroupItem, TopicNode } from "@/lib/api/types"
 import { cn } from "@/lib/utils"
 
 function isBuiltInNode(node: TopicNode) {
@@ -46,6 +47,7 @@ export function TopicsNavContent({
   currentRootNodeId?: number
 }) {
   const [nodes, setNodes] = React.useState(initialNodes)
+  const [groups, setGroups] = React.useState<GroupItem[]>([])
 
   React.useEffect(() => {
     if (initialNodes.length > 0) return
@@ -66,6 +68,19 @@ export function TopicsNavContent({
       window.clearTimeout(timer)
     }
   }, [initialNodes.length])
+
+  React.useEffect(() => {
+    let mounted = true
+    getGroupNavs().then((data) => {
+      if (mounted && data) {
+        setGroups(data)
+      }
+    }).catch(() => undefined)
+
+    return () => {
+      mounted = false
+    }
+  }, [])
 
   return (
     <div className="topics-nav">
@@ -107,6 +122,31 @@ export function TopicsNavContent({
               )
             })}
           </ul>
+          {groups.length > 0 ? (
+            <div className="px-3 pb-2">
+              <div className="nodes-divider" aria-hidden="true" />
+              <div className="text-xs text-muted-foreground/60 px-2 py-1">
+                Groups
+              </div>
+              <ul>
+                {groups.map((group) => (
+                  <li key={group.id} data-node-id={-1000 - group.id}>
+                    <Link href={`/groups/${group.slug}`}>
+                      <i
+                        className="node-logo"
+                        style={
+                          group.icon
+                            ? { backgroundImage: `url(${group.icon})` }
+                            : undefined
+                        }
+                      />
+                      <div className="node-name">{group.name}</div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
         </ScrollArea>
       </nav>
     </div>

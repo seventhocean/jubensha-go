@@ -169,6 +169,10 @@ func _buildTopic(topic *models.Topic, buildContent bool) *resp.TopicResponse {
 		node := services.TopicNodeService.Get(topic.NodeId)
 		rsp.Node = BuildNode(node)
 	}
+	if topic.GroupId > 0 {
+		group := services.GroupService.Get(topic.GroupId)
+		rsp.Group = BuildGroup(group, false)
+	}
 
 	tags := services.TopicService.GetTopicTags(topic.Id)
 	rsp.Tags = BuildTags(tags)

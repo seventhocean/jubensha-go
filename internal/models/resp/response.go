@@ -128,6 +128,29 @@ type NodeResponse struct {
 	Children    []NodeResponse          `json:"children,omitempty"` // 子节点（发帖可选时用）
 }
 
+// GroupResponse 群组返回实体
+type GroupResponse struct {
+	Id          int64  `json:"id"`
+	Name        string `json:"name"`
+	Slug        string `json:"slug"`
+	Description string `json:"description"`
+	Icon        string `json:"icon"`
+	Visibility  int    `json:"visibility"`
+	OwnerId     int64  `json:"ownerId"`
+	MemberCount int    `json:"memberCount"`
+	TopicCount  int    `json:"topicCount"`
+	Joined      bool   `json:"joined"`
+	CreateTime  int64  `json:"createTime"`
+}
+
+// GroupMemberResponse 群组成员返回实体
+type GroupMemberResponse struct {
+	Id         int64     `json:"id"`
+	GroupId    int64     `json:"groupId"`
+	User       *UserInfo `json:"user"`
+	CreateTime int64     `json:"createTime"`
+}
+
 // TopicNodeTreeItem 后台节点树形列表项（含 sortNo/status/createTime，children 始终存在以兼容 Arco Table）
 type TopicNodeTreeItem struct {
 	Id          int64                   `json:"id"`
@@ -185,6 +208,7 @@ type TopicResponse struct {
 	BountyScore       int                  `json:"bountyScore"`
 	User              *UserInfo            `json:"user"`
 	Node              *NodeResponse        `json:"node"`
+	Group             *GroupResponse       `json:"group,omitempty"`
 	Tags              *[]TagResponse       `json:"tags"`
 	Title             string               `json:"title"`
 	Summary           string               `json:"summary"`

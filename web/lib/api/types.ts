@@ -115,6 +115,27 @@ export interface TopicVote {
   options?: TopicVoteOption[]
 }
 
+export interface GroupItem {
+  id: number
+  name: string
+  slug: string
+  description?: string
+  icon?: string
+  visibility: number
+  ownerId: number
+  memberCount: number
+  topicCount: number
+  joined: boolean
+  createTime: number
+}
+
+export interface GroupMember {
+  id: number
+  groupId: number
+  user: UserSummary
+  createTime: number
+}
+
 export interface Topic {
   id: EntityId
   type?: number
@@ -125,6 +146,7 @@ export interface Topic {
   updateTime?: number
   user: UserSummary
   node?: TopicNode
+  group?: GroupItem | null
   tags?: Tag[]
   sticky?: boolean
   recommend?: boolean

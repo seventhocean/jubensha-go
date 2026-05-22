@@ -126,6 +126,7 @@ type ModulesConfig struct {
 	Topic   bool `json:"topic"`
 	QA      bool `json:"qa"`
 	Article bool `json:"article"`
+	Group   bool `json:"group"`
 }
 
 // LoginConfig 登录配置

@@ -63,6 +63,11 @@ var (
 	PermissionNodeDelete = PermissionDefinition{Type: TypeDashboard, Code: "dashboard.node.delete", GroupName: GroupContent, SortNo: 430, NameEn: "Delete Nodes", NameZh: "删除节点"}
 	PermissionNodeSort   = PermissionDefinition{Type: TypeDashboard, Code: "dashboard.node.sort", GroupName: GroupContent, SortNo: 440, NameEn: "Sort Nodes", NameZh: "排序节点"}
 
+	PermissionGroupView   = PermissionDefinition{Type: TypeDashboard, Code: "dashboard.group.view", GroupName: GroupContent, SortNo: 450, NameEn: "View Groups", NameZh: "查看群组"}
+	PermissionGroupCreate = PermissionDefinition{Type: TypeDashboard, Code: "dashboard.group.create", GroupName: GroupContent, SortNo: 460, NameEn: "Create Groups", NameZh: "创建群组"}
+	PermissionGroupUpdate = PermissionDefinition{Type: TypeDashboard, Code: "dashboard.group.update", GroupName: GroupContent, SortNo: 470, NameEn: "Update Groups", NameZh: "编辑群组"}
+	PermissionGroupDelete = PermissionDefinition{Type: TypeDashboard, Code: "dashboard.group.delete", GroupName: GroupContent, SortNo: 480, NameEn: "Delete Groups", NameZh: "删除群组"}
+
 	PermissionLinkView   = PermissionDefinition{Type: TypeDashboard, Code: "dashboard.link.view", GroupName: GroupContent, SortNo: 500, NameEn: "View Links", NameZh: "查看链接"}
 	PermissionLinkCreate = PermissionDefinition{Type: TypeDashboard, Code: "dashboard.link.create", GroupName: GroupContent, SortNo: 510, NameEn: "Create Links", NameZh: "创建链接"}
 	PermissionLinkUpdate = PermissionDefinition{Type: TypeDashboard, Code: "dashboard.link.update", GroupName: GroupContent, SortNo: 520, NameEn: "Update Links", NameZh: "编辑链接"}
@@ -133,6 +138,10 @@ var Permissions = []PermissionDefinition{
 	PermissionNodeUpdate,
 	PermissionNodeDelete,
 	PermissionNodeSort,
+	PermissionGroupView,
+	PermissionGroupCreate,
+	PermissionGroupUpdate,
+	PermissionGroupDelete,
 	PermissionLinkView,
 	PermissionLinkCreate,
 	PermissionLinkUpdate,

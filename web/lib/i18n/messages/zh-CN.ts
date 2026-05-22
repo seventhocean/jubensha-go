@@ -77,6 +77,7 @@ const zhCN = {
       topics: "话题",
       articles: "文章",
       nodes: "节点",
+      groups: "群组",
       links: "链接",
       forbiddenWords: "违禁词",
       community: "社区",
@@ -186,6 +187,10 @@ const zhCN = {
     nodeTypes: {
       normal: "话题",
       qa: "问答",
+    },
+    visibility: {
+      public: "公开",
+      private: "私有",
     },
     forbiddenWordTypes: {
       word: "词条",
@@ -645,6 +650,11 @@ const zhCN = {
       parentId: "父级分类",
       logo: "图标",
       sortNo: "排序",
+      slug: "标识",
+      memberCount: "成员数",
+      topicCount: "帖子数",
+      visibility: "可见性",
+      showInNav: "导航显示",
       url: "URL",
       word: "词条",
       remark: "备注",
@@ -703,6 +713,10 @@ const zhCN = {
       nodes: {
         title: "节点管理",
         description: "管理话题和问答分类。",
+      },
+      groups: {
+        title: "群组管理",
+        description: "管理社区群组（吧）及其设置。",
       },
       links: {
         title: "友情链接",
@@ -1517,6 +1531,17 @@ const zhCN = {
     },
   },
   user: {
+    groups: {
+      title: "群组广场",
+      join: "加入",
+      leave: "退出",
+      post: "发帖",
+      members: "成员",
+      topics: "帖子",
+      empty: "暂无群组",
+      no_topics: "该群组暂无帖子",
+      not_found: "群组不存在",
+    },
     tasks: {
       title: "任务中心",
       subtitle: "完成任务，赢取积分、经验与徽章奖励。",

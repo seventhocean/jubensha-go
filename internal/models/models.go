@@ -19,6 +19,7 @@ var Models = []interface{}{
 	&UserScoreLog{}, &UserExpLog{},
 	&OperateLog{}, &EmailLog{}, &EmailCode{}, &SmsCode{}, &CheckIn{}, &UserFollow{}, &UserFeed{}, &UserReport{},
 	&ForbiddenWord{},
+	&Group{}, &GroupMember{},
 	&Attachment{}, &AttachmentDownloadLog{},
 }
 
@@ -231,6 +232,7 @@ type Topic struct {
 	Model
 	Type              constants.TopicType   `gorm:"type:int(11);not null:default:0;index:idx_topic_type_node_id,priority:1;index:idx_topic_type_qa_status,priority:1" json:"type" form:"type"` // 类型
 	NodeId            int64                 `gorm:"not null;index:idx_node_id;index:idx_topic_type_node_id,priority:2" json:"nodeId" form:"nodeId"`                                            // 节点编号
+	GroupId           int64                 `gorm:"not null;default:0;index:idx_topic_group_id" json:"groupId" form:"groupId"`                                                                   // 群组编号（0=公开广场）
 	QaStatus          constants.QaStatus    `gorm:"size:16;not null;default:unsolved;index:idx_topic_type_qa_status,priority:2" json:"qaStatus" form:"qaStatus"`                               // 问答状态
 	AcceptedCommentId int64                 `gorm:"not null;default:0;index:idx_topic_accepted_comment_id" json:"acceptedCommentId" form:"acceptedCommentId"`                                  // 采纳评论ID
 	SolvedAt          int64                 `gorm:"not null;default:0" json:"solvedAt" form:"solvedAt"`                                                                                        // 解决时间
@@ -564,6 +566,33 @@ type ForbiddenWord struct {
 	Word       string `gorm:"size:128" json:"word" form:"word"`      // 违禁词
 	Remark     string `gorm:"size:1024" json:"remark" form:"remark"` // 备注
 	CreateTime int64  `json:"createTime" form:"createTime"`          // 举报时间
+}
+
+// Group 群组/吧
+type Group struct {
+	Model
+	Name        string `gorm:"size:64;not null;uniqueIndex:uk_group_name" json:"name" form:"name"`                                   // 群组名称
+	Slug        string `gorm:"size:64;not null;uniqueIndex:uk_group_slug" json:"slug" form:"slug"`                                   // URL友好名称（唯一）
+	Description string `gorm:"type:text" json:"description" form:"description"`                                                       // 描述
+	Icon        string `gorm:"size:1024" json:"icon" form:"icon"`                                                                     // 图标
+	Visibility  int    `gorm:"type:int(11);not null;default:0;index:idx_group_visibility" json:"visibility" form:"visibility"`         // 可见性：0=公开，1=私有
+	IsDefault   int    `gorm:"type:int(11);not null;default:0" json:"isDefault" form:"isDefault"`                                     // 是否默认群组：0=否，1=是
+	ShowInNav   int    `gorm:"type:int(11);not null;default:0" json:"showInNav" form:"showInNav"`                                     // 是否在导航栏显示：0=否，1=是
+	OwnerId     int64  `gorm:"not null;default:0;index:idx_group_owner_id" json:"ownerId" form:"ownerId"`                             // 群主用户ID
+	MemberCount int    `gorm:"type:int(11);not null;default:0" json:"memberCount" form:"memberCount"`                                 // 成员数量
+	TopicCount  int    `gorm:"type:int(11);not null;default:0" json:"topicCount" form:"topicCount"`                                   // 帖子数量
+	Status      int    `gorm:"type:int(11);not null;index:idx_group_status" json:"status" form:"status"`                              // 状态：0=正常，1=删除
+	SortNo      int    `gorm:"type:int(11);not null;default:0;index:idx_group_sort_no" json:"sortNo" form:"sortNo"`                   // 排序编号
+	CreateTime  int64  `gorm:"not null;default:0" json:"createTime" form:"createTime"`                                                // 创建时间
+	UpdateTime  int64  `gorm:"not null;default:0" json:"updateTime" form:"updateTime"`                                                // 更新时间
+}
+
+// GroupMember 群组成员
+type GroupMember struct {
+	Model
+	GroupId    int64 `gorm:"not null;uniqueIndex:uk_group_member_gu;index:idx_group_member_group_id" json:"groupId" form:"groupId"` // 群组ID
+	UserId     int64 `gorm:"not null;uniqueIndex:uk_group_member_gu;index:idx_group_member_user_id" json:"userId" form:"userId"`   // 用户ID
+	CreateTime int64 `gorm:"not null;default:0" json:"createTime" form:"createTime"`                                                // 加入时间
 }
 
 // Attachment 帖子附件

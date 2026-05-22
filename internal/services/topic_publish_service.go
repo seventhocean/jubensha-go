@@ -37,11 +37,18 @@ func (s *topicPublishService) Publish(userId int64, form req.CreateTopicReq) (*m
 	}
 
 	now := dates.NowTimestamp()
+	if form.GroupId == 0 {
+		defaultGroup := GroupService.GetDefaultGroup()
+		if defaultGroup != nil {
+			form.GroupId = defaultGroup.Id
+		}
+	}
 	topic := &models.Topic{
 		Type:            form.Type,
 		QaStatus:        constants.QaStatusUnsolved,
 		UserId:          userId,
 		NodeId:          form.NodeId,
+		GroupId:         form.GroupId,
 		Title:           form.Title,
 		ContentType:     form.ContentType,
 		Content:         form.Content,
@@ -135,6 +142,8 @@ func (s *topicPublishService) Publish(userId int64, form req.CreateTopicReq) (*m
 
 	// 添加索引
 	search.UpdateTopicIndexAsync(topic)
+	// 更新群组帖子计数
+	GroupService.AddTopicCount(topic.GroupId)
 	// 发送事件
 	event.Send(event.TopicCreateEvent{
 		UserId:     topic.UserId,
@@ -230,6 +239,14 @@ func (s topicPublishService) checkParams(userId int64, form req.CreateTopicReq) 
 	}
 	if !node.Type.Supports(form.Type) {
 		return errors.New(locales.Get("topic.node_type_mismatch"))
+	}
+	if form.GroupId > 0 {
+		if !modules.Group {
+			return errors.New(locales.Get("group.disabled"))
+		}
+		if err := GroupService.ValidateGroup(form.GroupId); err != nil {
+			return err
+		}
 	}
 	if form.Type == constants.TopicTypeQA {
 		form.Vote = nil

@@ -15,6 +15,7 @@ import (
 type CreateTopicReq struct {
 	Type          constants.TopicType   `json:"type" form:"type"`
 	NodeId        int64                 `json:"nodeId" form:"nodeId"`
+	GroupId       int64                 `json:"groupId" form:"groupId"`
 	Title         string                `json:"title" form:"title"`
 	Content       string                `json:"content" form:"content"`
 	ContentType   constants.ContentType `json:"contentType" form:"contentType"`
@@ -51,6 +52,7 @@ type VoteCastReq struct {
 
 type EditTopicReq struct {
 	NodeId        int64    `json:"nodeId" form:"nodeId"`
+	GroupId       int64    `json:"groupId" form:"groupId"`
 	Title         string   `json:"title" form:"title"`
 	Content       string   `json:"content" form:"content"`
 	HideContent   string   `json:"hideContent" form:"hideContent"`

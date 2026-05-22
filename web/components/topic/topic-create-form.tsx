@@ -47,6 +47,7 @@ import { useToastActions } from "@/lib/toast"
 type TopicCreateFormState = {
   type: number
   nodeId: number
+  groupId: number
   title: string
   tags: string[]
   contentType: "html" | "markdown" | "text"
@@ -89,15 +90,18 @@ function nodeTypeMatches(topicType: number) {
 function createInitialForm({
   type,
   nodeId,
+  groupId,
   contentType,
 }: {
   type: number
   nodeId: number
+  groupId?: number
   contentType: TopicCreateFormState["contentType"]
 }): TopicCreateFormState {
   return {
     type,
     nodeId,
+    groupId: groupId || 0,
     title: "",
     tags: [],
     contentType,
@@ -698,6 +702,7 @@ export function TopicCreateForm({
   currentUser,
   config,
   nodeId,
+  groupId,
   nodes,
   type,
 }: {
@@ -705,6 +710,7 @@ export function TopicCreateForm({
   currentUser: UserSummary
   config: SiteConfig | null
   nodeId: number
+  groupId?: number
   nodes: TopicNode[]
   type: number
 }) {
@@ -730,6 +736,7 @@ export function TopicCreateForm({
     createInitialForm({
       type,
       nodeId: nodeId || config?.defaultNodeId || 0,
+      groupId,
       contentType,
     })
   )

@@ -148,7 +148,24 @@ export function TopicListItem({
       ) : null}
 
       <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
-        <div className="min-w-0">
+        <div className="min-w-0 flex items-center gap-1.5">
+          {topic.group ? (
+            <Link
+              href={`/groups/${topic.group.slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex max-w-full items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-xs text-primary hover:text-primary/80"
+            >
+              {topic.group.icon ? (
+                <img
+                  src={topic.group.icon}
+                  alt=""
+                  className="h-4 w-4 rounded-full object-cover"
+                />
+              ) : null}
+              <span className="truncate">{topic.group.name}</span>
+            </Link>
+          ) : null}
           {topic.node ? (
             <Link
               href={`/topics/node/${topic.node.id}`}

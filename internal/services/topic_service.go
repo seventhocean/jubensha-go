@@ -169,6 +169,11 @@ func (s *topicService) Edit(userId, topicId int64, form req.EditTopicReq) error 
 	if !node.Type.Supports(topic.Type) {
 		return errors.New(locales.Get("topic.node_type_mismatch"))
 	}
+	if form.GroupId > 0 {
+		if err := GroupService.ValidateGroup(form.GroupId); err != nil {
+			return err
+		}
+	}
 
 	hideContent := form.HideContent
 	if topic.Type == constants.TopicTypeQA {
@@ -183,6 +188,7 @@ func (s *topicService) Edit(userId, topicId int64, form req.EditTopicReq) error 
 		)
 		if err = repositories.TopicRepository.Updates(ctx.Tx, topicId, map[string]interface{}{
 			"node_id":      form.NodeId,
+			"group_id":     form.GroupId,
 			"title":        form.Title,
 			"content":      form.Content,
 			"hide_content": hideContent,

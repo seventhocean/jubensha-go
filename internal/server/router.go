@@ -235,6 +235,15 @@ func registerAPIRoutes(group *gin.RouterGroup) {
 	badgeGroup := group.Group("/badge")
 	badgeGroup.GET("/badges", apiHandlers.BadgeBadges)
 
+	groupGroup := group.Group("/group")
+	groupGroup.GET("/list", apiHandlers.GroupList)
+	groupGroup.GET("/navs", apiHandlers.GroupNavs)
+	groupGroup.GET("/members", apiHandlers.GroupMembers)
+	groupGroup.GET("/topics", apiHandlers.GroupTopics)
+	groupGroup.POST("/join", apiHandlers.GroupJoin)
+	groupGroup.POST("/leave", apiHandlers.GroupLeave)
+	groupGroup.GET("/:slug", apiHandlers.GroupDetail)
+
 	voteGroup := group.Group("/vote")
 	voteGroup.POST("/cast", apiHandlers.VoteCast)
 	voteGroup.GET("/:id", apiHandlers.VoteDetail)
@@ -432,5 +441,12 @@ func registerAdminRoutes(group *gin.RouterGroup) {
 	voteRecordGroup.POST("/update", adminHandlers.VoteRecordUpdate)
 	voteRecordGroup.POST("/delete", adminHandlers.VoteRecordRemove)
 	voteRecordGroup.GET("/:id", adminHandlers.VoteRecordDetail)
+
+	adminGroupGroup := group.Group("/group")
+	adminGroupGroup.POST("/list", adminHandlers.GroupList)
+	adminGroupGroup.POST("/create", adminHandlers.GroupCreate)
+	adminGroupGroup.POST("/update", adminHandlers.GroupUpdate)
+	adminGroupGroup.POST("/delete", adminHandlers.GroupRemove)
+	adminGroupGroup.GET("/:id", adminHandlers.GroupDetail)
 
 }

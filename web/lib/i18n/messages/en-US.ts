@@ -77,6 +77,7 @@ const enUS = {
       topics: "Topics",
       articles: "Articles",
       nodes: "Categories",
+      groups: "Groups",
       links: "Links",
       forbiddenWords: "Moderation Rules",
       community: "Community",
@@ -186,6 +187,10 @@ const enUS = {
     nodeTypes: {
       normal: "Topic",
       qa: "Q&A",
+    },
+    visibility: {
+      public: "Public",
+      private: "Private",
     },
     forbiddenWordTypes: {
       word: "Word",
@@ -661,6 +666,11 @@ const enUS = {
       parentId: "Parent Category",
       logo: "Logo",
       sortNo: "Sort order",
+      slug: "Slug",
+      memberCount: "Members",
+      topicCount: "Topics",
+      visibility: "Visibility",
+      showInNav: "Show in nav",
       url: "URL",
       word: "Word",
       remark: "Remark",
@@ -719,6 +729,10 @@ const enUS = {
       nodes: {
         title: "Topic Categories",
         description: "Manage topic and Q&A categories.",
+      },
+      groups: {
+        title: "Groups",
+        description: "Manage community groups (forums/bars) and their settings.",
       },
       links: {
         title: "Community Links",
@@ -1554,6 +1568,17 @@ const enUS = {
     },
   },
   user: {
+    groups: {
+      title: "Groups",
+      join: "Join",
+      leave: "Leave",
+      post: "Post",
+      members: "members",
+      topics: "topics",
+      empty: "No groups yet",
+      no_topics: "No topics in this group yet",
+      not_found: "Group not found",
+    },
     tasks: {
       title: "Tasks",
       subtitle: "Complete tasks to earn points, XP, and badges.",

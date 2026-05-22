@@ -71,6 +71,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             permission: PERMISSIONS.DASHBOARD_NODE_VIEW,
           },
           {
+            title: t("dashboard.nav.groups"),
+            url: "/dashboard/groups",
+            permission: PERMISSIONS.DASHBOARD_GROUP_VIEW,
+          },
+          {
             title: t("dashboard.nav.links"),
             url: "/dashboard/links",
             permission: PERMISSIONS.DASHBOARD_LINK_VIEW,
