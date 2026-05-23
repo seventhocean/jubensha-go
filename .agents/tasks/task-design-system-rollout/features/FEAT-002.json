@@ -2,7 +2,7 @@
   "id": "FEAT-002",
   "type": "feat",
   "description": "Update all layout components (site-footer, main-shell, home-aside) and common components (empty-state, widget-card, skeleton-list) to use the new design system tokens, giving them proper surface colors, spacing, shadows/borders per mode, and transitions.",
-  "status": "in_progress",
+  "status": "completed",
   "steps": [
     "Update web/components/layout/site-footer.tsx: Apply design tokens - use var(--color-surface-1) for footer background, var(--color-ink-muted) for text, var(--color-hairline) for divider. Add proper spacing using spacing tokens. Style quick links with proper hover transitions using var(--motion-duration-fast).",
     "Update web/components/layout/home-aside.tsx: Update WidgetCard to use bg-[var(--color-surface-1)] with shadow-[var(--shadow-sm)] in light mode and border border-[var(--color-hairline)] in dark mode. Use rounded-[var(--rounded-lg)] for cards. Update ScoreRank list items to use proper ink colors and spacing. Apply design system avatar sizes.",
@@ -19,5 +19,5 @@
   ],
   "verification": ["Run 'pnpm build' in /projects/sandbox/jubensha-go/web/ and confirm no errors"],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "Build passes cleanly. All layout and common components updated to use design system tokens. The WidgetCard in home-aside uses shadow-sm in light mode and hairline border in dark mode. Skeleton components use the shimmer keyframe animation from variables.css with surface-1/surface-2 gradient. Footer brand link uses --color-secondary token instead of hardcoded #eb5424 .light class."
 }
