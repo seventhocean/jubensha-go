@@ -140,6 +140,7 @@ type GroupResponse struct {
 	Rules       string `json:"rules"`
 	Visibility  int    `json:"visibility"`
 	IsDefault   int    `json:"isDefault"`
+	ShowInNav   int    `json:"showInNav"`
 	OwnerId     int64  `json:"ownerId"`
 	MemberCount int    `json:"memberCount"`
 	TopicCount  int    `json:"topicCount"`

@@ -131,6 +131,7 @@ export interface GroupItem {
   notice?: string
   rules?: string
   isDefault?: number
+  showInNav?: number
 }
 
 export interface GroupMember {

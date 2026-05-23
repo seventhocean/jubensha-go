@@ -33,9 +33,9 @@ export default function DashboardGroupsRoute() {
       },
     ],
     columns: [
-      { key: "id", label: dashboardData.label(t, "id") },
+      { key: "id", label: dashboardData.label(t, "id"), className: "min-w-8" },
       { key: "name", label: dashboardData.label(t, "name") },
-      { key: "slug", label: dashboardData.label(t, "slug") },
+      { key: "slug", label: dashboardData.label(t, "slug"), className: "min-w-24" },
       {
         key: "description",
         label: dashboardData.label(t, "description"),
@@ -44,18 +44,21 @@ export default function DashboardGroupsRoute() {
       {
         key: "icon",
         label: dashboardData.label(t, "icon"),
+        className: "min-w-12",
         render: (record) =>
           dashboardData.imageCell(record.icon, String(record.name || "")),
       },
       {
         key: "banner",
         label: dashboardData.label(t, "banner"),
+        className: "min-w-24",
         render: (record) =>
           dashboardData.imageCell(record.banner, String(record.name || "")),
       },
       {
         key: "visibility",
         label: dashboardData.label(t, "visibility"),
+        className: "min-w-16",
         render: (record) => {
           if (record.visibility === 1) {
             return t("dashboard.visibility.private")
@@ -63,25 +66,28 @@ export default function DashboardGroupsRoute() {
           return t("dashboard.visibility.public")
         },
       },
-      { key: "memberCount", label: dashboardData.label(t, "memberCount") },
-      { key: "topicCount", label: dashboardData.label(t, "topicCount") },
-      { key: "notice", label: dashboardData.label(t, "notice") },
-      { key: "rules", label: dashboardData.label(t, "rules") },
-      { key: "sortNo", label: dashboardData.label(t, "sortNo") },
+      { key: "memberCount", label: dashboardData.label(t, "memberCount"), className: "min-w-16" },
+      { key: "topicCount", label: dashboardData.label(t, "topicCount"), className: "min-w-16" },
+      { key: "notice", label: dashboardData.label(t, "notice"), className: "min-w-72" },
+      { key: "rules", label: dashboardData.label(t, "rules"), className: "min-w-72" },
+      { key: "sortNo", label: dashboardData.label(t, "sortNo"), className: "min-w-12" },
       {
         key: "showInNav",
         label: dashboardData.label(t, "showInNav"),
+        className: "min-w-16",
         render: (record) =>
           record.showInNav ? t("common.yes") : t("common.no"),
       },
       {
         key: "status",
         label: dashboardData.label(t, "status"),
+        className: "min-w-16",
         render: (record) => dashboardData.statusCell(t, record.status),
       },
       {
         key: "createTime",
         label: dashboardData.label(t, "createTime"),
+        className: "min-w-36",
         render: (record) => dashboardData.dateCell(record.createTime),
       },
     ],

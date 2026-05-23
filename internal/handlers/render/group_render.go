@@ -20,6 +20,7 @@ func BuildGroup(group *models.Group, joined bool) *resp.GroupResponse {
 		Rules:       group.Rules,
 		Visibility:  group.Visibility,
 		IsDefault:   group.IsDefault,
+		ShowInNav:   group.ShowInNav,
 		OwnerId:     group.OwnerId,
 		MemberCount: group.MemberCount,
 		TopicCount:  group.TopicCount,

@@ -37,12 +37,6 @@ func (s *topicPublishService) Publish(userId int64, form req.CreateTopicReq) (*m
 	}
 
 	now := dates.NowTimestamp()
-	if form.GroupId == 0 {
-		defaultGroup := GroupService.GetDefaultGroup()
-		if defaultGroup != nil {
-			form.GroupId = defaultGroup.Id
-		}
-	}
 	topic := &models.Topic{
 		Type:            form.Type,
 		QaStatus:        constants.QaStatusUnsolved,

@@ -80,10 +80,6 @@ func (s *groupService) GetPublicGroups() []models.Group {
 		Asc("sort_no").Desc("id"))
 }
 
-func (s *groupService) GetDefaultGroup() *models.Group {
-	return repositories.GroupRepository.Take(sqls.DB(), "slug = ? and status = ?", "public", constants.StatusOk)
-}
-
 func (s *groupService) Join(userId, groupId int64) error {
 	group := s.Get(groupId)
 	if group == nil || group.Status != constants.StatusOk {

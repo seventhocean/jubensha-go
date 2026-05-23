@@ -10,6 +10,12 @@ import { LoadMore } from "@/components/common/load-more"
 import { MainShell } from "@/components/layout/main-shell"
 import { TopicListItem } from "@/components/topic/topic-list-item"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   getGroup,
@@ -241,13 +247,29 @@ export default function GroupDetailRoute() {
 
       {/* Action buttons */}
       <div className="flex items-center gap-3 mb-4">
-        <Link
-          to={`/topic/create?groupId=${group.id}&type=0`}
-          className="inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium bg-primary text-primary-foreground hover:opacity-90"
-        >
-          <Pin className="h-4 w-4" />
-          {t("user.groups.createPost")}
-        </Link>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              type="button"
+              className="inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium bg-primary text-primary-foreground hover:opacity-90"
+            >
+              <Pin className="h-4 w-4" />
+              {t("user.groups.createPost")}
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start">
+            <DropdownMenuItem asChild>
+              <Link to={`/topic/create?groupId=${group.id}&type=0`}>
+                {t("common.createBtn.topic")}
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link to={`/topic/create?groupId=${group.id}&type=2`}>
+                {t("common.createBtn.qa")}
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <button
           type="button"
           onClick={handleJoin}
