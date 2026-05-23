@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from "react"
 import { Link } from "react-router"
-import { Users } from "lucide-react"
+import { Loader2, Plus, Users } from "lucide-react"
+import { toast } from "sonner"
 
 import { EmptyState } from "@/components/common/empty-state"
+import { GroupCardGridSkeleton } from "@/components/common/skeleton-list"
 import { MainShell } from "@/components/layout/main-shell"
 import { getGroupList, joinGroup, leaveGroup } from "@/lib/api/groups"
 import type { GroupItem } from "@/lib/api/types"
@@ -22,14 +24,17 @@ export async function clientLoader() {
 function GroupCard({
   group,
   onJoin,
+  joiningId,
   t,
 }: {
   group: GroupItem
   onJoin: (group: GroupItem) => void
+  joiningId: number | null
   t: (key: string) => string
 }) {
+  const isJoining = joiningId === group.id
   return (
-    <div className="relative overflow-hidden rounded-lg border bg-card hover:shadow-md transition-shadow">
+    <div className="relative overflow-hidden rounded-lg border bg-card hover:shadow-md hover:-translate-y-0.5 transition-transform">
       {/* Banner header */}
       {group.banner ? (
         <Link to={`/groups/${group.slug}`} className="block">
@@ -84,13 +89,20 @@ function GroupCard({
           <button
             type="button"
             onClick={() => onJoin(group)}
+            disabled={isJoining}
             className={`px-3 py-1 rounded-full text-xs font-medium ${
               group.joined
                 ? "bg-muted text-muted-foreground hover:bg-red-100 hover:text-red-600"
                 : "bg-primary text-primary-foreground hover:opacity-90"
             }`}
           >
-            {group.joined ? t("user.groups.leave") : t("user.groups.join")}
+            {isJoining ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : group.joined ? (
+              t("user.groups.leave")
+            ) : (
+              t("user.groups.join")
+            )}
           </button>
         </div>
       </div>
@@ -175,6 +187,8 @@ export default function GroupsIndexRoute() {
   useDocumentTitle(t("user.groups.title"))
   const [groups, setGroups] = useState<GroupItem[] | null>(null)
   const [loading, setLoading] = useState(true)
+  const [joiningId, setJoiningId] = useState<number | null>(null)
+  const [search, setSearch] = useState("")
 
   useEffect(() => {
     getGroupList()
@@ -183,45 +197,80 @@ export default function GroupsIndexRoute() {
   }, [])
 
   async function handleJoin(group: GroupItem) {
-    if (group.joined) {
-      await leaveGroup(group.id)
-    } else {
-      await joinGroup(group.id)
+    if (joiningId !== null) return
+    setJoiningId(group.id)
+    try {
+      if (group.joined) {
+        await leaveGroup(group.id)
+        toast.success(t("user.groups.leaveSuccess"))
+      } else {
+        await joinGroup(group.id)
+        toast.success(t("user.groups.joinSuccess"))
+      }
+      setGroups((prev) =>
+        (prev || []).map((g) =>
+          g.id === group.id
+            ? {
+                ...g,
+                joined: !g.joined,
+                memberCount: g.joined
+                  ? g.memberCount - 1
+                  : g.memberCount + 1,
+              }
+            : g,
+        ),
+      )
+    } catch {
+      toast.error(t("user.groups.operationFailed"))
+    } finally {
+      setJoiningId(null)
     }
-    setGroups((prev) =>
-      (prev || []).map((g) =>
-        g.id === group.id
-          ? {
-              ...g,
-              joined: !g.joined,
-              memberCount: g.joined
-                ? g.memberCount - 1
-                : g.memberCount + 1,
-            }
-          : g,
-      ),
-    )
   }
 
   if (loading || groups === null) {
     return (
       <MainShell>
-        <div className="p-8 text-center text-muted-foreground">
-          Loading...
+        <div className="container mx-auto p-4">
+          <GroupCardGridSkeleton />
         </div>
       </MainShell>
     )
   }
 
-  const myGroups = groups.filter((g) => g.joined)
-  const availableGroups = groups.filter((g) => !g.joined)
+  const filteredGroups = search
+    ? groups.filter((g) =>
+        g.name.toLowerCase().includes(search.toLowerCase()),
+      )
+    : groups
+
+  const myGroups = filteredGroups.filter((g) => g.joined)
+  const availableGroups = filteredGroups.filter((g) => !g.joined)
 
   return (
     <MainShell>
       <div className="container mx-auto p-4">
-        <h1 className="text-2xl font-bold mb-6">{t("user.groups.title")}</h1>
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-2xl font-bold">{t("user.groups.title")}</h1>
+          <Link
+            to="/groups/create"
+            className="inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium bg-primary text-primary-foreground hover:opacity-90"
+          >
+            <Plus className="h-4 w-4" />
+            {t("user.groups.createGroup")}
+          </Link>
+        </div>
 
-        {groups.length === 0 ? (
+        <div className="mb-6">
+          <input
+            type="text"
+            placeholder={t("user.groups.searchPlaceholder")}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full max-w-sm rounded-lg border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+          />
+        </div>
+
+        {filteredGroups.length === 0 ? (
           <EmptyState title={t("user.groups.empty")} />
         ) : (
           <div className="space-y-8">
@@ -255,6 +304,7 @@ export default function GroupsIndexRoute() {
                       key={group.id}
                       group={group}
                       onJoin={handleJoin}
+                      joiningId={joiningId}
                       t={t}
                     />
                   ))}

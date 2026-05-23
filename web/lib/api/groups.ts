@@ -34,14 +34,33 @@ export function getGroupMembers(groupId: number, cursor?: string) {
   })
 }
 
-export function getGroupTopics(groupId: number, cursor?: string) {
+export function getGroupTopics(groupId: number, cursor?: string, sort?: string, page?: number) {
   return apiFetch<PageData<Topic>>("/api/group/topics", {
-    params: { groupId, cursor },
+    params: { groupId, cursor, sort, page },
   })
 }
 
 export function getGroupStickyTopics(groupId: number) {
   return apiFetch<Topic[]>("/api/group/sticky_topics", {
     params: { groupId },
+  })
+}
+
+export function getGroupHotTopics(groupId: number) {
+  return apiFetch<Topic[]>("/api/group/hot_topics", {
+    params: { groupId },
+  })
+}
+
+export function createGroup(data: {
+  name: string
+  slug: string
+  description?: string
+  icon?: string
+  banner?: string
+}) {
+  return apiFetch<GroupItem>("/api/group/create", {
+    method: "POST",
+    body: data,
   })
 }

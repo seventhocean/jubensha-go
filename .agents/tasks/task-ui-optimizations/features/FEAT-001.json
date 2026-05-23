@@ -1,0 +1,38 @@
+{
+  "id": "FEAT-001",
+  "type": "feat",
+  "description": "Add all i18n keys, skeleton components, toast feedback, loading states, banner fix, and micro-animations (P0-P3 frontend-only items)",
+  "status": "completed",
+  "steps": [
+    "Step 1: Add all new i18n keys to web/lib/i18n/messages/en-US.ts under user.groups and common.nav sections. Keys: createGroup, sortLatest, sortMostReplies, sortMostActive, hot, searchPlaceholder, joinSuccess, leaveSuccess, operationFailed, creating, createSuccess, slugHint, nameRequired, noHotTopics. Under common.nav: groups, viewAll.",
+    "Step 2: Add matching i18n keys to web/lib/i18n/messages/zh-CN.ts with Chinese translations.",
+    "Step 3: Add new skeleton components in web/components/common/skeleton-list.tsx: GroupDetailSkeleton (banner placeholder 40-48h + tabs placeholder + TopicListSkeleton), GroupCardGridSkeleton (grid of 3 card placeholders with banner+info area).",
+    "Step 4: In web/app/routes/groups._index.tsx - Replace 'Loading...' with GroupCardGridSkeleton. Add try-catch to handleJoin with toast.success/toast.error using sonner. Add loading spinner state (useState for joiningId) to prevent double-clicks on join/leave buttons, show Loader2 spinning icon from lucide-react. Add search input at top for client-side filtering by group name. Add 'Create Group' button (Link to /groups/create) next to the title. Add hover:-translate-y-0.5 to group cards.",
+    "Step 5: In web/app/routes/groups.$slug.tsx - Replace 'Loading...' with GroupDetailSkeleton. Add try-catch to handleJoin with toast.success/toast.error. Add loading spinner state to join/leave button. Fix banner contrast: when no banner image, use from-slate-800 to-slate-900 gradient and keep white text. Load sticky topics on mount (not just when pinned tab activates) and show them at top of 'All Posts' tab with orange left border before regular topics. Add sort dropdown above topic list in 'All Posts' tab (Latest/Most Replies/Most Active). Add 'Hot' tab between 'All Posts' and 'Pinned'. Add scale-95 animation on join/leave button state change. Add fade-in animation on tab content switch. In the 'About' tab, also render announcement and rules content (mobile sidebar info).",
+    "Step 6: In web/components/topic/topics-nav-content.tsx - Replace hardcoded 'Groups' text with t('common.nav.groups') using the useI18n hook (or a prop). Add 'View All' link to /groups below the groups list using t('common.nav.viewAll').",
+    "Step 7: In web/lib/api/groups.ts - Add new API functions: getGroupHotTopics(groupId, cursor?), getGroupTopicsSorted(groupId, sort, cursor?), createGroup(data). Update getGroupTopics to accept optional sort parameter."
+  ],
+  "acceptance_criteria": [
+    "pnpm typecheck passes with no errors",
+    "pnpm lint passes with no errors",
+    "All new i18n keys exist in both en-US.ts and zh-CN.ts",
+    "Skeleton components replace all 'Loading...' text in groups routes",
+    "Toast feedback is added with try-catch on all join/leave operations",
+    "Join/leave buttons show loading spinner and prevent double-clicks",
+    "Banner uses dark gradient when no image is present",
+    "Sticky topics display at top of All Posts tab with visual differentiation",
+    "Sort dropdown exists in All Posts tab",
+    "Hot tab exists between All Posts and Pinned",
+    "Search input exists on groups list page",
+    "Create Group button/link exists on groups list page",
+    "Micro-animations added (hover lift on cards, scale on buttons, tab fade-in)",
+    "About tab shows announcement and rules on mobile",
+    "TopicsNavContent uses i18n key instead of hardcoded 'Groups'"
+  ],
+  "verification": [
+    "cd web && pnpm typecheck",
+    "cd web && pnpm lint"
+  ],
+  "blocked_reason": null,
+  "findings": "All changes pass typecheck and lint. pnpm install was needed first (node_modules not present). No pre-existing test failures."
+}

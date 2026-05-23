@@ -1,0 +1,28 @@
+{
+  "id": "FEAT-002",
+  "type": "feat",
+  "description": "Backend endpoints for hot topics, sorted topics, and group creation",
+  "status": "completed",
+  "steps": [
+    "Step 1: In internal/services/group_service.go - Add method GetGroupHotTopics(groupId int64, cursor int64) ([]models.Topic, int64, bool) that queries topics ordered by (like_count + comment_count) DESC with cursor-based pagination (limit 20). Add sort parameter to GetGroupTopics to support 'latest' (default, by id desc), 'most_replies' (comment_count desc), 'most_active' (last_comment_time desc).",
+    "Step 2: In internal/handlers/api/group_handlers.go - Add GroupHotTopics handler that reads groupId and cursor params, calls GetGroupHotTopics, renders with BuildSimpleTopics. Add sort query parameter handling to existing GroupTopics handler. Add GroupCreate handler that: requires auth, reads JSON body (name, slug, description, icon, banner), validates required fields, creates group with owner=current user, returns the created group.",
+    "Step 3: In internal/server/router.go - Register new routes in the group group: GET /hot_topics -> GroupHotTopics, POST /create -> GroupCreate.",
+    "Step 4: In web/app/routes/groups.create.tsx - Create the new route with a form for creating a group. Fields: name (required), slug (auto-generated from name, editable), description, icon URL, banner URL. Use existing UI patterns (Card, Input from shadcn). On submit POST to /api/group/create, show toast on success/error, redirect to the new group on success."
+  ],
+  "acceptance_criteria": [
+    "go build ./... compiles without errors",
+    "New GroupHotTopics handler registered at GET /api/group/hot_topics",
+    "GroupTopics handler accepts ?sort= parameter",
+    "GroupCreate handler registered at POST /api/group/create",
+    "groups.create.tsx route exists with form and validation",
+    "pnpm typecheck passes",
+    "pnpm lint passes"
+  ],
+  "verification": [
+    "cd /projects/sandbox/jubensha-go && go build ./...",
+    "cd /projects/sandbox/jubensha-go/web && pnpm typecheck",
+    "cd /projects/sandbox/jubensha-go/web && pnpm lint"
+  ],
+  "blocked_reason": null,
+  "findings": "Go build requires web/build/spa/ placeholder for embed.FS. All verification passes: go build ./..., pnpm typecheck, pnpm lint. Used ginx.BindJSON for JSON body parsing in GroupCreate handler."
+}

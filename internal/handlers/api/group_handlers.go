@@ -7,6 +7,7 @@ import (
 	"bbs-go/internal/pkg/errs"
 	"bbs-go/internal/pkg/params"
 	"bbs-go/internal/services"
+	"regexp"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -139,7 +140,21 @@ func GroupTopics(ctx *gin.Context) {
 		return
 	}
 	cursor, _ := params.GetInt64(ctx, "cursor")
-	topics, nextCursor, hasMore := services.GroupService.GetGroupTopics(groupId, cursor)
+	sort := ctx.Query("sort")
+
+	// For non-ID sorts, use page-based pagination
+	page := 0
+	if sort == "most_replies" || sort == "most_active" {
+		pageStr := ctx.Query("page")
+		if pageStr != "" {
+			p, err := strconv.Atoi(pageStr)
+			if err == nil && p >= 0 {
+				page = p
+			}
+		}
+	}
+
+	topics, nextCursor, hasMore := services.GroupService.GetGroupTopics(groupId, cursor, page, sort)
 
 	ginx.WriteJSON(ctx, ginx.CursorData(render.BuildSimpleTopics(ctx, topics), strconv.FormatInt(nextCursor, 10), hasMore))
 }
@@ -153,4 +168,73 @@ func GroupStickyTopics(ctx *gin.Context) {
 	}
 	topics := services.GroupService.GetGroupStickyTopics(groupId)
 	ginx.WriteJSON(ctx, render.BuildSimpleTopics(ctx, topics))
+}
+
+// GroupHotTopics 群组热门帖子列表
+func GroupHotTopics(ctx *gin.Context) {
+	groupId, _ := params.GetInt64(ctx, "groupId")
+	if groupId <= 0 {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage("groupId is required"))
+		return
+	}
+	topics := services.GroupService.GetGroupHotTopics(groupId)
+	ginx.WriteJSON(ctx, render.BuildSimpleTopics(ctx, topics))
+}
+
+type groupCreateReq struct {
+	Name        string `json:"name"`
+	Slug        string `json:"slug"`
+	Description string `json:"description"`
+	Icon        string `json:"icon"`
+	Banner      string `json:"banner"`
+}
+
+// GroupCreate 创建群组
+func GroupCreate(ctx *gin.Context) {
+	user := common.GetCurrentUser(ctx)
+	if user == nil {
+		ginx.WriteJSON(ctx, errs.NotLogin())
+		return
+	}
+	var body groupCreateReq
+	if err := ginx.BindJSON(ctx, &body); err != nil {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage("invalid request"))
+		return
+	}
+	if body.Name == "" {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage("name is required"))
+		return
+	}
+	if body.Slug == "" {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage("slug is required"))
+		return
+	}
+	// Validate slug format: lowercase alphanumeric with hyphens, 2-64 chars
+	slugRegex := regexp.MustCompile(`^[a-z0-9]+(-[a-z0-9]+)*$`)
+	if len(body.Slug) < 2 || len(body.Slug) > 64 || !slugRegex.MatchString(body.Slug) {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage("slug must be 2-64 characters, lowercase alphanumeric with hyphens only"))
+		return
+	}
+	// Check reserved slugs that would conflict with routes
+	reservedSlugs := map[string]bool{
+		"create":       true,
+		"hot_topics":   true,
+		"sticky_topics": true,
+		"list":         true,
+		"navs":         true,
+		"members":      true,
+		"topics":       true,
+		"join":         true,
+		"leave":        true,
+	}
+	if reservedSlugs[body.Slug] {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage("this slug is reserved and cannot be used"))
+		return
+	}
+	group, err := services.GroupService.CreateGroup(user.Id, body.Name, body.Slug, body.Description, body.Icon, body.Banner)
+	if err != nil {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage(err.Error()))
+		return
+	}
+	ginx.WriteJSON(ctx, render.BuildGroup(group, true))
 }
