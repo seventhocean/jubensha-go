@@ -68,8 +68,6 @@ export default function DashboardGroupsRoute() {
       },
       { key: "memberCount", label: dashboardData.label(t, "memberCount"), className: "min-w-16" },
       { key: "topicCount", label: dashboardData.label(t, "topicCount"), className: "min-w-16" },
-      { key: "notice", label: dashboardData.label(t, "notice"), className: "min-w-72" },
-      { key: "rules", label: dashboardData.label(t, "rules"), className: "min-w-72" },
       { key: "sortNo", label: dashboardData.label(t, "sortNo"), className: "min-w-12" },
       {
         key: "showInNav",
@@ -97,8 +95,6 @@ export default function DashboardGroupsRoute() {
       { name: "description", label: dashboardData.label(t, "description"), type: "textarea" },
       { name: "icon", label: dashboardData.label(t, "icon"), type: "image", colSpan: 2 },
       { name: "banner", label: dashboardData.label(t, "banner"), type: "image", colSpan: 2 },
-      { name: "notice", label: dashboardData.label(t, "notice"), type: "textarea" },
-      { name: "rules", label: dashboardData.label(t, "rules"), type: "textarea" },
       {
         name: "visibility",
         label: dashboardData.label(t, "visibility"),
