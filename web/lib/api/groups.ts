@@ -39,3 +39,9 @@ export function getGroupTopics(groupId: number, cursor?: string) {
     params: { groupId, cursor },
   })
 }
+
+export function getGroupStickyTopics(groupId: number) {
+  return apiFetch<Topic[]>("/api/group/sticky_topics", {
+    params: { groupId },
+  })
+}

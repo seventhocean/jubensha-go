@@ -1,0 +1,28 @@
+{
+  "id": "FEAT-002",
+  "type": "feat",
+  "description": "Frontend: Redesign the group detail page (groups.$slug.tsx) inspired by Baidu Tieba, with a rich banner/header, tab navigation (All Posts | Pinned | About), sidebar with announcements/rules/members, and improved topic listing. Also enhance the group list page to distinguish public/default groups from user-created ones.",
+  "status": "in_progress",
+  "steps": [
+    "Update the GroupItem TypeScript interface in web/lib/api/types.ts to add: banner?: string, notice?: string, rules?: string, isDefault?: number.",
+    "Add a new API function getGroupStickyTopics(groupId: number) in web/lib/api/groups.ts that calls GET /api/group/sticky_topics?groupId=X and returns Topic[].",
+    "Add new i18n keys for the group detail page in both web/lib/i18n/messages/en-US.ts and web/lib/i18n/messages/zh-CN.ts under user.groups: announcement, rules, pinned, allPosts, about, noAnnouncement, noRules, admin, activeMembers, createPost, groupInfo, memberSince, defaultGroup, userCreatedGroup, publicGroups, myGroups.",
+    "Completely redesign web/app/routes/groups.$slug.tsx with the following structure: (a) A rich banner/header area showing the group banner image as background, group icon overlay, group name, description, member/topic counts, and join/leave + create-post buttons. (b) A tab navigation bar using the Tabs component from web/components/ui/tabs.tsx with tabs: All Posts, Pinned, About. (c) Use MainShell with aside prop for sidebar layout. (d) The 'All Posts' tab shows the regular topic list with LoadMore pagination (existing pattern). (e) The 'Pinned' tab fetches and shows only sticky/pinned topics. (f) The 'About' tab shows group info: announcement/notice, rules, creation date, owner info. (g) The sidebar (aside) shows: group announcement card (if exists), group rules card (if exists), and recent members list.",
+    "Enhance web/app/routes/groups._index.tsx: (a) Split the group list into two sections - 'Public Groups' (isDefault=1 or system groups) and 'User-Created Groups'. (b) Add a section at the top showing groups the current user has joined ('My Groups'). (c) Improve the group cards with better visual hierarchy - show banner/icon more prominently, add activity indicators."
+  ],
+  "acceptance_criteria": [
+    "pnpm typecheck passes in web/ with no type errors",
+    "pnpm lint passes in web/ with no errors",
+    "Group detail page has banner header, tab navigation, and sidebar layout",
+    "Tabs component from shadcn UI is properly integrated",
+    "All new strings are in both en-US and zh-CN i18n files",
+    "Group list page shows separate sections for public and user-created groups",
+    "The page is responsive - sidebar collapses or hides on smaller screens (handled by MainShell's existing responsive behavior)"
+  ],
+  "verification": [
+    "Run 'pnpm typecheck' in web/ to confirm no type errors",
+    "Run 'pnpm lint' in web/ to confirm no lint errors"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

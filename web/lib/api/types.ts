@@ -127,6 +127,10 @@ export interface GroupItem {
   topicCount: number
   joined: boolean
   createTime: number
+  banner?: string
+  notice?: string
+  rules?: string
+  isDefault?: number
 }
 
 export interface GroupMember {
