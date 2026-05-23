@@ -1,0 +1,7 @@
+{
+  "task_id": "task-nav-fluency-perf-optimizations",
+  "task_description": "Implement navigation fluency and performance optimizations for the jubensha-go web frontend: link prefetch for instant navigation, image lazy loading, optimistic UI for follow actions, and shouldRevalidate to prevent unnecessary route reloads.",
+  "status": "in_progress",
+  "feature_order": ["FEAT-001", "FEAT-002", "FEAT-003"],
+  "blocked_reason": null
+}

@@ -1,0 +1,24 @@
+{
+  "id": "FEAT-001",
+  "type": "feat",
+  "description": "Enable link prefetch support and add prefetch='intent' to key navigation links for instant perceived navigation.",
+  "status": "in_progress",
+  "steps": [
+    "Step 1: Update web/lib/router/link.tsx to pass the `prefetch` prop through to React Router's Link component. Currently the component destructures prefetch as `_prefetch` and discards it. Change: (a) import Link from 'react-router' (not react-router-dom, since the framework-mode Link from react-router has prefetch support built in), (b) update the LinkProps type to include `prefetch?: 'intent' | 'render' | 'viewport' | 'none'`, (c) pass `prefetch` through to <RouterLink> for internal links. For external links (http/mailto), ignore the prefetch prop.",
+    "Step 2: Update web/components/common/link.tsx to change the default from `prefetch = false` to `prefetch = 'intent'` so that all internal navigation links get prefetch-on-hover by default. This single change covers: topic list item links, sidebar navigation links, header nav links, article list links, and any other Link usage across the app. The type of the prefetch prop should be updated to match the React Router PrefetchBehavior type (string union).",
+    "Step 3: In web/app/routes/groups._index.tsx, the GroupCard and MyGroupCard components use React Router's `<Link>` directly (imported from 'react-router') with `to=` prop instead of the custom Link component. Add `prefetch='intent'` to the group card Link components that navigate to /groups/$slug (these are the Link elements wrapping banners, icons, and 'enter' buttons).",
+    "Step 4: In web/components/topic/topics-nav-content.tsx, verify the sidebar navigation node links use the custom Link component (they do). Since we changed the default prefetch to 'intent' in Step 2, these links will automatically get prefetch behavior. No additional changes needed here but verify the file is unchanged and will work correctly.",
+    "Step 5: Run `pnpm build` in web/ directory and confirm it builds successfully with no TypeScript or bundling errors."
+  ],
+  "acceptance_criteria": [
+    "web/lib/router/link.tsx passes prefetch prop to React Router Link for internal routes",
+    "web/components/common/link.tsx defaults prefetch to 'intent'",
+    "Group card links in groups._index.tsx have prefetch='intent'",
+    "Build passes without errors"
+  ],
+  "verification": [
+    "Run `pnpm build` in /projects/sandbox/jubensha-go/web/ and confirm exit code 0"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

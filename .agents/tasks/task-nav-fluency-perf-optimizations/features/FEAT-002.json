@@ -1,0 +1,27 @@
+{
+  "id": "FEAT-002",
+  "type": "feat",
+  "description": "Image lazy loading and performance optimizations: add loading='lazy' and decoding='async' to user-uploaded images and avatars that appear below the fold.",
+  "status": "pending",
+  "steps": [
+    "Step 1: Update web/components/common/avatar.tsx - add `loading='lazy'` and `decoding='async'` to the <img> element that displays the avatar image. This covers all user avatars throughout the app (topic lists, comments, header, etc.).",
+    "Step 2: Update web/components/topic/topic-list-item.tsx - add `loading='lazy'` and `decoding='async'` to: (a) the topic image list items (the images in the grid at the bottom of type-1 topics), (b) the group icon images, (c) the node logo images.",
+    "Step 3: Update web/components/article/article-list.tsx - add `loading='lazy'` and `decoding='async'` to the article cover image (<img> with src={article.cover.preview || article.cover.url}).",
+    "Step 4: Update web/components/topic/comment-list.tsx - add `loading='lazy'` and `decoding='async'` to comment image list items (the images rendered in comment.imageList).",
+    "Step 5: Update web/app/routes/groups._index.tsx - add `loading='lazy'` and `decoding='async'` to group banner images and group icon images in both GroupCard and MyGroupCard components.",
+    "Step 6: Run `pnpm build` in web/ directory and confirm it builds successfully."
+  ],
+  "acceptance_criteria": [
+    "Avatar img elements have loading='lazy' and decoding='async'",
+    "Topic list item images have loading='lazy' and decoding='async'",
+    "Article cover images have loading='lazy' and decoding='async'",
+    "Comment images have loading='lazy' and decoding='async'",
+    "Group card images have loading='lazy' and decoding='async'",
+    "Build passes without errors"
+  ],
+  "verification": [
+    "Run `pnpm build` in /projects/sandbox/jubensha-go/web/ and confirm exit code 0"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

@@ -1,0 +1,24 @@
+{
+  "id": "FEAT-003",
+  "type": "feat",
+  "description": "Optimistic UI for follow button and route-level shouldRevalidate for preventing unnecessary data reloads on tab switches.",
+  "status": "pending",
+  "steps": [
+    "Step 1: Update web/components/user/follow-button.tsx to add optimistic state toggling. Currently the button uses `useTransition` and only updates state after the API returns. Change: (a) immediately toggle the `followed` state and call `onChanged?.(nextFollowed)` before the API call, (b) on API error, roll back to the previous state. The pending state from useTransition can still disable the button during the operation. The key change is that `setFollowed(nextFollowed)` should happen before the `await followAction()`.",
+    "Step 2: Add a `shouldRevalidate` export to web/app/routes/_index.tsx (topic list page). The function should return false when only the hash changes (e.g., same pathname with different hash for tab switching) but the search params relevant to pagination haven't changed. Use the pattern: export function shouldRevalidate({ currentUrl, nextUrl, defaultShouldRevalidate }) { if (currentUrl.pathname === nextUrl.pathname) return false; return defaultShouldRevalidate; }",
+    "Step 3: Add a `shouldRevalidate` export to web/app/routes/user.$userId.tsx (user profile page). This prevents reloading the user profile data when switching between the topics/articles/badges/fans sub-tabs which are handled client-side within the UserProfileClientPage component. Pattern: return false when pathname is the same or when navigating between user sub-routes (user_.$userId.articles, user_.$userId.badges, etc.) that share the same userId.",
+    "Step 4: Run `pnpm build` in web/ directory and confirm it builds successfully."
+  ],
+  "acceptance_criteria": [
+    "Follow button shows immediate visual feedback (toggled state) before API response",
+    "Follow button rolls back state on API error",
+    "Topic list route exports shouldRevalidate that prevents unnecessary reloads",
+    "User profile route exports shouldRevalidate that prevents unnecessary reloads",
+    "Build passes without errors"
+  ],
+  "verification": [
+    "Run `pnpm build` in /projects/sandbox/jubensha-go/web/ and confirm exit code 0"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}
