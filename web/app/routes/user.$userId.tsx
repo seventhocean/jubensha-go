@@ -45,7 +45,7 @@ export default function UserProfileRoute() {
 }
 
 export function shouldRevalidate({ currentUrl, nextUrl, defaultShouldRevalidate }: ShouldRevalidateFunctionArgs) {
-  if (currentUrl.pathname === nextUrl.pathname) {
+  if (currentUrl.pathname === nextUrl.pathname && currentUrl.search === nextUrl.search) {
     return false
   }
   return defaultShouldRevalidate

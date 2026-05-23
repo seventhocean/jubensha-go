@@ -283,7 +283,7 @@ function UserMenu({
     <>
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger className="flex items-center space-x-2 rounded-md px-1 py-1 transition-colors hover:bg-accent hover:text-accent-foreground">
-          <UserAvatar user={user} size={30} />
+          <UserAvatar user={user} size={30} loading="eager" />
           <span className="max-w-20 truncate text-sm font-medium">
             {getUserName(user)}
           </span>

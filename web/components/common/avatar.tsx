@@ -20,12 +20,14 @@ export function UserAvatar({
   className,
   linkToProfile = true,
   target = "_blank",
+  loading = "lazy",
 }: {
   user?: UserSummary | null
   size?: number
   className?: string
   linkToProfile?: boolean
   target?: React.HTMLAttributeAnchorTarget
+  loading?: "lazy" | "eager"
 }) {
   const src = user?.smallAvatar || user?.avatar
   const name = getDisplayName(user) || "User"
@@ -60,7 +62,7 @@ export function UserAvatar({
           ref={imageRef}
           src={src}
           alt={name}
-          loading="lazy"
+          loading={loading}
           decoding="async"
           className={cn("h-full w-full object-cover", !imageLoaded && "hidden")}
           referrerPolicy="no-referrer"

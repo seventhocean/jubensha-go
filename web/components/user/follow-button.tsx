@@ -24,25 +24,21 @@ export function FollowButton({
   function submit() {
     const previousFollowed = followed
     const nextFollowed = !followed
-    // Optimistically update state immediately
+    // Optimistically update local visual state
     setFollowed(nextFollowed)
-    onChanged?.(nextFollowed)
 
     startTransition(async () => {
       const result = await followAction(userId, previousFollowed)
       if (!result.ok) {
-        // Roll back on error
+        // Roll back local state
         setFollowed(previousFollowed)
-        onChanged?.(previousFollowed)
         toast.error(result.message || t("composables.unknownError"))
         return
       }
-      // Confirm final state from server
+      // Confirm final state from server and notify parent once
       const confirmed = Boolean(result.followed)
-      if (confirmed !== nextFollowed) {
-        setFollowed(confirmed)
-        onChanged?.(confirmed)
-      }
+      setFollowed(confirmed)
+      onChanged?.(confirmed)
     })
   }
 
