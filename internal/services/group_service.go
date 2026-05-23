@@ -144,14 +144,25 @@ func (s *groupService) GetMembers(groupId int64, cursor int64) ([]models.GroupMe
 	return list, nextCursor, hasMore
 }
 
-func (s *groupService) GetGroupTopics(groupId int64, cursor int64) ([]models.Topic, int64, bool) {
+func (s *groupService) GetGroupTopics(groupId int64, cursor int64, sort ...string) ([]models.Topic, int64, bool) {
 	const limit = 20
 	db := sqls.DB().Where("group_id = ? and status = ?", groupId, constants.StatusOk)
 	if cursor > 0 {
 		db = db.Where("id < ?", cursor)
 	}
+
+	sortOrder := "id desc"
+	if len(sort) > 0 {
+		switch sort[0] {
+		case "most_replies":
+			sortOrder = "comment_count desc, id desc"
+		case "most_active":
+			sortOrder = "last_comment_time desc, id desc"
+		}
+	}
+
 	var topics []models.Topic
-	db.Order("id desc").Limit(limit + 1).Find(&topics)
+	db.Order(sortOrder).Limit(limit + 1).Find(&topics)
 
 	hasMore := len(topics) > limit
 	if hasMore {
@@ -162,6 +173,72 @@ func (s *groupService) GetGroupTopics(groupId int64, cursor int64) ([]models.Top
 		nextCursor = topics[len(topics)-1].Id
 	}
 	return topics, nextCursor, hasMore
+}
+
+func (s *groupService) GetGroupHotTopics(groupId int64, cursor int64) ([]models.Topic, int64, bool) {
+	const limit = 20
+	db := sqls.DB().Where("group_id = ? AND status = ?", groupId, constants.StatusOk)
+	if cursor > 0 {
+		db = db.Where("id < ?", cursor)
+	}
+	var topics []models.Topic
+	db.Order("(like_count + comment_count) DESC, id DESC").Limit(limit + 1).Find(&topics)
+
+	hasMore := len(topics) > limit
+	if hasMore {
+		topics = topics[:limit]
+	}
+	var nextCursor int64
+	if len(topics) > 0 {
+		nextCursor = topics[len(topics)-1].Id
+	}
+	return topics, nextCursor, hasMore
+}
+
+func (s *groupService) CreateGroup(userId int64, name, slug, description, icon, banner string) (*models.Group, error) {
+	if name == "" {
+		return nil, errors.New("name is required")
+	}
+	if slug == "" {
+		return nil, errors.New("slug is required")
+	}
+	// Check slug uniqueness
+	existing := s.FindOne(sqls.NewCnd().Eq("slug", slug))
+	if existing != nil {
+		return nil, errors.New("slug already exists")
+	}
+	// Check name uniqueness
+	existingName := s.FindOne(sqls.NewCnd().Eq("name", name))
+	if existingName != nil {
+		return nil, errors.New("name already exists")
+	}
+
+	group := &models.Group{
+		Name:        name,
+		Slug:        slug,
+		Description: description,
+		Icon:        icon,
+		Banner:      banner,
+		Visibility:  0,
+		OwnerId:     userId,
+		MemberCount: 1,
+		TopicCount:  0,
+		Status:      constants.StatusOk,
+		SortNo:      s.GetNextSortNo(),
+		CreateTime:  dates.NowTimestamp(),
+		UpdateTime:  dates.NowTimestamp(),
+	}
+	if err := s.Create(group); err != nil {
+		return nil, err
+	}
+	// Add owner as member
+	member := &models.GroupMember{
+		GroupId:    group.Id,
+		UserId:     userId,
+		CreateTime: dates.NowTimestamp(),
+	}
+	repositories.GroupMemberRepository.Create(sqls.DB(), member)
+	return group, nil
 }
 
 func (s *groupService) GetUserJoinedGroupIds(userId int64) map[int64]bool {

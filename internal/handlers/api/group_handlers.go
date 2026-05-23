@@ -139,7 +139,8 @@ func GroupTopics(ctx *gin.Context) {
 		return
 	}
 	cursor, _ := params.GetInt64(ctx, "cursor")
-	topics, nextCursor, hasMore := services.GroupService.GetGroupTopics(groupId, cursor)
+	sort := ctx.Query("sort")
+	topics, nextCursor, hasMore := services.GroupService.GetGroupTopics(groupId, cursor, sort)
 
 	ginx.WriteJSON(ctx, ginx.CursorData(render.BuildSimpleTopics(ctx, topics), strconv.FormatInt(nextCursor, 10), hasMore))
 }
@@ -153,4 +154,52 @@ func GroupStickyTopics(ctx *gin.Context) {
 	}
 	topics := services.GroupService.GetGroupStickyTopics(groupId)
 	ginx.WriteJSON(ctx, render.BuildSimpleTopics(ctx, topics))
+}
+
+// GroupHotTopics 群组热门帖子列表
+func GroupHotTopics(ctx *gin.Context) {
+	groupId, _ := params.GetInt64(ctx, "groupId")
+	if groupId <= 0 {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage("groupId is required"))
+		return
+	}
+	cursor, _ := params.GetInt64(ctx, "cursor")
+	topics, nextCursor, hasMore := services.GroupService.GetGroupHotTopics(groupId, cursor)
+	ginx.WriteJSON(ctx, ginx.CursorData(render.BuildSimpleTopics(ctx, topics), strconv.FormatInt(nextCursor, 10), hasMore))
+}
+
+type groupCreateReq struct {
+	Name        string `json:"name"`
+	Slug        string `json:"slug"`
+	Description string `json:"description"`
+	Icon        string `json:"icon"`
+	Banner      string `json:"banner"`
+}
+
+// GroupCreate 创建群组
+func GroupCreate(ctx *gin.Context) {
+	user := common.GetCurrentUser(ctx)
+	if user == nil {
+		ginx.WriteJSON(ctx, errs.NotLogin())
+		return
+	}
+	var body groupCreateReq
+	if err := ginx.BindJSON(ctx, &body); err != nil {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage("invalid request"))
+		return
+	}
+	if body.Name == "" {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage("name is required"))
+		return
+	}
+	if body.Slug == "" {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage("slug is required"))
+		return
+	}
+	group, err := services.GroupService.CreateGroup(user.Id, body.Name, body.Slug, body.Description, body.Icon, body.Banner)
+	if err != nil {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage(err.Error()))
+		return
+	}
+	ginx.WriteJSON(ctx, render.BuildGroup(group, true))
 }
