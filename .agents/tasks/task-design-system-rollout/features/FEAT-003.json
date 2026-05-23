@@ -2,7 +2,7 @@
   "id": "FEAT-003",
   "type": "feat",
   "description": "Update topic components and pages to fully use the design system. This includes topic-list-item, topic-detail, topic-comments, topic-create/edit forms, and the topic list pages (_index, topics.tsx, topics_.node.$id.tsx, topics_.tag.$id.tsx).",
-  "status": "in_progress",
+  "status": "completed",
   "steps": [
     "Update web/components/topic/topic-list-item.tsx: Replace Tailwind hardcoded classes with design system token references. Use forum-topic-item classes from topic.css for the list item wrapper. Apply var(--color-surface-1) on hover. Use var(--color-ink) for title, var(--color-ink-muted) for meta. Badge colors should use the forum-qa-badge and forum-node-chip classes. Ensure 44px min touch target on the item. Add transition using motion tokens.",
     "Update web/components/topic/topic-content.tsx: Ensure it uses the bbs-content class which now references design system tokens (from FEAT-001 content.css update).",
@@ -20,5 +20,5 @@
   ],
   "verification": ["Run 'pnpm build' in /projects/sandbox/jubensha-go/web/ and confirm no errors"],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "Build passes cleanly. Topic list items now use forum-topic-item and forum-topic-item--sticky CSS classes. QA badges use forum-qa-badge--solved/unsolved/bounty. Node chips use forum-node-chip class. Comment section uses forum-comment-thread for items and forum-comment-thread--nested for sub-replies. All list wrappers and detail pages use design token vars for surface, shadow, border, and rounded corners. The topic-create-form and topic-edit-form already use .publish-form CSS class with topic-tag classes from topic.css, so no additional changes were needed for form tag chips."
 }
