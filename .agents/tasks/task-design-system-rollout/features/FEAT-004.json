@@ -2,7 +2,7 @@
   "id": "FEAT-004",
   "type": "feat",
   "description": "Update user pages, auth pages, article pages, and remaining feature pages (groups, search, tasks, links, about, messages, favorites, scores, dashboard, install) to use the design system tokens for a complete visual refresh.",
-  "status": "in_progress",
+  "status": "completed",
   "steps": [
     "Update web/components/user/user-info.tsx, user-profile-card.tsx, user-center-shell.tsx, user-badges.tsx: Apply design system colors. Level badges use var(--color-primary-muted) bg with var(--color-primary) text. Progress bars use forum-progress-bar classes. Avatar borders use var(--color-surface-2). Online indicator uses var(--color-online-indicator).",
     "Update web/components/user/user-follow-list.tsx, user-lists.tsx: Style follow items with proper spacing, var(--color-ink) for names, var(--color-ink-muted) for descriptions, var(--color-hairline) borders.",
@@ -31,5 +31,5 @@
   ],
   "verification": ["Run 'pnpm build' in /projects/sandbox/jubensha-go/web/ and confirm no errors"],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "Auth forms (signin-form.tsx, signup-form.tsx, password-reset-forms.tsx) already use shadcn classes (text-muted-foreground, text-primary, bg-background) - no changes needed. Dashboard components (app-sidebar.tsx, dashboard-overview.tsx) already use --dashboard-panel tokens. Article components and search components already use shadcn classes. The user route pages (messages, favorites, scores, profile, account) delegate to shared components (PrivateCenter, ProfileShell, WidgetCard) and don't have hardcoded colors. Main changes were in: task-widgets.tsx, tasks-page.tsx, groups._index.tsx, about.tsx, install-wizard.tsx, user-profile-client-page.tsx, user-sidebar.tsx, user-lists.tsx, private-user-center-page.tsx. Rose-* colors for negative score changes were kept since there is no semantic-error/danger token defined for that specific case."
 }
