@@ -416,12 +416,12 @@ export default function GroupDetailRoute() {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start">
             <DropdownMenuItem asChild>
-              <Link to={`/topic/create?groupId=${group.id}&type=0`}>
+              <Link to={`/topic/create?groupId=${group.id}&type=0&groupSlug=${group.slug}`}>
                 {t("common.createBtn.topic")}
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link to={`/topic/create?groupId=${group.id}&type=2`}>
+              <Link to={`/topic/create?groupId=${group.id}&type=2&groupSlug=${group.slug}`}>
                 {t("common.createBtn.qa")}
               </Link>
             </DropdownMenuItem>

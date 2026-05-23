@@ -2,6 +2,7 @@
 
 import * as React from "react"
 
+import Link from "@/components/common/link"
 import { MainShell } from "@/components/layout/main-shell"
 import { PageError, PageLoading } from "@/components/common/page-state"
 import { TopicActionProvider } from "@/components/topic/topic-action-context"
@@ -15,6 +16,14 @@ import { TopicSideActionBar } from "@/components/topic/topic-side-action-bar"
 import { TopicTags } from "@/components/topic/topic-tags"
 import { TopicToc } from "@/components/topic/topic-toc"
 import { TopicVoteCard } from "@/components/topic/topic-vote-card"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
 import { UserInfo } from "@/components/user/user-info"
 import { useCurrentUser } from "@/components/app/app-provider"
 import { apiFetch } from "@/lib/api/client"
@@ -144,6 +153,29 @@ export function TopicDetailClientPage({
       asideClassName="!h-auto self-stretch"
     >
       <div className="main-content no-padding no-bg space-y-4">
+        {topic.group?.slug ? (
+          <Breadcrumb className="mb-4">
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link href="/groups">{t("common.nav.groups")}</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link href={`/groups/${topic.group.slug}`}>
+                    {topic.group.name}
+                  </Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>{topic.title}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        ) : null}
         {topic.status === 2 ? (
           <div className="my-5 w-full rounded-md border border-amber-300 bg-amber-100 px-4 py-3 text-amber-800">
             {t("pages.topic.detail.pending")}

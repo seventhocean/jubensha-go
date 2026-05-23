@@ -1292,6 +1292,7 @@ const zhCN = {
         tweetFeatureDisabled: "动态模块未开启",
         topicFeatureDisabled: "帖子模块未开启",
         qaFeatureDisabled: "提问模块未开启",
+        publishingTo: "发布到：{group}",
         attachment: {
           label: "附件（可选）",
           limitHint: "最多 {maxCount} 个，单个 ≤ {maxSizeMB} MB",

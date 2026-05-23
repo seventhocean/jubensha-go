@@ -1319,6 +1319,7 @@ const enUS = {
         tweetFeatureDisabled: "Updates are not enabled",
         topicFeatureDisabled: "Discussions are not enabled",
         qaFeatureDisabled: "Q&A module is not enabled",
+        publishingTo: "Publishing to: {group}",
         attachment: {
           label: "Attachments (optional)",
           limitHint: "Up to {maxCount} attachments, max {maxSizeMB} MB each",

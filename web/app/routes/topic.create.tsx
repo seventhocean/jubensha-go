@@ -45,6 +45,7 @@ export default function TopicCreateRoute() {
       : "html"
   const nodeId = Number(searchParams.get("nodeId") || 0)
   const groupId = Number(searchParams.get("groupId") || 0)
+  const groupSlug = searchParams.get("groupSlug") || ""
   const type = Number(searchParams.get("type") || 0)
   const title =
     type === 1
@@ -78,6 +79,7 @@ export default function TopicCreateRoute() {
           config={config}
           nodeId={nodeId}
           groupId={groupId || undefined}
+          groupSlug={groupSlug}
           nodes={nodes || []}
           type={type}
         />

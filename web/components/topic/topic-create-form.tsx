@@ -29,6 +29,7 @@ import {
 } from "@/lib/editor-mode"
 import type {
   ImageInfo,
+  GroupItem,
   SiteConfig,
   Topic,
   TopicAttachment,
@@ -703,6 +704,7 @@ export function TopicCreateForm({
   config,
   nodeId,
   groupId,
+  groupSlug,
   nodes,
   type,
 }: {
@@ -711,6 +713,7 @@ export function TopicCreateForm({
   config: SiteConfig | null
   nodeId: number
   groupId?: number
+  groupSlug?: string
   nodes: TopicNode[]
   type: number
 }) {
@@ -740,6 +743,15 @@ export function TopicCreateForm({
       contentType,
     })
   )
+
+  const [groupInfo, setGroupInfo] = React.useState<GroupItem | null>(null)
+  React.useEffect(() => {
+    if (groupId && groupId > 0 && groupSlug) {
+      apiFetch<GroupItem>(`/api/group/${groupSlug}`)
+        .then((g) => setGroupInfo(g))
+        .catch(() => setGroupInfo(null))
+    }
+  }, [groupId, groupSlug])
 
   const availableNodes = React.useMemo(
     () => filterTopicNodeTree(nodes, nodeTypeMatches(form.type)),
@@ -947,6 +959,21 @@ export function TopicCreateForm({
             </div>
           ) : null}
         </div>
+
+        {groupInfo ? (
+          <div className="flex items-center gap-2 rounded-md border border-blue-200 bg-blue-50 dark:border-blue-900 dark:bg-blue-950/30 px-3 py-2 mb-3">
+            {groupInfo.icon ? (
+              <img
+                src={groupInfo.icon}
+                alt={groupInfo.name}
+                className="h-5 w-5 rounded-full object-cover"
+              />
+            ) : null}
+            <span className="text-sm text-blue-800 dark:text-blue-200">
+              {t("pages.topic.create.publishingTo", { group: groupInfo.name })}
+            </span>
+          </div>
+        ) : null}
 
         <div className="field">
           <TopicNodeQuickSelector
