@@ -31,7 +31,7 @@ export function SearchTopicList({ results }: { results: Topic[] }) {
                 className="transition-colors group-hover:text-primary"
               >
                 <span
-                  className="[&_em]:rounded-sm [&_em]:bg-yellow-200/80 [&_em]:px-0.5 [&_em]:not-italic dark:[&_em]:bg-yellow-500/30"
+                  className="[&_em]:rounded-sm [&_em]:bg-[var(--color-highlight-muted)] [&_em]:px-0.5 [&_em]:not-italic"
                   dangerouslySetInnerHTML={{ __html: item.title || "" }}
                 />
               </Link>
@@ -43,7 +43,7 @@ export function SearchTopicList({ results }: { results: Topic[] }) {
               className="mt-2 block text-sm leading-6 text-muted-foreground transition-colors hover:text-foreground"
             >
               <span
-                className="[display:-webkit-box] overflow-hidden [-webkit-box-orient:vertical] [-webkit-line-clamp:2] [&_em]:rounded-sm [&_em]:bg-yellow-200/70 [&_em]:px-0.5 [&_em]:not-italic dark:[&_em]:bg-yellow-500/25"
+                className="[display:-webkit-box] overflow-hidden [-webkit-box-orient:vertical] [-webkit-line-clamp:2] [&_em]:rounded-sm [&_em]:bg-[var(--color-highlight-muted)] [&_em]:px-0.5 [&_em]:not-italic"
                 dangerouslySetInnerHTML={{ __html: item.summary || "" }}
               />
             </Link>

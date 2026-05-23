@@ -36,13 +36,13 @@ export function SearchUserList({ results }: { results: SearchUser[] }) {
                   className="text-base leading-6 font-semibold text-foreground transition-colors group-hover:text-primary sm:text-[17px]"
                 >
                   <span
-                    className="[&_em]:rounded-sm [&_em]:bg-yellow-200/80 [&_em]:px-0.5 [&_em]:not-italic dark:[&_em]:bg-yellow-500/30"
+                    className="[&_em]:rounded-sm [&_em]:bg-[var(--color-highlight-muted)] [&_em]:px-0.5 [&_em]:not-italic"
                     dangerouslySetInnerHTML={{ __html: name }}
                   />
                 </Link>
                 {description ? (
                   <p
-                    className="mt-1.5 line-clamp-2 text-sm leading-6 text-muted-foreground [&_em]:rounded-sm [&_em]:bg-yellow-200/70 [&_em]:px-0.5 [&_em]:not-italic dark:[&_em]:bg-yellow-500/25"
+                    className="mt-1.5 line-clamp-2 text-sm leading-6 text-muted-foreground [&_em]:rounded-sm [&_em]:bg-[var(--color-highlight-muted)] [&_em]:px-0.5 [&_em]:not-italic"
                     dangerouslySetInnerHTML={{ __html: description }}
                   />
                 ) : null}

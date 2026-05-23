@@ -23,7 +23,7 @@ export function TopicHideContent({ hideContent, t }: { hideContent?: TopicHideCo
           />
         </section>
       ) : (
-        <div className="flex items-center gap-2 rounded-md border border-gray-200 p-2 text-gray-600">
+        <div className="flex items-center gap-2 rounded-md border border-[var(--color-hairline)] p-2 text-[var(--color-ink-muted)]">
           <Lock size={16} />
           <span>{t("pages.topic.detail.hideContentTip")}</span>
         </div>

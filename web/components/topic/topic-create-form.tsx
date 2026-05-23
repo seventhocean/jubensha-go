@@ -961,7 +961,7 @@ export function TopicCreateForm({
         </div>
 
         {groupInfo ? (
-          <div className="flex items-center gap-2 rounded-md border border-blue-200 bg-blue-50 dark:border-blue-900 dark:bg-blue-950/30 px-3 py-2 mb-3">
+          <div className="flex items-center gap-2 rounded-md border border-[var(--color-hairline)] bg-[var(--color-semantic-info-bg)] px-3 py-2 mb-3">
             {groupInfo.icon ? (
               <img
                 src={groupInfo.icon}
@@ -969,7 +969,7 @@ export function TopicCreateForm({
                 className="h-5 w-5 rounded-full object-cover"
               />
             ) : null}
-            <span className="text-sm text-blue-800 dark:text-blue-200">
+            <span className="text-sm text-[var(--color-semantic-info)]">
               {t("pages.topic.create.publishingTo", { group: groupInfo.name })}
             </span>
           </div>

@@ -322,11 +322,11 @@ export function InstallWizard({
                 title={t("pages.install.step.welcome")}
                 description={t("pages.install.welcome.description")}
               />
-              <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-                <h3 className="mb-2.5 font-medium text-blue-900">
+              <div className="rounded-lg border border-[var(--color-hairline)] bg-[var(--color-semantic-info-bg)] p-4">
+                <h3 className="mb-2.5 font-medium text-[var(--color-semantic-info)]">
                   {t("pages.install.welcome.requirements.title")}
                 </h3>
-                <ul className="space-y-2 text-blue-800">
+                <ul className="space-y-2 text-[var(--color-semantic-info)]">
                   <RequirementItem>
                     {t("pages.install.welcome.requirements.mysql")}
                   </RequirementItem>
@@ -418,10 +418,10 @@ export function InstallWizard({
                 {effectiveDbType === "mysql" ? (
                   <>
                     {dockerBuiltinMysql ? (
-                      <Alert className="border-blue-200 bg-blue-50 md:col-span-2">
+                      <Alert className="border-[var(--color-hairline)] bg-[var(--color-semantic-info-bg)] md:col-span-2">
                         <div className="flex gap-2">
-                          <Database className="mt-1 h-4 w-4 text-blue-700" />
-                          <AlertDescription className="text-blue-800">
+                          <Database className="mt-1 h-4 w-4 text-[var(--color-semantic-info)]" />
+                          <AlertDescription className="text-[var(--color-semantic-info)]">
                             {t(
                               "pages.install.database.dockerBuiltinMysqlNotice"
                             )}
@@ -743,7 +743,7 @@ export function InstallWizard({
               <Alert
                 variant={installFailed ? "destructive" : "default"}
                 className={
-                  installFailed ? undefined : "border-blue-200 bg-blue-50"
+                  installFailed ? undefined : "border-[var(--color-hairline)] bg-[var(--color-semantic-info-bg)]"
                 }
               >
                 <div className="flex gap-2">
@@ -753,7 +753,7 @@ export function InstallWizard({
                     <Loader2 className="mt-1 h-4 w-4 animate-spin" />
                   )}
                   <AlertDescription
-                    className={installFailed ? "text-red-800" : "text-blue-800"}
+                    className={installFailed ? "text-red-800" : "text-[var(--color-semantic-info)]"}
                   >
                     {installMessage}
                   </AlertDescription>
@@ -856,7 +856,7 @@ function SectionTitle({
 function RequirementItem({ children }: { children: React.ReactNode }) {
   return (
     <li className="flex items-center">
-      <div className="mr-3 h-2 w-2 rounded-full bg-blue-500" />
+      <div className="mr-3 h-2 w-2 rounded-full bg-[var(--color-semantic-info)]" />
       {children}
     </li>
   )
@@ -872,7 +872,7 @@ function RequiredLabel({
   return (
     <Label htmlFor={htmlFor} className="text-sm font-medium">
       {children}
-      <span className="text-red-500">*</span>
+      <span className="text-[var(--color-semantic-danger)]">*</span>
     </Label>
   )
 }

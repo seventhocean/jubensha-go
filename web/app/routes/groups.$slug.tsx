@@ -57,7 +57,7 @@ function RoleBadge({ role, t }: { role?: number; t: (key: string) => string }) {
   if (role === 1) {
     return (
       <span title={t("user.groups.adminRole")}>
-        <Shield className="h-3 w-3 text-blue-500" />
+        <Shield className="h-3 w-3 text-[var(--color-primary)]" />
       </span>
     )
   }
@@ -501,7 +501,7 @@ export default function GroupDetailRoute() {
             disabled={checkingIn || (checkInStatus?.checkedIn === true)}
             className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-transform active:scale-95 ${
               checkInStatus?.checkedIn
-                ? "bg-green-100 text-green-700 cursor-default"
+                ? "bg-[var(--color-semantic-success-bg)] text-[var(--color-semantic-success)] cursor-default"
                 : "bg-primary/10 text-primary hover:bg-primary/20"
             }`}
           >
@@ -512,7 +512,7 @@ export default function GroupDetailRoute() {
             )}
             {checkInStatus?.checkedIn ? t("user.groups.checkedIn") : t("user.groups.checkIn")}
             {checkInStatus?.checkedIn && checkInStatus.consecutiveDays > 0 ? (
-              <span className="ml-1 rounded-full bg-green-200 px-1.5 py-0.5 text-xs text-green-800">
+              <span className="ml-1 rounded-full bg-[var(--color-semantic-success-muted)] px-1.5 py-0.5 text-xs text-[var(--color-semantic-success)]">
                 {checkInStatus.consecutiveDays} {t("user.groups.days")}
               </span>
             ) : null}
@@ -524,7 +524,7 @@ export default function GroupDetailRoute() {
           disabled={isJoining}
           className={`px-4 py-2 rounded-lg text-sm font-medium transition-transform active:scale-95 ${
             group.joined
-              ? "bg-muted text-muted-foreground hover:bg-red-100 hover:text-red-600"
+              ? "bg-muted text-muted-foreground hover:bg-[var(--color-semantic-danger-bg)] hover:text-[var(--color-semantic-danger)]"
               : "bg-primary/10 text-primary hover:bg-primary/20"
           }`}
         >
@@ -573,7 +573,7 @@ export default function GroupDetailRoute() {
 
             {/* Sticky topics at the top */}
             {stickyLoaded && stickyTopics.length > 0 ? (
-              <ul className="divide-y divide-border border-l-4 border-orange-400 bg-orange-50/50 dark:bg-orange-950/20">
+              <ul className="divide-y divide-border border-l-4 border-[var(--color-sticky-accent)] bg-[var(--color-highlight-muted)]">
                 {stickyTopics.map((topic) => (
                   <TopicListItem
                     key={topic.id}

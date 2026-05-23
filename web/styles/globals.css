@@ -424,5 +424,23 @@
   }
   html {
     @apply font-sans;
+    scroll-behavior: smooth;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .forum-card {
+    border-radius: var(--rounded-lg);
+    background-color: var(--color-surface-1);
+    box-shadow: var(--shadow-sm);
+  }
+
+  :is(.dark) .forum-card {
+    box-shadow: none;
+    border: 1px solid var(--color-hairline);
   }
 }

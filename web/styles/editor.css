@@ -376,7 +376,7 @@
 
   .resizable-image-wrapper .border-line {
     position: absolute;
-    background-color: #3b82f6;
+    background-color: var(--color-primary);
   }
 
   .resizable-image-wrapper .border-top,
@@ -416,7 +416,7 @@
     height: 8px;
     border: 1px solid white;
     border-radius: 50%;
-    background-color: #3b82f6;
+    background-color: var(--color-primary);
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
   }
 

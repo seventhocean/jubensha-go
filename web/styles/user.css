@@ -276,7 +276,7 @@
     justify-content: center;
     border-radius: 50%;
     background-color: rgba(0, 0, 0, 0.5);
-    color: #fff;
+    color: var(--color-on-primary);
     cursor: pointer;
   }
 
@@ -318,7 +318,7 @@
       transform: rotate(-15deg);
     }
     50% {
-      color: #ef4444;
+      color: var(--color-semantic-danger);
     }
     60% {
       transform: rotate(10deg);

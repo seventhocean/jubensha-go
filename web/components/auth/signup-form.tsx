@@ -111,7 +111,7 @@ export function SignupForm({ redirect }: { redirect?: string }) {
         <div className="space-y-2">
           <Label htmlFor="nickname">
             {t("user.signup.nickname")}
-            <span className="text-red-500">*</span>
+            <span className="text-[var(--color-semantic-danger)]">*</span>
           </Label>
           <Input
             id="nickname"
@@ -125,7 +125,7 @@ export function SignupForm({ redirect }: { redirect?: string }) {
         <div className="space-y-2">
           <Label htmlFor="email">
             {t("user.signup.email")}
-            <span className="text-red-500">*</span>
+            <span className="text-[var(--color-semantic-danger)]">*</span>
           </Label>
           <Input
             id="email"
@@ -140,7 +140,7 @@ export function SignupForm({ redirect }: { redirect?: string }) {
         <div className="space-y-2">
           <Label htmlFor="password">
             {t("user.signup.password")}
-            <span className="text-red-500">*</span>
+            <span className="text-[var(--color-semantic-danger)]">*</span>
           </Label>
           <Input
             id="password"
@@ -158,7 +158,7 @@ export function SignupForm({ redirect }: { redirect?: string }) {
         <div className="space-y-2">
           <Label htmlFor="rePassword">
             {t("user.signup.confirmPassword")}
-            <span className="text-red-500">*</span>
+            <span className="text-[var(--color-semantic-danger)]">*</span>
           </Label>
           <Input
             id="rePassword"

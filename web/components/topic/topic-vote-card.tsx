@@ -140,7 +140,7 @@ function TopicVoteCardContent({ vote, className }: { vote: TopicVote; className?
     const left = options[0]
     const right = options[1]
     return (
-      <section className={cn("rounded-lg bg-[#f6f9ff] p-5 text-[#16181f] dark:bg-card dark:text-card-foreground", className)}>
+      <section className={cn("rounded-lg bg-[var(--color-surface-2)] p-5 text-[var(--color-ink)]", className)}>
         <h2 className="mb-4 flex items-center text-base leading-none font-medium">
           <span>{currentVote.title}</span>
         </h2>
@@ -156,9 +156,9 @@ function TopicVoteCardContent({ vote, className }: { vote: TopicVote; className?
                 className={cn(
                   "flex min-h-24 flex-col justify-center px-4 text-sm transition-colors disabled:cursor-default",
                   index === 0
-                    ? "items-start bg-[#fceeed] text-[#f15c5b] dark:bg-red-950/40 dark:text-red-200"
-                    : "items-end bg-[#deedff] text-[#1050e7] dark:bg-blue-950/40 dark:text-blue-200",
-                  option.voted && !currentVote.expired && (index === 0 ? "bg-[#ff4b24] text-white" : "bg-[#3b64fc] text-white")
+                    ? "items-start bg-[var(--color-semantic-danger-bg)] text-[var(--color-semantic-danger)]"
+                    : "items-end bg-[var(--color-semantic-info-bg)] text-[var(--color-semantic-info)]",
+                  option.voted && !currentVote.expired && (index === 0 ? "bg-[var(--color-semantic-danger)] text-[var(--color-on-primary)]" : "bg-[var(--color-semantic-info)] text-[var(--color-on-primary)]")
                 )}
                 style={{ width: `${width}%` }}
                 title={option.content}
@@ -180,9 +180,9 @@ function TopicVoteCardContent({ vote, className }: { vote: TopicVote; className?
   }
 
   return (
-    <section className={cn("rounded-lg bg-[#f6f9ff] px-5 py-6 text-[#16181f] dark:bg-card dark:text-card-foreground", className)}>
+    <section className={cn("rounded-lg bg-[var(--color-surface-2)] px-5 py-6 text-[var(--color-ink)]", className)}>
       <div className="mb-5 flex flex-wrap items-center gap-1 text-base leading-none font-medium">
-        <span className="rounded-sm bg-gradient-to-r from-[#ff603d] to-[#ff881a] px-1.5 py-0.5 text-xs text-white">
+        <span className="rounded-sm bg-[image:var(--gradient-trending)] px-1.5 py-0.5 text-xs text-[var(--color-on-primary)]">
           {t("pages.topic.detail.vote.tag")}
         </span>
         <h2>{currentVote.title}</h2>
@@ -196,25 +196,24 @@ function TopicVoteCardContent({ vote, className }: { vote: TopicVote; className?
               disabled={!canVote}
               title={option.content}
               className={cn(
-                "relative min-h-9 w-full max-w-[470px] overflow-hidden rounded border border-white bg-white px-1.5 py-1.5 text-left text-sm text-[#737782] disabled:cursor-default dark:border-border dark:bg-background dark:text-muted-foreground",
-                canVote && "cursor-pointer hover:text-[#ff7827] dark:hover:text-orange-300",
-                canVote && isChecked(checkedIds, option.id) && "border-[#ff7827] text-[#ff7827]",
-                canVote && isChecked(checkedIds, option.id) && "dark:border-orange-400 dark:text-orange-300",
-                option.voted && "text-[#ff7827] dark:text-orange-300",
-                !option.voted && currentVote.expired && "text-[#8b8f99] dark:text-muted-foreground/70"
+                "relative min-h-9 w-full max-w-[470px] overflow-hidden rounded border border-white bg-white px-1.5 py-1.5 text-left text-sm text-[var(--color-ink-muted)] disabled:cursor-default dark:border-border dark:bg-background",
+                canVote && "cursor-pointer hover:text-[var(--color-highlight)]",
+                canVote && isChecked(checkedIds, option.id) && "border-[var(--color-highlight)] text-[var(--color-highlight)]",
+                option.voted && "text-[var(--color-highlight)]",
+                !option.voted && currentVote.expired && "text-[var(--color-ink-muted)]"
               )}
               onClick={() => toggleOption(option.id)}
             >
               <span
                 className={cn(
-                  "absolute inset-y-[-1px] left-[-1px] bg-[#e5eeff] dark:bg-primary/20",
-                  option.voted && "bg-[#ffe9dd] dark:bg-orange-500/20"
+                  "absolute inset-y-[-1px] left-[-1px] bg-[var(--color-primary-muted)]",
+                  option.voted && "bg-[var(--color-highlight-muted)]"
                 )}
                 style={{ width: `${getPercent(currentVote, option.voteCount)}%` }}
               />
               <span className="relative z-10 break-all">{option.content}</span>
               {!canVote ? (
-                <span className="relative z-10 float-right ml-3 text-[#737782] dark:text-muted-foreground">{option.voteCount || 0}</span>
+                <span className="relative z-10 float-right ml-3 text-[var(--color-ink-muted)]">{option.voteCount || 0}</span>
               ) : null}
             </button>
           </li>
@@ -230,7 +229,7 @@ function TopicVoteCardContent({ vote, className }: { vote: TopicVote; className?
         </button>
       ) : null}
       <VoteStatus vote={currentVote} t={t} />
-      <Button className="mt-6 h-10 w-[188px] bg-gradient-to-r from-[#ff420e] to-[#ff7827] text-white" disabled={disabledSubmit} onClick={() => submitVote()}>
+      <Button className="mt-6 h-10 w-[188px] bg-[image:var(--gradient-trending)] text-[var(--color-on-primary)]" disabled={disabledSubmit} onClick={() => submitVote()}>
         {currentVote.voted
           ? t("pages.topic.detail.vote.voted")
           : currentVote.expired
@@ -243,7 +242,7 @@ function TopicVoteCardContent({ vote, className }: { vote: TopicVote; className?
 
 function VoteStatus({ vote, t }: { vote: TopicVote; t: ReturnType<typeof useI18n>["t"] }) {
   return (
-    <div className="mt-3 text-sm leading-none text-[#737782] dark:text-muted-foreground">
+    <div className="mt-3 text-sm leading-none text-[var(--color-ink-muted)]">
       {t("pages.topic.detail.vote.participants", { count: vote.voteCount || 0 })}
       {vote.expired ? (
         <span className="ml-3">{t("pages.topic.detail.vote.expired")}</span>
