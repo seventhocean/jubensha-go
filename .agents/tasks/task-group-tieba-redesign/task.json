@@ -1,7 +1,12 @@
 {
   "task_id": "task-group-tieba-redesign",
   "task_description": "Redesign the group system inspired by Baidu Tieba. Add backend fields (Banner, Notice, Rules) and sticky topics endpoint. Redesign the frontend group detail page with rich header/banner, tab navigation, sidebar with announcements/rules/members, and enhanced topic listing. Improve group list page to differentiate public vs user-created groups.",
-  "status": "in_progress",
+  "status": "completed",
   "feature_order": ["FEAT-001", "FEAT-002"],
-  "blocked_reason": null
+  "blocked_reason": null,
+  "verification": {
+    "build": "pass",
+    "tests": "pass",
+    "summary": "All review issues addressed. go build, pnpm typecheck, and pnpm lint all pass."
+  }
 }
