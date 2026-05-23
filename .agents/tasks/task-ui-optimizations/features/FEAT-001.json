@@ -2,7 +2,7 @@
   "id": "FEAT-001",
   "type": "feat",
   "description": "Add all i18n keys, skeleton components, toast feedback, loading states, banner fix, and micro-animations (P0-P3 frontend-only items)",
-  "status": "in_progress",
+  "status": "completed",
   "steps": [
     "Step 1: Add all new i18n keys to web/lib/i18n/messages/en-US.ts under user.groups and common.nav sections. Keys: createGroup, sortLatest, sortMostReplies, sortMostActive, hot, searchPlaceholder, joinSuccess, leaveSuccess, operationFailed, creating, createSuccess, slugHint, nameRequired, noHotTopics. Under common.nav: groups, viewAll.",
     "Step 2: Add matching i18n keys to web/lib/i18n/messages/zh-CN.ts with Chinese translations.",
@@ -34,5 +34,5 @@
     "cd web && pnpm lint"
   ],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "All changes pass typecheck and lint. pnpm install was needed first (node_modules not present). No pre-existing test failures."
 }
