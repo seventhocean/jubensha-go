@@ -2,7 +2,7 @@
   "id": "FEAT-001",
   "type": "chore",
   "description": "Update all CSS style files (content.css, auth.css, editor.css, user.css, pages.css, common.css) to use design system tokens instead of hardcoded values. This ensures the foundation styles leverage the new color, spacing, typography, and motion tokens defined in globals.css.",
-  "status": "in_progress",
+  "status": "completed",
   "steps": [
     "Update web/styles/content.css: Replace var(--foreground) with var(--color-ink), var(--primary) with var(--color-primary), var(--border) with var(--color-hairline), var(--muted) with var(--color-surface-3). Apply prose typography tokens (line-height: 1.75 for paragraph text). Use var(--rounded-md) for border-radius. Use var(--color-surface-1) for blockquote and code block backgrounds.",
     "Update web/styles/auth.css: Replace var(--background) with var(--color-surface-1) for card backgrounds. Use var(--color-hairline) for borders. Use var(--color-ink) for text. Add focus ring using var(--color-primary-muted). Apply var(--motion-duration-fast) for transitions. Use var(--rounded-md) for border-radius values.",
@@ -19,5 +19,5 @@
   ],
   "verification": ["Run 'pnpm build' in /projects/sandbox/jubensha-go/web/ and confirm no errors"],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "Build passes cleanly. Image resize handles in editor.css still use #3b82f6 as allowed by acceptance criteria. The .footer .light color (#eb5424) in common.css was not replaced since no matching design token exists for that exact brand color."
 }
