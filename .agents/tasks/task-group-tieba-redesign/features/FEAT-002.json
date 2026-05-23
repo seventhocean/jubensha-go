@@ -2,7 +2,7 @@
   "id": "FEAT-002",
   "type": "feat",
   "description": "Frontend: Redesign the group detail page (groups.$slug.tsx) inspired by Baidu Tieba, with a rich banner/header, tab navigation (All Posts | Pinned | About), sidebar with announcements/rules/members, and improved topic listing. Also enhance the group list page to distinguish public/default groups from user-created ones.",
-  "status": "in_progress",
+  "status": "completed",
   "steps": [
     "Update the GroupItem TypeScript interface in web/lib/api/types.ts to add: banner?: string, notice?: string, rules?: string, isDefault?: number.",
     "Add a new API function getGroupStickyTopics(groupId: number) in web/lib/api/groups.ts that calls GET /api/group/sticky_topics?groupId=X and returns Topic[].",
@@ -24,5 +24,5 @@
     "Run 'pnpm lint' in web/ to confirm no lint errors"
   ],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "Implemented successfully. Note: existing code used `message` prop on EmptyState but the component actually expects `title` prop - corrected in the rewrite. The Tabs component from shadcn supports variant='line' on TabsList for cleaner line-style tabs."
 }
