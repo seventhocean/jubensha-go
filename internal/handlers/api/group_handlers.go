@@ -35,10 +35,12 @@ func GroupList(ctx *gin.Context) {
 	groups := services.GroupService.GetPublicGroups()
 	user := common.GetCurrentUser(ctx)
 	joinedMap := make(map[int64]bool)
+	var userId int64
 	if user != nil {
 		joinedMap = services.GroupService.GetUserJoinedGroupIds(user.Id)
+		userId = user.Id
 	}
-	ginx.WriteJSON(ctx, render.BuildGroups(groups, joinedMap))
+	ginx.WriteJSON(ctx, render.BuildGroupsWithPermission(groups, joinedMap, userId))
 }
 
 // GroupPage returns aggregated group detail page data
@@ -105,8 +107,13 @@ func GroupPage(ctx *gin.Context) {
 	rankRecords := services.GroupCheckInService.GetRank(group.Id)
 	checkInRank := render.BuildGroupCheckInRank(rankRecords)
 
+	var userId int64
+	if user != nil {
+		userId = user.Id
+	}
+
 	ginx.WriteJSON(ctx, map[string]interface{}{
-		"group":         render.BuildGroup(group, joined),
+		"group":         render.BuildGroupWithPermission(group, joined, userId),
 		"topics":        topicsData,
 		"stickyTopics":  stickyData,
 		"members":       &web.CursorResult{Results: memberResults, Cursor: strconv.FormatInt(memberNextCursor, 10), HasMore: memberHasMore},
@@ -125,10 +132,12 @@ func GroupDetail(ctx *gin.Context) {
 	}
 	user := common.GetCurrentUser(ctx)
 	joined := false
+	var userId int64
 	if user != nil {
 		joined = services.GroupService.IsMember(group.Id, user.Id)
+		userId = user.Id
 	}
-	ginx.WriteJSON(ctx, render.BuildGroup(group, joined))
+	ginx.WriteJSON(ctx, render.BuildGroupWithPermission(group, joined, userId))
 }
 
 type groupActionReq struct {
@@ -288,8 +297,8 @@ func GroupUpdate(ctx *gin.Context) {
 		ginx.WriteJSON(ctx, ginx.ErrorMessage("group not found"))
 		return
 	}
-	if group.OwnerId != user.Id {
-		ginx.WriteJSON(ctx, ginx.ErrorMessage("only the group owner can update settings"))
+	if group.OwnerId != user.Id && !services.PermissionService.HasPermission(user, "dashboard.group.update") {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage("only the group owner or admin can update settings"))
 		return
 	}
 	columns := map[string]interface{}{
@@ -315,7 +324,7 @@ func GroupUpdate(ctx *gin.Context) {
 		return
 	}
 	updated := services.GroupService.Get(body.GroupId)
-	ginx.WriteJSON(ctx, render.BuildGroup(updated, true))
+	ginx.WriteJSON(ctx, render.BuildGroupWithPermission(updated, true, user.Id))
 }
 
 type groupCreateReq struct {
@@ -373,7 +382,7 @@ func GroupCreate(ctx *gin.Context) {
 		ginx.WriteJSON(ctx, ginx.ErrorMessage(err.Error()))
 		return
 	}
-	ginx.WriteJSON(ctx, render.BuildGroup(group, true))
+	ginx.WriteJSON(ctx, render.BuildGroupWithPermission(group, true, user.Id))
 }
 
 type groupSetMemberRoleReq struct {
@@ -398,7 +407,7 @@ func GroupSetMemberRole(ctx *gin.Context) {
 		ginx.WriteJSON(ctx, ginx.ErrorMessage("groupId and userId are required"))
 		return
 	}
-	if err := services.GroupService.SetMemberRole(user.Id, body.GroupId, body.UserId, body.Role); err != nil {
+	if err := services.GroupService.SetMemberRole(user.Id, body.GroupId, body.UserId, body.Role, services.PermissionService.HasPermission(user, "dashboard.group.update")); err != nil {
 		ginx.WriteJSON(ctx, ginx.ErrorMessage(err.Error()))
 		return
 	}

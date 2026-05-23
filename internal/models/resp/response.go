@@ -145,6 +145,7 @@ type GroupResponse struct {
 	MemberCount int    `json:"memberCount"`
 	TopicCount  int    `json:"topicCount"`
 	Joined      bool   `json:"joined"`
+	CanManage   bool   `json:"canManage"`
 	CreateTime  int64  `json:"createTime"`
 }
 

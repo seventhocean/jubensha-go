@@ -292,7 +292,7 @@ func (s *groupService) GetGroupStickyTopics(groupId int64) []models.Topic {
 	return topics
 }
 
-func (s *groupService) SetMemberRole(currentUserId, groupId, targetUserId int64, role int) error {
+func (s *groupService) SetMemberRole(currentUserId, groupId, targetUserId int64, role int, isAdmin bool) error {
 	// Validate role value (0 or 1 only - cannot set to owner via this API)
 	if role != 0 && role != 1 {
 		return errors.New("invalid role value")
@@ -301,10 +301,12 @@ func (s *groupService) SetMemberRole(currentUserId, groupId, targetUserId int64,
 	if currentUserId == targetUserId {
 		return errors.New("cannot change own role")
 	}
-	// Current user must be owner (role 2)
-	currentMember := repositories.GroupMemberRepository.GetByGroupAndUser(sqls.DB(), groupId, currentUserId)
-	if currentMember == nil || currentMember.Role != 2 {
-		return errors.New(locales.Get("group.owner_only"))
+	// Current user must be owner (role 2) or admin
+	if !isAdmin {
+		currentMember := repositories.GroupMemberRepository.GetByGroupAndUser(sqls.DB(), groupId, currentUserId)
+		if currentMember == nil || currentMember.Role != 2 {
+			return errors.New(locales.Get("group.owner_only"))
+		}
 	}
 	// Target must be a member
 	targetMember := repositories.GroupMemberRepository.GetByGroupAndUser(sqls.DB(), groupId, targetUserId)

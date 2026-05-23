@@ -126,6 +126,7 @@ export interface GroupItem {
   memberCount: number
   topicCount: number
   joined: boolean
+  canManage: boolean
   createTime: number
   banner?: string
   notice?: string

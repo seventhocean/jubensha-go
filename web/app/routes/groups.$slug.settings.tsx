@@ -193,7 +193,7 @@ export default function GroupSettingsRoute() {
     )
   }
 
-  if (String(group.ownerId) !== currentUser.id) {
+  if (!group.canManage) {
     return <Navigate to={`/groups/${slug}`} replace />
   }
 

@@ -68,14 +68,14 @@ function GroupSidebar({
   group,
   members,
   t,
-  isOwner,
+  canManage,
   onManageMembers,
   checkInRank,
 }: {
   group: GroupItem
   members: GroupMember[]
   t: (key: string) => string
-  isOwner: boolean
+  canManage: boolean
   onManageMembers: () => void
   checkInRank: GroupCheckInRankItem[]
 }) {
@@ -137,7 +137,7 @@ function GroupSidebar({
                 </div>
               ))}
             </div>
-            {isOwner ? (
+            {canManage ? (
               <button
                 type="button"
                 onClick={onManageMembers}
@@ -207,7 +207,7 @@ export default function GroupDetailRoute() {
   const [checkInRank, setCheckInRank] = useState<GroupCheckInRankItem[]>([])
   const [checkingIn, setCheckingIn] = useState(false)
 
-  const isOwner = !!(currentUser && group && String(group.ownerId) === currentUser.id)
+  const canManage = !!(group?.canManage)
 
   useDocumentTitle(group?.name)
 
@@ -398,7 +398,7 @@ export default function GroupDetailRoute() {
   }
 
   const sidebar = (
-    <GroupSidebar group={group} members={members} t={t} isOwner={isOwner} onManageMembers={handleManageMembers} checkInRank={checkInRank} />
+    <GroupSidebar group={group} members={members} t={t} canManage={canManage} onManageMembers={handleManageMembers} checkInRank={checkInRank} />
   )
 
   return (
@@ -525,7 +525,7 @@ export default function GroupDetailRoute() {
             t("user.groups.join")
           )}
         </button>
-        {currentUser && String(group.ownerId) === currentUser.id ? (
+        {canManage ? (
           <Link
             to={`/groups/${slug}/settings`}
             className="inline-flex items-center justify-center rounded-lg px-3 py-2 text-sm font-medium bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
@@ -740,7 +740,7 @@ export default function GroupDetailRoute() {
       </Tabs>
 
       {/* Member Management Panel */}
-      {showManageMembers && isOwner ? (
+      {showManageMembers && canManage ? (
         <div className="mt-6">
           <Card size="sm">
             <CardHeader>
