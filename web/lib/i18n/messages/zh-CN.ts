@@ -34,6 +34,7 @@ const zhCN = {
       login: "登录",
       confirmLogout: "确定退出登录吗？",
       toggleMenu: "展开菜单",
+      messages: "消息",
     },
     footer: {
       poweredBy: "Powered by",
@@ -1617,6 +1618,8 @@ const zhCN = {
       setRole: "设置角色",
       kickMember: "移除",
       kickConfirm: "确定将该成员移出群组？",
+      leaveConfirm: "退出群组",
+      leaveConfirmDescription: "确定要退出该群组吗？退出后你将不再是该群组成员。",
       roleUpdated: "角色已更新",
       memberKicked: "成员已移除",
       checkIn: "签到",

@@ -2,12 +2,22 @@
 
 import { useEffect, useState } from "react"
 import { Link } from "react-router"
-import { Loader2, Plus, Users } from "lucide-react"
+import { Loader2, LogOut, Plus, Users } from "lucide-react"
 import { toast } from "sonner"
 
 import { EmptyState } from "@/components/common/empty-state"
 import { GroupCardGridSkeleton } from "@/components/common/skeleton-list"
 import { MainShell } from "@/components/layout/main-shell"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import { getGroupList, joinGroup, leaveGroup } from "@/lib/api/groups"
 import type { GroupItem } from "@/lib/api/types"
 import { useI18n } from "@/lib/i18n/provider"
@@ -24,21 +34,22 @@ export async function clientLoader() {
 function GroupCard({
   group,
   onJoin,
+  onLeave,
   joiningId,
   t,
 }: {
   group: GroupItem
   onJoin: (group: GroupItem) => void
+  onLeave: (group: GroupItem) => void
   joiningId: number | null
   t: (key: string) => string
 }) {
   const isJoining = joiningId === group.id
   return (
     <div className="relative overflow-hidden rounded-[var(--rounded-lg)] border border-[var(--color-hairline)] bg-[var(--color-surface-1)] shadow-[var(--shadow-sm)] transition-all duration-[var(--motion-duration-normal)] hover:-translate-y-0.5 hover:shadow-[var(--shadow-md)]">
-      {/* Banner header */}
       {group.banner ? (
         <Link to={`/groups/${group.slug}`} className="block">
-          <div className="h-24 w-full overflow-hidden">
+          <div className="h-16 w-full overflow-hidden">
             <img
               src={group.banner}
               alt=""
@@ -48,62 +59,65 @@ function GroupCard({
         </Link>
       ) : (
         <Link to={`/groups/${group.slug}`} className="block">
-          <div className="h-24 w-full bg-[var(--color-primary-subtle)]" />
+          <div className="h-16 w-full bg-[var(--color-primary-subtle)]" />
         </Link>
       )}
 
-      <div className="p-4">
+      <div className="p-3">
         <Link to={`/groups/${group.slug}`} className="block">
-          <div className="flex items-center gap-3 mb-2">
+          <div className="flex items-center gap-2 mb-1.5">
             {group.icon ? (
               <img
                 src={group.icon}
                 alt={group.name}
-                className="w-10 h-10 rounded-full object-cover border border-[var(--color-hairline)]"
+                className="w-8 h-8 rounded-full object-cover border border-[var(--color-hairline)]"
               />
             ) : (
-              <div className="w-10 h-10 rounded-full bg-[var(--color-surface-3)] flex items-center justify-center text-muted-foreground">
+              <div className="w-8 h-8 rounded-full bg-[var(--color-surface-3)] flex items-center justify-center text-xs text-muted-foreground">
                 {group.name.charAt(0)}
               </div>
             )}
             <div className="flex-1 min-w-0">
-              <h2 className="font-semibold text-base truncate">
+              <h2 className="font-semibold text-sm truncate">
                 {group.name}
               </h2>
             </div>
           </div>
           {group.description ? (
-            <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+            <p className="text-xs text-muted-foreground line-clamp-2 mb-2">
               {group.description}
             </p>
           ) : (
-            <div className="mb-3" />
+            <div className="mb-2" />
           )}
         </Link>
-        <div className="flex items-center justify-between text-xs text-muted-foreground">
+        <div className="flex items-center justify-between text-[11px] text-muted-foreground">
           <span className="flex items-center gap-1">
-            <Users className="h-3.5 w-3.5" />
-            {group.memberCount} {t("user.groups.members")} ·{" "}
-            {group.topicCount} {t("user.groups.topics")}
+            <Users className="h-3 w-3" />
+            {group.memberCount} · {group.topicCount}
           </span>
-          <button
-            type="button"
-            onClick={() => onJoin(group)}
-            disabled={isJoining}
-            className={`px-3 py-1 rounded-full text-xs font-medium ${
-              group.joined
-                ? "bg-[var(--color-surface-3)] text-muted-foreground hover:bg-[var(--color-semantic-danger-muted)] hover:text-[var(--color-semantic-danger)]"
-                : "bg-primary text-primary-foreground hover:opacity-90"
-            }`}
-          >
-            {isJoining ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            ) : group.joined ? (
-              t("user.groups.leave")
-            ) : (
-              t("user.groups.join")
-            )}
-          </button>
+          {group.joined ? (
+            <button
+              type="button"
+              onClick={() => onLeave(group)}
+              className="px-2.5 py-1 rounded-full text-[11px] font-medium bg-[var(--color-surface-3)] text-muted-foreground hover:bg-[var(--color-semantic-danger-muted)] hover:text-[var(--color-semantic-danger)]"
+            >
+              {t("user.groups.leave")}
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => onJoin(group)}
+              disabled={isJoining}
+              className="px-2.5 py-1 rounded-full text-[11px] font-medium bg-primary text-primary-foreground hover:opacity-90"
+            >
+              {isJoining ? (
+                <Loader2 className="h-3 w-3 animate-spin" />
+              ) : (
+                t("user.groups.join")
+              )}
+            </button>
+          )}
         </div>
       </div>
     </div>
@@ -112,17 +126,18 @@ function GroupCard({
 
 function MyGroupCard({
   group,
+  onLeave,
   t,
 }: {
   group: GroupItem
+  onLeave: (group: GroupItem) => void
   t: (key: string) => string
 }) {
   return (
     <div className="relative overflow-hidden rounded-[var(--rounded-lg)] border border-[var(--color-hairline)] bg-[var(--color-surface-1)] shadow-[var(--shadow-sm)] transition-all duration-[var(--motion-duration-normal)] hover:shadow-[var(--shadow-md)]">
-      {/* Banner header */}
       {group.banner ? (
         <Link to={`/groups/${group.slug}`} className="block">
-          <div className="h-24 w-full overflow-hidden">
+          <div className="h-16 w-full overflow-hidden">
             <img
               src={group.banner}
               alt=""
@@ -132,50 +147,59 @@ function MyGroupCard({
         </Link>
       ) : (
         <Link to={`/groups/${group.slug}`} className="block">
-          <div className="h-24 w-full bg-[var(--color-primary-subtle)]" />
+          <div className="h-16 w-full bg-[var(--color-primary-subtle)]" />
         </Link>
       )}
 
-      <div className="p-4">
+      <div className="p-3">
         <Link to={`/groups/${group.slug}`} className="block">
-          <div className="flex items-center gap-3 mb-2">
+          <div className="flex items-center gap-2 mb-1.5">
             {group.icon ? (
               <img
                 src={group.icon}
                 alt={group.name}
-                className="w-10 h-10 rounded-full object-cover border border-[var(--color-hairline)]"
+                className="w-8 h-8 rounded-full object-cover border border-[var(--color-hairline)]"
               />
             ) : (
-              <div className="w-10 h-10 rounded-full bg-[var(--color-surface-3)] flex items-center justify-center text-muted-foreground">
+              <div className="w-8 h-8 rounded-full bg-[var(--color-surface-3)] flex items-center justify-center text-xs text-muted-foreground">
                 {group.name.charAt(0)}
               </div>
             )}
             <div className="flex-1 min-w-0">
-              <h2 className="font-semibold text-base truncate">
+              <h2 className="font-semibold text-sm truncate">
                 {group.name}
               </h2>
             </div>
           </div>
           {group.description ? (
-            <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+            <p className="text-xs text-muted-foreground line-clamp-2 mb-2">
               {group.description}
             </p>
           ) : (
-            <div className="mb-3" />
+            <div className="mb-2" />
           )}
         </Link>
-        <div className="flex items-center justify-between text-xs text-muted-foreground">
+        <div className="flex items-center justify-between text-[11px] text-muted-foreground">
           <span className="flex items-center gap-1">
-            <Users className="h-3.5 w-3.5" />
-            {group.memberCount} {t("user.groups.members")} ·{" "}
-            {group.topicCount} {t("user.groups.topics")}
+            <Users className="h-3 w-3" />
+            {group.memberCount} · {group.topicCount}
           </span>
-          <Link
-            to={`/groups/${group.slug}`}
-            className="px-3 py-1 rounded-full text-xs font-medium bg-[var(--color-surface-3)] text-muted-foreground hover:bg-[var(--color-primary-muted)] hover:text-[var(--color-primary)]"
-          >
-            {t("user.groups.enter")}
-          </Link>
+          <div className="flex items-center gap-1.5">
+            <Link
+              to={`/groups/${group.slug}`}
+              className="px-2.5 py-1 rounded-full text-[11px] font-medium bg-[var(--color-primary-muted)] text-[var(--color-primary)] hover:bg-[var(--color-primary-subtle)]"
+            >
+              {t("user.groups.enter")}
+            </Link>
+            <button
+              type="button"
+              onClick={() => onLeave(group)}
+              className="px-2 py-1 rounded-full text-[11px] font-medium text-muted-foreground hover:bg-[var(--color-semantic-danger-muted)] hover:text-[var(--color-semantic-danger)]"
+              title={t("user.groups.leave")}
+            >
+              <LogOut className="h-3 w-3" />
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -189,6 +213,7 @@ export default function GroupsIndexRoute() {
   const [loading, setLoading] = useState(true)
   const [joiningId, setJoiningId] = useState<number | null>(null)
   const [search, setSearch] = useState("")
+  const [leaveTarget, setLeaveTarget] = useState<GroupItem | null>(null)
 
   useEffect(() => {
     getGroupList()
@@ -200,23 +225,12 @@ export default function GroupsIndexRoute() {
     if (joiningId !== null) return
     setJoiningId(group.id)
     try {
-      if (group.joined) {
-        await leaveGroup(group.id)
-        toast.success(t("user.groups.leaveSuccess"))
-      } else {
-        await joinGroup(group.id)
-        toast.success(t("user.groups.joinSuccess"))
-      }
+      await joinGroup(group.id)
+      toast.success(t("user.groups.joinSuccess"))
       setGroups((prev) =>
         (prev || []).map((g) =>
           g.id === group.id
-            ? {
-                ...g,
-                joined: !g.joined,
-                memberCount: g.joined
-                  ? g.memberCount - 1
-                  : g.memberCount + 1,
-              }
+            ? { ...g, joined: true, memberCount: g.memberCount + 1 }
             : g,
         ),
       )
@@ -224,6 +238,31 @@ export default function GroupsIndexRoute() {
       toast.error(t("user.groups.operationFailed"))
     } finally {
       setJoiningId(null)
+    }
+  }
+
+  function handleLeaveClick(group: GroupItem) {
+    setLeaveTarget(group)
+  }
+
+  async function handleLeaveConfirm() {
+    if (!leaveTarget || joiningId !== null) return
+    setJoiningId(leaveTarget.id)
+    try {
+      await leaveGroup(leaveTarget.id)
+      toast.success(t("user.groups.leaveSuccess"))
+      setGroups((prev) =>
+        (prev || []).map((g) =>
+          g.id === leaveTarget.id
+            ? { ...g, joined: false, memberCount: g.memberCount - 1 }
+            : g,
+        ),
+      )
+    } catch {
+      toast.error(t("user.groups.operationFailed"))
+    } finally {
+      setJoiningId(null)
+      setLeaveTarget(null)
     }
   }
 
@@ -274,17 +313,17 @@ export default function GroupsIndexRoute() {
           <EmptyState title={t("user.groups.empty")} />
         ) : (
           <div className="space-y-8">
-            {/* My Groups */}
             {myGroups.length > 0 ? (
               <section>
                 <h2 className="text-lg font-semibold mb-3">
                   {t("user.groups.myGroups")}
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                   {myGroups.map((group) => (
                     <MyGroupCard
                       key={group.id}
                       group={group}
+                      onLeave={handleLeaveClick}
                       t={t}
                     />
                   ))}
@@ -292,18 +331,18 @@ export default function GroupsIndexRoute() {
               </section>
             ) : null}
 
-            {/* All Groups */}
             {availableGroups.length > 0 ? (
               <section>
                 <h2 className="text-lg font-semibold mb-3">
                   {t("user.groups.allGroups")}
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                   {availableGroups.map((group) => (
                     <GroupCard
                       key={group.id}
                       group={group}
                       onJoin={handleJoin}
+                      onLeave={handleLeaveClick}
                       joiningId={joiningId}
                       t={t}
                     />
@@ -314,6 +353,23 @@ export default function GroupsIndexRoute() {
           </div>
         )}
       </div>
+
+      <AlertDialog open={leaveTarget !== null} onOpenChange={(open) => { if (!open) setLeaveTarget(null) }}>
+        <AlertDialogContent size="sm">
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("user.groups.leaveConfirm")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("user.groups.leaveConfirmDescription")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+            <AlertDialogAction variant="destructive" onClick={handleLeaveConfirm}>
+              {t("user.groups.leave")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </MainShell>
   )
 }

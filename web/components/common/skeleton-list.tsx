@@ -54,15 +54,15 @@ export function GroupDetailSkeleton() {
 
 export function GroupCardGridSkeleton() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {Array.from({ length: 3 }).map((_, i) => (
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+      {Array.from({ length: 4 }).map((_, i) => (
         <div key={i} className="rounded-[var(--rounded-lg)] border border-[var(--color-hairline)] bg-[var(--color-surface-1)] overflow-hidden">
-          <div className={`h-24 ${shimmerClass}`} />
-          <div className="p-4">
-            <div className="flex items-center gap-3 mb-2">
-              <div className={`h-10 w-10 shrink-0 rounded-full ${shimmerClass}`} />
-              <div className="space-y-2 flex-1">
-                <div className={`h-4 w-2/3 rounded ${shimmerClass}`} />
+          <div className={`h-16 ${shimmerClass}`} />
+          <div className="p-3">
+            <div className="flex items-center gap-2 mb-1.5">
+              <div className={`h-8 w-8 shrink-0 rounded-full ${shimmerClass}`} />
+              <div className="space-y-1.5 flex-1">
+                <div className={`h-3.5 w-2/3 rounded ${shimmerClass}`} />
                 <div className={`h-3 w-1/2 rounded ${shimmerClass}`} />
               </div>
             </div>

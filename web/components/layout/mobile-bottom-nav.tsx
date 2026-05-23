@@ -1,6 +1,6 @@
 "use client"
 
-import { Bell, Compass, Home, Plus, User } from "lucide-react"
+import { FileText, ListChecks, MessageSquare, Plus, Users } from "lucide-react"
 import Link from "@/components/common/link"
 import { usePathname } from "@/lib/router/navigation"
 import { cn } from "@/lib/utils"
@@ -9,11 +9,11 @@ export function MobileBottomNav() {
   const pathname = usePathname()
 
   const tabs = [
-    { href: "/", icon: Home, label: "Home" },
-    { href: "/explore", icon: Compass, label: "Explore" },
+    { href: "/topics", icon: MessageSquare, label: "Topics" },
+    { href: "/articles", icon: FileText, label: "Articles" },
     { href: "/topic/create", icon: Plus, label: "Create", isCreate: true },
-    { href: "/user/messages", icon: Bell, label: "Notifications" },
-    { href: "/user/profile", icon: User, label: "Profile" },
+    { href: "/groups", icon: Users, label: "Groups" },
+    { href: "/tasks", icon: ListChecks, label: "Tasks" },
   ]
 
   return (

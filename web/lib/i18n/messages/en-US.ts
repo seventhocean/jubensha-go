@@ -34,6 +34,7 @@ const enUS = {
       login: "Sign in",
       confirmLogout: "Are you sure you want to sign out?",
       toggleMenu: "Toggle menu",
+      messages: "Messages",
     },
     footer: {
       poweredBy: "Powered by",
@@ -1655,6 +1656,8 @@ const enUS = {
       setRole: "Set Role",
       kickMember: "Remove",
       kickConfirm: "Remove this member from the group?",
+      leaveConfirm: "Leave Group",
+      leaveConfirmDescription: "Are you sure you want to leave this group? You will no longer be a member.",
       roleUpdated: "Role updated",
       memberKicked: "Member removed",
       checkIn: "Check In",

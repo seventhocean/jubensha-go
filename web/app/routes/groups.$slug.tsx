@@ -3,6 +3,16 @@
 import { useEffect, useState } from "react"
 import { Link, Outlet, useLocation, useNavigate, useParams } from "react-router"
 import { Crown, Loader2, Megaphone, Pin, ScrollText, Settings, Shield, Users, CalendarCheck } from "lucide-react"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import { toast } from "sonner"
 
 import { useCurrentUser } from "@/components/app/app-provider"
@@ -206,6 +216,7 @@ export default function GroupDetailRoute() {
   const [checkInStatus, setCheckInStatus] = useState<GroupCheckInStatus | null>(null)
   const [checkInRank, setCheckInRank] = useState<GroupCheckInRankItem[]>([])
   const [checkingIn, setCheckingIn] = useState(false)
+  const [leaveDialogOpen, setLeaveDialogOpen] = useState(false)
 
   const canManage = !!(group?.canManage)
 
@@ -352,6 +363,19 @@ export default function GroupDetailRoute() {
     }
   }
 
+  function handleJoinClick() {
+    if (!currentUser) {
+      navigate(buildSigninHref(`/groups/${slug}`))
+      return
+    }
+    if (!group || isJoining) return
+    if (group.joined) {
+      setLeaveDialogOpen(true)
+      return
+    }
+    handleJoin()
+  }
+
   async function handleJoin() {
     if (!currentUser) {
       navigate(buildSigninHref(`/groups/${slug}`))
@@ -378,6 +402,7 @@ export default function GroupDetailRoute() {
       toast.error(t("user.groups.operationFailed"))
     } finally {
       setIsJoining(false)
+      setLeaveDialogOpen(false)
     }
   }
 
@@ -413,6 +438,7 @@ export default function GroupDetailRoute() {
   )
 
   return (
+    <>
     <MainShell aside={sidebar}>
       {/* Banner / Header */}
       <div className="relative mb-6 overflow-hidden rounded-lg">
@@ -520,7 +546,7 @@ export default function GroupDetailRoute() {
         ) : null}
         <button
           type="button"
-          onClick={handleJoin}
+          onClick={handleJoinClick}
           disabled={isJoining}
           className={`px-4 py-2 rounded-lg text-sm font-medium transition-transform active:scale-95 ${
             group.joined
@@ -835,5 +861,23 @@ export default function GroupDetailRoute() {
         </div>
       ) : null}
     </MainShell>
+
+      <AlertDialog open={leaveDialogOpen} onOpenChange={setLeaveDialogOpen}>
+        <AlertDialogContent size="sm">
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("user.groups.leaveConfirm")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("user.groups.leaveConfirmDescription")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+            <AlertDialogAction variant="destructive" onClick={handleJoin}>
+              {t("user.groups.leave")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   )
 }

@@ -18,6 +18,7 @@ import {
   ListChecks,
   LogOut,
   Menu,
+  Search,
   MessageCircle,
   MessageSquare,
   Plus,
@@ -494,14 +495,6 @@ function MobileMenu({
 
           <Separator />
 
-          <div className="px-3">
-            <SearchInput placeholder={t("component.searchInput.placeholder")} />
-          </div>
-
-          <div className="px-3">
-            <CreateTopicButton config={config} t={t} />
-          </div>
-
           {user ? (
             <div className="flex flex-col space-y-2 px-3">
               <SheetClose asChild onClick={closeMobileMenu}>
@@ -636,14 +629,36 @@ export function SiteHeader() {
             ) : null}
           </div>
 
-          <MobileMenu
-            navs={navs}
-            config={config}
-            user={user}
-            t={t}
-            showColorModeToggle={showColorModeToggle}
-            onSignedOut={() => setCurrentUser(null)}
-          />
+          <div className="flex items-center space-x-1 md:hidden">
+            <Link
+              href="/search"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-md text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
+              aria-label={t("component.searchInput.placeholder")}
+            >
+              <Search className="h-5 w-5" />
+            </Link>
+            {user ? (
+              <Link
+                href="/user/messages"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-md text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
+                aria-label={t("common.header.messages")}
+              >
+                {unreadMessageCount > 0 ? (
+                  <BellRing size={18} className="animate-swing" />
+                ) : (
+                  <Bell size={18} />
+                )}
+              </Link>
+            ) : null}
+            <MobileMenu
+              navs={navs}
+              config={config}
+              user={user}
+              t={t}
+              showColorModeToggle={showColorModeToggle}
+              onSignedOut={() => setCurrentUser(null)}
+            />
+          </div>
         </div>
       </div>
     </header>

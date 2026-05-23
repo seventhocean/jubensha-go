@@ -3,6 +3,8 @@
 import Link from "@/components/common/link"
 import * as React from "react"
 
+import { Clock, Flame, Rss } from "lucide-react"
+
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { apiFetch } from "@/lib/api/client"
 import { getGroupNavs } from "@/lib/api/groups"
@@ -36,6 +38,34 @@ function isActiveNode(
     return currentNodeId === node.id
   }
   return currentRootNodeId === node.id
+}
+
+const builtInNodeIcons: Record<number, React.ReactNode> = {
+  0: <Clock className="size-4" />,
+  [-1]: <Flame className="size-4" />,
+  [-2]: <Rss className="size-4" />,
+}
+
+function NodeLogo({ node }: { node: TopicNode }) {
+  if (node.logo) {
+    return (
+      <i
+        className="node-logo"
+        style={{ backgroundImage: `url(${node.logo})` }}
+      />
+    )
+  }
+
+  const icon = builtInNodeIcons[node.id]
+  if (icon) {
+    return (
+      <span className="flex size-6 shrink-0 items-center justify-center mr-2 text-[var(--color-ink-muted)]">
+        {icon}
+      </span>
+    )
+  }
+
+  return <i className="node-logo" />
 }
 
 export function TopicsNavContent({
@@ -109,14 +139,7 @@ export function TopicsNavContent({
                   ) : null}
                   <li className={cn(active && "active")} data-node-id={node.id}>
                     <Link href={nodeHref(node)}>
-                      <i
-                        className="node-logo"
-                        style={
-                          node.logo
-                            ? { backgroundImage: `url(${node.logo})` }
-                            : undefined
-                        }
-                      />
+                      <NodeLogo node={node} />
                       <div className="node-name">{node.name}</div>
                     </Link>
                   </li>
@@ -125,11 +148,8 @@ export function TopicsNavContent({
             })}
           </ul>
           {groups.length > 0 ? (
-            <div className="px-3 pb-2">
+            <React.Fragment>
               <div className="nodes-divider" aria-hidden="true" />
-              <div className="text-xs text-muted-foreground/60 px-2 py-1">
-                {t("common.nav.groups")}
-              </div>
               <ul>
                 {groups.map((group) => (
                   <li key={group.id} data-node-id={-1000 - group.id}>
@@ -147,13 +167,15 @@ export function TopicsNavContent({
                   </li>
                 ))}
               </ul>
-              <Link
-                href="/groups"
-                className="block px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
-              >
-                {t("common.nav.viewAll")}
-              </Link>
-            </div>
+              <li>
+                <Link
+                  href="/groups"
+                  className="block py-1 text-xs text-muted-foreground hover:text-foreground"
+                >
+                  {t("common.nav.viewAll")}
+                </Link>
+              </li>
+            </React.Fragment>
           ) : null}
         </ScrollArea>
       </nav>
