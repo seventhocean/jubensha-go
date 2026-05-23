@@ -1636,6 +1636,8 @@ const enUS = {
       bannerLabel: "Group Banner",
       uploadImage: "Upload image",
       clickToReplace: "Click to replace",
+      slugError: "Slug must be 2-64 characters, lowercase letters, numbers, and hyphens only",
+      loginRequired: "Please sign in first",
     },
     tasks: {
       title: "Tasks",

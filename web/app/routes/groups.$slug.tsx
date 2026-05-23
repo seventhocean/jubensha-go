@@ -1,10 +1,11 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Link, useParams } from "react-router"
+import { Link, useNavigate, useParams } from "react-router"
 import { Loader2, Megaphone, Pin, ScrollText, Users } from "lucide-react"
 import { toast } from "sonner"
 
+import { useCurrentUser } from "@/components/app/app-provider"
 import { EmptyState } from "@/components/common/empty-state"
 import { UserAvatar } from "@/components/common/avatar"
 import { LoadMore } from "@/components/common/load-more"
@@ -31,6 +32,7 @@ import {
 import type { GroupItem, GroupMember, Topic } from "@/lib/api/types"
 import { prettyDate } from "@/lib/format"
 import { useI18n } from "@/lib/i18n/provider"
+import { buildSigninHref } from "@/lib/toast"
 import { useDocumentTitle } from "@/lib/use-document-title"
 
 export async function loader() {
@@ -112,6 +114,8 @@ function GroupSidebar({
 export default function GroupDetailRoute() {
   const { slug } = useParams<{ slug: string }>()
   const { t } = useI18n()
+  const currentUser = useCurrentUser()
+  const navigate = useNavigate()
   const [group, setGroup] = useState<GroupItem | null>(null)
   const [topics, setTopics] = useState<Topic[]>([])
   const [cursor, setCursor] = useState<string>("")
@@ -185,6 +189,10 @@ export default function GroupDetailRoute() {
   }, [activeTab, hotLoaded, group])
 
   async function handleJoin() {
+    if (!currentUser) {
+      navigate(buildSigninHref(`/groups/${slug}`))
+      return
+    }
     if (!group || isJoining) return
     setIsJoining(true)
     try {
@@ -287,6 +295,12 @@ export default function GroupDetailRoute() {
             <button
               type="button"
               className="inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium bg-primary text-primary-foreground hover:opacity-90"
+              onClick={(e) => {
+                if (!currentUser) {
+                  e.preventDefault()
+                  navigate(buildSigninHref(`/groups/${slug}`))
+                }
+              }}
             >
               <Pin className="h-4 w-4" />
               {t("user.groups.createPost")}

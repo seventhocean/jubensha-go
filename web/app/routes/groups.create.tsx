@@ -1,10 +1,11 @@
 "use client"
 
 import { useRef, useState } from "react"
-import { useNavigate } from "react-router"
+import { Navigate, useLocation, useNavigate } from "react-router"
 import { CloudUpload, Loader2, Pencil, Upload } from "lucide-react"
 import { toast } from "sonner"
 
+import { useAuthChecked, useCurrentUser } from "@/components/app/app-provider"
 import { MainShell } from "@/components/layout/main-shell"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -15,11 +16,15 @@ import { createGroup } from "@/lib/api/groups"
 import { useI18n } from "@/lib/i18n/provider"
 import { useDocumentTitle } from "@/lib/use-document-title"
 
-export async function loader() {
+import { requireUser, requireUserClient } from "../route-helpers/auth"
+
+export async function loader(args: { request: Request }) {
+  await requireUser(args)
   return null
 }
 
-export async function clientLoader() {
+export async function clientLoader(args: { request: Request }) {
+  await requireUserClient(args)
   return null
 }
 
@@ -132,33 +137,65 @@ export default function GroupsCreateRoute() {
   const { t } = useI18n()
   useDocumentTitle(t("user.groups.createGroup"))
   const navigate = useNavigate()
+  const location = useLocation()
+  const currentUser = useCurrentUser()
+  const authChecked = useAuthChecked()
 
   const [name, setName] = useState("")
   const [slug, setSlug] = useState("")
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(false)
+  const [slugError, setSlugError] = useState("")
   const [description, setDescription] = useState("")
   const [icon, setIcon] = useState("")
   const [banner, setBanner] = useState("")
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState("")
 
+  if (!authChecked) {
+    return null
+  }
+
+  if (!currentUser) {
+    const redirectTo = `${location.pathname}${location.search}`
+    return (
+      <Navigate
+        to={`/user/signin?redirect=${encodeURIComponent(redirectTo)}`}
+        replace
+      />
+    )
+  }
+
   function handleNameChange(value: string) {
     setName(value)
     if (!slugManuallyEdited) {
-      setSlug(slugify(value))
+      const newSlug = slugify(value)
+      setSlug(newSlug)
+      validateSlug(newSlug)
     }
     if (error) setError("")
+  }
+
+  function validateSlug(value: string) {
+    if (value && (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(value) || value.length < 2 || value.length > 64)) {
+      setSlugError(t("user.groups.slugError"))
+    } else {
+      setSlugError("")
+    }
   }
 
   function handleSlugChange(value: string) {
     setSlug(value)
     setSlugManuallyEdited(true)
+    validateSlug(value)
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!name.trim()) {
       setError(t("user.groups.nameRequired"))
+      return
+    }
+    if (slugError) {
       return
     }
     setSubmitting(true)
@@ -213,9 +250,13 @@ export default function GroupsCreateRoute() {
                   onChange={(e) => handleSlugChange(e.target.value)}
                   placeholder={t("user.groups.slugPlaceholder")}
                 />
-                <p className="text-xs text-muted-foreground">
-                  {t("user.groups.slugHelp")}
-                </p>
+                {slugError ? (
+                  <p className="text-sm text-destructive">{slugError}</p>
+                ) : (
+                  <p className="text-xs text-muted-foreground">
+                    {t("user.groups.slugHelp")}
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">

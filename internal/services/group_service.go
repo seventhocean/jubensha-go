@@ -100,7 +100,7 @@ func (s *groupService) Join(userId, groupId int64) error {
 		return err
 	}
 	return repositories.GroupRepository.Updates(sqls.DB(), groupId, map[string]interface{}{
-		"member_count": group.MemberCount + 1,
+		"member_count": gorm.Expr("member_count + 1"),
 	})
 }
 
@@ -118,7 +118,7 @@ func (s *groupService) Leave(userId, groupId int64) error {
 	}
 	repositories.GroupMemberRepository.Delete(sqls.DB(), member.Id)
 	return repositories.GroupRepository.Updates(sqls.DB(), groupId, map[string]interface{}{
-		"member_count": group.MemberCount - 1,
+		"member_count": gorm.Expr("member_count - 1"),
 	})
 }
 

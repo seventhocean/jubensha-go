@@ -1598,6 +1598,8 @@ const zhCN = {
       bannerLabel: "群组横幅",
       uploadImage: "上传图片",
       clickToReplace: "点击更换",
+      slugError: "Slug 必须为 2-64 个字符，仅允许小写字母、数字和连字符",
+      loginRequired: "请先登录",
     },
     tasks: {
       title: "任务中心",
