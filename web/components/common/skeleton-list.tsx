@@ -1,21 +1,24 @@
+const shimmerClass =
+  "animate-[shimmer_1.5s_ease-in-out_infinite] bg-[length:200%_100%] bg-[linear-gradient(90deg,var(--color-surface-2),var(--color-surface-1),var(--color-surface-2))]"
+
 export function TopicListSkeleton() {
   return (
-    <ul className="divide-y">
+    <ul className="divide-y divide-[var(--color-hairline)]">
       {Array.from({ length: 4 }).map((_, i) => (
         <li key={i} className="px-4 py-4">
           <div className="flex items-center gap-2">
-            <div className="h-6 w-6 shrink-0 animate-pulse rounded-full bg-muted" />
-            <div className="h-3 w-24 animate-pulse rounded bg-muted" />
-            <div className="h-3 w-16 animate-pulse rounded bg-muted" />
+            <div className={`h-6 w-6 shrink-0 rounded-full ${shimmerClass}`} />
+            <div className={`h-3 w-24 rounded ${shimmerClass}`} />
+            <div className={`h-3 w-16 rounded ${shimmerClass}`} />
           </div>
           <div className="mt-3 space-y-2">
-            <div className="h-4 w-3/4 animate-pulse rounded bg-muted" />
-            <div className="h-3 w-full animate-pulse rounded bg-muted" />
-            <div className="h-3 w-2/3 animate-pulse rounded bg-muted" />
+            <div className={`h-4 w-3/4 rounded ${shimmerClass}`} />
+            <div className={`h-3 w-full rounded ${shimmerClass}`} />
+            <div className={`h-3 w-2/3 rounded ${shimmerClass}`} />
           </div>
           <div className="mt-3 flex items-center gap-4">
-            <div className="h-3 w-12 animate-pulse rounded bg-muted" />
-            <div className="h-3 w-12 animate-pulse rounded bg-muted" />
+            <div className={`h-3 w-12 rounded ${shimmerClass}`} />
+            <div className={`h-3 w-12 rounded ${shimmerClass}`} />
           </div>
         </li>
       ))}
@@ -25,11 +28,11 @@ export function TopicListSkeleton() {
 
 export function CardSkeleton() {
   return (
-    <div className="rounded-lg border bg-background p-4">
+    <div className="rounded-[var(--rounded-lg)] border border-[var(--color-hairline)] bg-[var(--color-surface-1)] p-4">
       <div className="space-y-3">
-        <div className="h-4 w-1/2 animate-pulse rounded bg-muted" />
-        <div className="h-3 w-full animate-pulse rounded bg-muted" />
-        <div className="h-3 w-3/4 animate-pulse rounded bg-muted" />
+        <div className={`h-4 w-1/2 rounded ${shimmerClass}`} />
+        <div className={`h-3 w-full rounded ${shimmerClass}`} />
+        <div className={`h-3 w-3/4 rounded ${shimmerClass}`} />
       </div>
     </div>
   )
@@ -38,10 +41,10 @@ export function CardSkeleton() {
 export function GroupDetailSkeleton() {
   return (
     <div className="space-y-4">
-      <div className="h-40 animate-pulse rounded-lg bg-muted" />
+      <div className={`h-40 rounded-[var(--rounded-lg)] ${shimmerClass}`} />
       <div className="flex items-center gap-3">
         {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="h-8 w-20 animate-pulse rounded bg-muted" />
+          <div key={i} className={`h-8 w-20 rounded ${shimmerClass}`} />
         ))}
       </div>
       <TopicListSkeleton />
@@ -53,14 +56,14 @@ export function GroupCardGridSkeleton() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {Array.from({ length: 3 }).map((_, i) => (
-        <div key={i} className="rounded-lg border bg-background overflow-hidden">
-          <div className="h-24 animate-pulse bg-muted" />
+        <div key={i} className="rounded-[var(--rounded-lg)] border border-[var(--color-hairline)] bg-[var(--color-surface-1)] overflow-hidden">
+          <div className={`h-24 ${shimmerClass}`} />
           <div className="p-4">
             <div className="flex items-center gap-3 mb-2">
-              <div className="h-10 w-10 shrink-0 animate-pulse rounded-full bg-muted" />
+              <div className={`h-10 w-10 shrink-0 rounded-full ${shimmerClass}`} />
               <div className="space-y-2 flex-1">
-                <div className="h-4 w-2/3 animate-pulse rounded bg-muted" />
-                <div className="h-3 w-1/2 animate-pulse rounded bg-muted" />
+                <div className={`h-4 w-2/3 rounded ${shimmerClass}`} />
+                <div className={`h-3 w-1/2 rounded ${shimmerClass}`} />
               </div>
             </div>
           </div>

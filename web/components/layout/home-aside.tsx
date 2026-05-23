@@ -25,9 +25,9 @@ function WidgetCard({
   children: React.ReactNode
 }) {
   return (
-    <section className="rounded-md bg-background px-3 py-1">
+    <section className="rounded-[var(--rounded-lg)] bg-[var(--color-surface-1)] px-4 py-2 shadow-[var(--shadow-sm)] dark:shadow-none dark:border dark:border-[var(--color-hairline)]">
       {title ? (
-        <div className="flex items-center justify-between border-b py-2 text-base font-medium">
+        <div className="flex items-center justify-between border-b border-[var(--color-hairline)] py-2 text-base font-medium">
           <span>{title}</span>
         </div>
       ) : null}
@@ -76,7 +76,7 @@ function ScoreRank({
             <div className="ml-[9px] w-full text-xs leading-[1.4]">
               <Link
                 href={`/user/${user.id}`}
-                className="block text-sm leading-5 text-foreground hover:text-sky-500/80"
+                className="block text-sm leading-5 text-foreground transition-colors duration-[var(--motion-duration-fast)] hover:text-[var(--color-primary)]"
               >
                 {displayName(user)}
               </Link>
@@ -87,7 +87,7 @@ function ScoreRank({
               </p>
             </div>
             <div className="w-[120px]">
-              <span className="float-right inline-flex h-[21px] items-center rounded-xl bg-muted px-1.5 text-xs leading-[21px] text-muted-foreground [text-shadow:0_0_1px_#fff]">
+              <span className="float-right inline-flex h-[21px] items-center rounded-xl bg-[var(--color-primary-muted)] px-1.5 text-xs leading-[21px] text-[var(--color-primary)]">
                 <Trophy className="mr-[3px] size-3" />
                 <span>{user.score ?? 0}</span>
               </span>

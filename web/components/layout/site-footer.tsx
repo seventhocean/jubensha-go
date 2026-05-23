@@ -31,38 +31,38 @@ export function SiteFooter() {
     ) ?? []
 
   return (
-    <section className="main">
+    <section className="main border-t border-[var(--color-hairline)]">
       <div className="container">
         <footer className="footer">
-          <div className="grid grid-cols-1 gap-6 border-b pb-6 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 border-b border-[var(--color-hairline)] pb-6 md:grid-cols-2">
             <div>
-              <h3 className="text-sm font-semibold text-foreground">
+              <h3 className="text-sm font-semibold text-[var(--color-ink)]">
                 {config?.siteTitle || "BBS-GO"}
               </h3>
-              <p className="mt-1 text-xs text-muted-foreground">
+              <p className="mt-1 text-xs text-[var(--color-ink-muted)]">
                 {t("common.footer.siteDescription")}
               </p>
             </div>
             <div className="md:text-right">
-              <h4 className="text-sm font-semibold text-foreground">
+              <h4 className="text-sm font-semibold text-[var(--color-ink)]">
                 {t("common.footer.quickLinks")}
               </h4>
               <nav className="mt-1 flex flex-wrap gap-3 md:justify-end">
                 <Link
                   href="/topics"
-                  className="text-xs text-muted-foreground hover:text-foreground"
+                  className="text-xs text-[var(--color-ink-muted)] transition-colors duration-[var(--motion-duration-fast)] hover:text-[var(--color-ink)]"
                 >
                   {t("common.footer.topics")}
                 </Link>
                 <Link
                   href="/articles"
-                  className="text-xs text-muted-foreground hover:text-foreground"
+                  className="text-xs text-[var(--color-ink-muted)] transition-colors duration-[var(--motion-duration-fast)] hover:text-[var(--color-ink)]"
                 >
                   {t("common.footer.articles")}
                 </Link>
                 <Link
                   href="/search"
-                  className="text-xs text-muted-foreground hover:text-foreground"
+                  className="text-xs text-[var(--color-ink-muted)] transition-colors duration-[var(--motion-duration-fast)] hover:text-[var(--color-ink)]"
                 >
                   {t("common.footer.search")}
                 </Link>
@@ -80,7 +80,7 @@ export function SiteFooter() {
                     <Link
                       key={key}
                       href={item.url}
-                      className="hover:text-foreground"
+                      className="transition-colors duration-[var(--motion-duration-fast)] hover:text-[var(--color-ink)]"
                     >
                       {label}
                     </Link>
@@ -96,7 +96,7 @@ export function SiteFooter() {
                       rel={
                         item.openInNewWindow ? "noopener noreferrer" : undefined
                       }
-                      className="hover:text-foreground"
+                      className="transition-colors duration-[var(--motion-duration-fast)] hover:text-[var(--color-ink)]"
                     >
                       {label}
                     </a>
@@ -113,7 +113,7 @@ export function SiteFooter() {
               href="https://bbs-go.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="light"
+              className="text-[var(--color-secondary)] transition-colors duration-[var(--motion-duration-fast)] hover:text-[var(--color-secondary-hover)]"
             >
               BBS-GO
             </a>

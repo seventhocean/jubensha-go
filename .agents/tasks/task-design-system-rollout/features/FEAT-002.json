@@ -1,0 +1,23 @@
+{
+  "id": "FEAT-002",
+  "type": "feat",
+  "description": "Update all layout components (site-footer, main-shell, home-aside) and common components (empty-state, widget-card, skeleton-list) to use the new design system tokens, giving them proper surface colors, spacing, shadows/borders per mode, and transitions.",
+  "status": "in_progress",
+  "steps": [
+    "Update web/components/layout/site-footer.tsx: Apply design tokens - use var(--color-surface-1) for footer background, var(--color-ink-muted) for text, var(--color-hairline) for divider. Add proper spacing using spacing tokens. Style quick links with proper hover transitions using var(--motion-duration-fast).",
+    "Update web/components/layout/home-aside.tsx: Update WidgetCard to use bg-[var(--color-surface-1)] with shadow-[var(--shadow-sm)] in light mode and border border-[var(--color-hairline)] in dark mode. Use rounded-[var(--rounded-lg)] for cards. Update ScoreRank list items to use proper ink colors and spacing. Apply design system avatar sizes.",
+    "Update web/components/layout/main-shell.tsx: Ensure the main shell uses var(--color-canvas) background implicitly (already from body). No major changes needed structurally but verify spacing token usage.",
+    "Update web/components/common/empty-state.tsx: Style with var(--color-ink-muted) for empty state text, ensure proper spacing.",
+    "Update web/components/common/widget-card.tsx (if it exists as standalone): Apply card surface styling.",
+    "Update web/components/common/skeleton-list.tsx: Ensure skeleton loaders use the design system's shimmer animation with var(--color-surface-1) and var(--color-surface-2) as the shimmer colors."
+  ],
+  "acceptance_criteria": [
+    "Footer uses design system tokens for all colors",
+    "Home aside widget cards use proper surface/shadow/border treatment per the design system",
+    "Skeleton loaders use the shimmer keyframe from variables.css",
+    "Build passes successfully"
+  ],
+  "verification": ["Run 'pnpm build' in /projects/sandbox/jubensha-go/web/ and confirm no errors"],
+  "blocked_reason": null,
+  "findings": ""
+}

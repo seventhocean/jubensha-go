@@ -16,7 +16,7 @@ export function EmptyState({
         className,
       )}
     >
-      <svg viewBox="0 0 120 100" aria-hidden="true" className="h-23 text-muted-foreground">
+      <svg viewBox="0 0 120 100" aria-hidden="true" className="h-23 text-[var(--color-ink-muted)]">
         <defs>
           <linearGradient id="emptyFill" x1="0%" x2="100%" y1="0%" y2="100%">
             <stop offset="0%" stopColor="currentColor" stopOpacity="0.12" />
@@ -42,8 +42,8 @@ export function EmptyState({
           <circle cx="84" cy="10" r="1.8" fill="currentColor" fillOpacity="0.22" />
         </g>
       </svg>
-      <p className="mt-4 text-sm font-normal text-muted-foreground">{title}</p>
-      {description ? <p className="mt-1 max-w-sm text-sm text-muted-foreground">{description}</p> : null}
+      <p className="mt-4 text-sm font-normal text-[var(--color-ink-muted)]">{title}</p>
+      {description ? <p className="mt-1 max-w-sm text-sm text-[var(--color-ink-muted)]">{description}</p> : null}
     </div>
   )
 }
