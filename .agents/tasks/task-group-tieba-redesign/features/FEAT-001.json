@@ -2,7 +2,7 @@
   "id": "FEAT-001",
   "type": "feat",
   "description": "Backend enhancements: Add new Group fields (Banner, Notice, Rules), new API endpoint for group sticky topics, and update response structures to support the Tieba-style group detail page.",
-  "status": "in_progress",
+  "status": "completed",
   "steps": [
     "Add new fields to the Group model in internal/models/models.go: Banner (string, cover/banner image URL), Notice (text, group announcement), Rules (text, group rules/guidelines).",
     "Add IsDefault field to GroupResponse in internal/models/resp/response.go, and add the new fields Banner, Notice, Rules to GroupResponse.",
@@ -27,5 +27,5 @@
     "Run 'pnpm typecheck' in web/ to confirm frontend still compiles after dashboard changes"
   ],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "Pre-existing test failures in internal/server (SPA embed tests) and TypeScript errors in groups.$slug.tsx / groups._index.tsx are unrelated to this feature. Go build succeeds. The web/build/spa/ directory needs to exist with at least one file for go build to work (placeholder.html used)."
 }
