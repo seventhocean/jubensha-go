@@ -17,18 +17,6 @@ import type { GroupItem } from "@/lib/api/types"
 import { useI18n } from "@/lib/i18n/provider"
 import { useDocumentTitle } from "@/lib/use-document-title"
 
-import { requireUser, requireUserClient } from "../route-helpers/auth"
-
-export async function loader(args: { request: Request }) {
-  await requireUser(args)
-  return null
-}
-
-export async function clientLoader(args: { request: Request }) {
-  await requireUserClient(args)
-  return null
-}
-
 function ImageUploader({
   value,
   onChange,
@@ -164,10 +152,9 @@ export default function GroupSettingsRoute() {
   }
 
   if (!currentUser) {
-    const redirectTo = `${location.pathname}${location.search}`
     return (
       <Navigate
-        to={`/user/signin?redirect=${encodeURIComponent(redirectTo)}`}
+        to={`/user/signin?redirect=${encodeURIComponent(location.pathname + location.search)}`}
         replace
       />
     )
