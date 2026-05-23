@@ -11,6 +11,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/mlogclub/simple/sqls"
 	"github.com/mlogclub/simple/web"
 
 	"bbs-go/internal/pkg/ginx"
@@ -298,7 +299,15 @@ func GroupUpdate(ctx *gin.Context) {
 		"notice":      body.Notice,
 		"rules":       body.Rules,
 	}
-	if body.Name != "" {
+	if body.Name != "" && body.Name != group.Name {
+		// Check name uniqueness
+		existingName := services.GroupService.FindOne(sqls.NewCnd().Where("name = ? AND id != ?", body.Name, group.Id))
+		if existingName != nil {
+			ginx.WriteJSON(ctx, ginx.ErrorMessage("name already exists"))
+			return
+		}
+		columns["name"] = body.Name
+	} else if body.Name != "" {
 		columns["name"] = body.Name
 	}
 	if err := services.GroupService.Updates(body.GroupId, columns); err != nil {

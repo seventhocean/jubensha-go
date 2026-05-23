@@ -4,6 +4,7 @@ import (
 	"bbs-go/internal/models"
 	"bbs-go/internal/repositories"
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/mlogclub/simple/common/dates"
@@ -29,6 +30,11 @@ func groupCheckInYesterdayDate() int {
 }
 
 func (s *groupCheckInService) CheckIn(userId, groupId int64) error {
+	// Verify user is a member of the group
+	if !GroupService.IsMember(groupId, userId) {
+		return errors.New("must join the group first")
+	}
+
 	today := groupCheckInTodayDate()
 	// Check if already checked in today
 	existing := repositories.GroupCheckInRepository.GetByGroupUserDate(sqls.DB(), groupId, userId, today)
@@ -49,7 +55,11 @@ func (s *groupCheckInService) CheckIn(userId, groupId int64) error {
 		ConsecutiveDays: consecutiveDays,
 		CreateTime:      dates.NowTimestamp(),
 	}
-	return repositories.GroupCheckInRepository.Create(sqls.DB(), record)
+	err := repositories.GroupCheckInRepository.Create(sqls.DB(), record)
+	if err != nil && strings.Contains(strings.ToLower(err.Error()), "duplicate") {
+		return errors.New("already checked in today")
+	}
+	return err
 }
 
 func (s *groupCheckInService) GetStatus(userId, groupId int64) (bool, int) {
