@@ -87,6 +87,8 @@ function ArticleListItem({ article, t }: { article: Article; t: TFunction }) {
             <img
               src={article.cover.preview || article.cover.url}
               alt={article.title}
+              loading="lazy"
+              decoding="async"
               className="aspect-[16/10] w-full object-cover transition-transform duration-300 group-hover:scale-[1.03] sm:aspect-[4/3]"
             />
           </Link>

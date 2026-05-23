@@ -53,6 +53,8 @@ function GroupCard({
             <img
               src={group.banner}
               alt=""
+              loading="lazy"
+              decoding="async"
               className="h-full w-full object-cover"
             />
           </div>
@@ -70,6 +72,8 @@ function GroupCard({
               <img
                 src={group.icon}
                 alt={group.name}
+                loading="lazy"
+                decoding="async"
                 className="w-8 h-8 rounded-full object-cover border border-[var(--color-hairline)]"
               />
             ) : (
@@ -141,6 +145,8 @@ function MyGroupCard({
             <img
               src={group.banner}
               alt=""
+              loading="lazy"
+              decoding="async"
               className="h-full w-full object-cover"
             />
           </div>
@@ -158,6 +164,8 @@ function MyGroupCard({
               <img
                 src={group.icon}
                 alt={group.name}
+                loading="lazy"
+                decoding="async"
                 className="w-8 h-8 rounded-full object-cover border border-[var(--color-hairline)]"
               />
             ) : (

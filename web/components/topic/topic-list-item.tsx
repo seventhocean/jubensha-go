@@ -132,6 +132,8 @@ export function TopicListItem({
                     >                      <img
                         src={image.preview || image.url}
                         alt=""
+                        loading="lazy"
+                        decoding="async"
                         className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
                       />
                     </Link>
@@ -160,6 +162,8 @@ export function TopicListItem({
                 <img
                   src={topic.group.icon}
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                   className="h-4 w-4 rounded-full object-cover"
                 />
               ) : null}
@@ -177,6 +181,8 @@ export function TopicListItem({
                 <img
                   src={topic.node.logo}
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                   className="h-4 w-4 rounded-full object-cover"
                 />
               ) : null}

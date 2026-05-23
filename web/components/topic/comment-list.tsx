@@ -79,6 +79,8 @@ function CommentItem({
                 key={`${image.url || image.preview || index}`}
                 src={image.url || image.preview}
                 alt=""
+                loading="lazy"
+                decoding="async"
                 className="h-[72px] w-[72px] cursor-pointer object-cover transition-all duration-500 ease-out hover:scale-[1.04]"
               />
             ))}

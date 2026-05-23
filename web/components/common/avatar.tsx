@@ -60,6 +60,8 @@ export function UserAvatar({
           ref={imageRef}
           src={src}
           alt={name}
+          loading="lazy"
+          decoding="async"
           className={cn("h-full w-full object-cover", !imageLoaded && "hidden")}
           referrerPolicy="no-referrer"
           onLoad={() => setImageLoaded(true)}
