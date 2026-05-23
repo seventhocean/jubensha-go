@@ -48,6 +48,7 @@ func BuildGroupMember(member *models.GroupMember, userInfo *resp.UserInfo) *resp
 		Id:         member.Id,
 		GroupId:    member.GroupId,
 		User:       userInfo,
+		Role:       member.Role,
 		CreateTime: member.CreateTime,
 	}
 }

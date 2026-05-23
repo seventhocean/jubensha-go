@@ -595,6 +595,7 @@ type GroupMember struct {
 	Model
 	GroupId    int64 `gorm:"not null;uniqueIndex:uk_group_member_gu;index:idx_group_member_group_id" json:"groupId" form:"groupId"` // 群组ID
 	UserId     int64 `gorm:"not null;uniqueIndex:uk_group_member_gu;index:idx_group_member_user_id" json:"userId" form:"userId"`   // 用户ID
+	Role       int   `gorm:"type:int(11);not null;default:0" json:"role" form:"role"`                                               // 0=member, 1=admin, 2=owner
 	CreateTime int64 `gorm:"not null;default:0" json:"createTime" form:"createTime"`                                                // 加入时间
 }
 

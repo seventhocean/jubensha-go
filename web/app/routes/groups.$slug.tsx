@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router"
-import { Loader2, Megaphone, Pin, ScrollText, Settings, Users } from "lucide-react"
+import { Crown, Loader2, Megaphone, Pin, ScrollText, Settings, Shield, Users } from "lucide-react"
 import { toast } from "sonner"
 
 import { useCurrentUser } from "@/components/app/app-provider"
@@ -27,7 +27,9 @@ import {
   getGroupStickyTopics,
   getGroupTopics,
   joinGroup,
+  kickMember,
   leaveGroup,
+  setMemberRole,
 } from "@/lib/api/groups"
 import type { GroupItem, GroupMember, Topic } from "@/lib/api/types"
 import { prettyDate } from "@/lib/format"
@@ -43,14 +45,36 @@ export async function clientLoader() {
   return null
 }
 
+function RoleBadge({ role, t }: { role?: number; t: (key: string) => string }) {
+  if (role === 2) {
+    return (
+      <span title={t("user.groups.owner")}>
+        <Crown className="h-3 w-3 text-amber-500" />
+      </span>
+    )
+  }
+  if (role === 1) {
+    return (
+      <span title={t("user.groups.adminRole")}>
+        <Shield className="h-3 w-3 text-blue-500" />
+      </span>
+    )
+  }
+  return null
+}
+
 function GroupSidebar({
   group,
   members,
   t,
+  isOwner,
+  onManageMembers,
 }: {
   group: GroupItem
   members: GroupMember[]
   t: (key: string) => string
+  isOwner: boolean
+  onManageMembers: () => void
 }) {
   return (
     <>
@@ -97,13 +121,28 @@ function GroupSidebar({
           <CardContent>
             <div className="flex flex-wrap gap-2">
               {members.slice(0, 10).map((member) => (
-                <UserAvatar
-                  key={member.id}
-                  user={member.user}
-                  size={32}
-                />
+                <div key={member.id} className="relative">
+                  <UserAvatar
+                    user={member.user}
+                    size={32}
+                  />
+                  {(member.role === 2 || member.role === 1) ? (
+                    <span className="absolute -top-1 -right-1">
+                      <RoleBadge role={member.role} t={t} />
+                    </span>
+                  ) : null}
+                </div>
               ))}
             </div>
+            {isOwner ? (
+              <button
+                type="button"
+                onClick={onManageMembers}
+                className="mt-3 text-xs text-primary hover:underline"
+              >
+                {t("user.groups.manageMembers")}
+              </button>
+            ) : null}
           </CardContent>
         </Card>
       ) : null}
@@ -129,6 +168,13 @@ export default function GroupDetailRoute() {
   const [sort, setSort] = useState("latest")
   const [hotTopics, setHotTopics] = useState<Topic[]>([])
   const [hotLoaded, setHotLoaded] = useState(false)
+  const [showManageMembers, setShowManageMembers] = useState(false)
+  const [allMembers, setAllMembers] = useState<GroupMember[]>([])
+  const [membersCursor, setMembersCursor] = useState<string>("")
+  const [membersHasMore, setMembersHasMore] = useState(false)
+  const [membersLoading, setMembersLoading] = useState(false)
+
+  const isOwner = !!(currentUser && group && String(group.ownerId) === currentUser.id)
 
   useDocumentTitle(group?.name)
 
@@ -188,6 +234,68 @@ export default function GroupDetailRoute() {
       .finally(() => setHotLoaded(true))
   }, [activeTab, hotLoaded, group])
 
+  function handleManageMembers() {
+    if (!group) return
+    setShowManageMembers(true)
+    setMembersLoading(true)
+    getGroupMembers(group.id).then((data) => {
+      if (data) {
+        setAllMembers(data.results || [])
+        setMembersCursor(data.cursor || "")
+        setMembersHasMore(data.hasMore)
+      }
+    }).finally(() => setMembersLoading(false))
+  }
+
+  async function handleLoadMoreMembers() {
+    if (!group || !membersHasMore || membersLoading) return
+    setMembersLoading(true)
+    try {
+      const data = await getGroupMembers(group.id, membersCursor)
+      if (data) {
+        setAllMembers((prev) => [...prev, ...(data.results || [])])
+        setMembersCursor(data.cursor || "")
+        setMembersHasMore(data.hasMore)
+      }
+    } finally {
+      setMembersLoading(false)
+    }
+  }
+
+  async function handleSetRole(userId: string, role: number) {
+    if (!group) return
+    try {
+      await setMemberRole(group.id, userId, role)
+      toast.success(t("user.groups.roleUpdated"))
+      setAllMembers((prev) =>
+        prev.map((m) =>
+          m.user.id === userId ? { ...m, role } : m
+        )
+      )
+      setMembers((prev) =>
+        prev.map((m) =>
+          m.user.id === userId ? { ...m, role } : m
+        )
+      )
+    } catch {
+      toast.error(t("user.groups.operationFailed"))
+    }
+  }
+
+  async function handleKickMember(userId: string) {
+    if (!group) return
+    if (!confirm(t("user.groups.kickConfirm"))) return
+    try {
+      await kickMember(group.id, userId)
+      toast.success(t("user.groups.memberKicked"))
+      setAllMembers((prev) => prev.filter((m) => m.user.id !== userId))
+      setMembers((prev) => prev.filter((m) => m.user.id !== userId))
+      setGroup({ ...group, memberCount: group.memberCount - 1 })
+    } catch {
+      toast.error(t("user.groups.operationFailed"))
+    }
+  }
+
   async function handleJoin() {
     if (!currentUser) {
       navigate(buildSigninHref(`/groups/${slug}`))
@@ -234,7 +342,7 @@ export default function GroupDetailRoute() {
   }
 
   const sidebar = (
-    <GroupSidebar group={group} members={members} t={t} />
+    <GroupSidebar group={group} members={members} t={t} isOwner={isOwner} onManageMembers={handleManageMembers} />
   )
 
   return (
@@ -550,6 +658,91 @@ export default function GroupDetailRoute() {
           </div>
         </TabsContent>
       </Tabs>
+
+      {/* Member Management Panel */}
+      {showManageMembers && isOwner ? (
+        <div className="mt-6">
+          <Card size="sm">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <Users className="h-4 w-4" />
+                  {t("user.groups.manageMembers")}
+                </CardTitle>
+                <button
+                  type="button"
+                  onClick={() => setShowManageMembers(false)}
+                  className="text-xs text-muted-foreground hover:text-foreground"
+                >
+                  &times;
+                </button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {membersLoading && allMembers.length === 0 ? (
+                <div className="p-4 text-center text-muted-foreground">
+                  <Loader2 className="h-4 w-4 animate-spin mx-auto" />
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {allMembers.map((member) => {
+                    const isSelf = currentUser && member.user.id === currentUser.id
+                    return (
+                      <div
+                        key={member.id}
+                        className="flex items-center gap-3 py-2 border-b last:border-b-0"
+                      >
+                        <UserAvatar user={member.user} size={32} />
+                        <div className="flex-1 min-w-0">
+                          <span className="text-sm font-medium truncate block">
+                            {member.user.nickname || member.user.username}
+                          </span>
+                        </div>
+                        <RoleBadge role={member.role} t={t} />
+                        {!isSelf && member.role !== 2 ? (
+                          <div className="flex items-center gap-2">
+                            <select
+                              value={member.role ?? 0}
+                              onChange={(e) =>
+                                handleSetRole(member.user.id, Number(e.target.value))
+                              }
+                              className="rounded border bg-background px-2 py-1 text-xs"
+                            >
+                              <option value={0}>{t("user.groups.memberRole")}</option>
+                              <option value={1}>{t("user.groups.adminRole")}</option>
+                            </select>
+                            <button
+                              type="button"
+                              onClick={() => handleKickMember(member.user.id)}
+                              className="rounded px-2 py-1 text-xs text-red-600 hover:bg-red-50"
+                            >
+                              {t("user.groups.kickMember")}
+                            </button>
+                          </div>
+                        ) : null}
+                      </div>
+                    )
+                  })}
+                  {membersHasMore ? (
+                    <button
+                      type="button"
+                      onClick={handleLoadMoreMembers}
+                      disabled={membersLoading}
+                      className="w-full text-center text-xs text-primary hover:underline py-2"
+                    >
+                      {membersLoading ? (
+                        <Loader2 className="h-3 w-3 animate-spin mx-auto" />
+                      ) : (
+                        t("common.loadMore.loadMore")
+                      )}
+                    </button>
+                  ) : null}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      ) : null}
     </MainShell>
   )
 }

@@ -94,6 +94,7 @@ func (s *groupService) Join(userId, groupId int64) error {
 	member := &models.GroupMember{
 		GroupId:    groupId,
 		UserId:     userId,
+		Role:       0,
 		CreateTime: dates.NowTimestamp(),
 	}
 	if err := repositories.GroupMemberRepository.Create(sqls.DB(), member); err != nil {
@@ -237,6 +238,7 @@ func (s *groupService) CreateGroup(userId int64, name, slug, description, icon, 
 	member := &models.GroupMember{
 		GroupId:    group.Id,
 		UserId:     userId,
+		Role:       2,
 		CreateTime: dates.NowTimestamp(),
 	}
 	if err := repositories.GroupMemberRepository.Create(sqls.DB(), member); err != nil {
@@ -288,4 +290,54 @@ func (s *groupService) GetGroupStickyTopics(groupId int64) []models.Topic {
 	sqls.DB().Where("group_id = ? AND sticky = ? AND status = ?", groupId, true, constants.StatusOk).
 		Order("sticky_time desc").Limit(50).Find(&topics)
 	return topics
+}
+
+func (s *groupService) SetMemberRole(currentUserId, groupId, targetUserId int64, role int) error {
+	// Validate role value (0 or 1 only - cannot set to owner via this API)
+	if role != 0 && role != 1 {
+		return errors.New("invalid role value")
+	}
+	// Cannot change own role
+	if currentUserId == targetUserId {
+		return errors.New("cannot change own role")
+	}
+	// Current user must be owner (role 2)
+	currentMember := repositories.GroupMemberRepository.GetByGroupAndUser(sqls.DB(), groupId, currentUserId)
+	if currentMember == nil || currentMember.Role != 2 {
+		return errors.New(locales.Get("group.owner_only"))
+	}
+	// Target must be a member
+	targetMember := repositories.GroupMemberRepository.GetByGroupAndUser(sqls.DB(), groupId, targetUserId)
+	if targetMember == nil {
+		return errors.New(locales.Get("group.not_joined"))
+	}
+	// Update role
+	return repositories.GroupMemberRepository.Updates(sqls.DB(), targetMember.Id, map[string]interface{}{
+		"role": role,
+	})
+}
+
+func (s *groupService) KickMember(currentUserId, groupId, targetUserId int64) error {
+	if currentUserId == targetUserId {
+		return errors.New("cannot kick yourself")
+	}
+	currentMember := repositories.GroupMemberRepository.GetByGroupAndUser(sqls.DB(), groupId, currentUserId)
+	if currentMember == nil || currentMember.Role < 1 {
+		return errors.New("permission denied")
+	}
+	targetMember := repositories.GroupMemberRepository.GetByGroupAndUser(sqls.DB(), groupId, targetUserId)
+	if targetMember == nil {
+		return errors.New(locales.Get("group.not_joined"))
+	}
+	// Admin can only kick regular members
+	if currentMember.Role == 1 && targetMember.Role >= 1 {
+		return errors.New("admins can only kick regular members")
+	}
+	// Owner cannot be kicked
+	if targetMember.Role == 2 {
+		return errors.New("cannot kick the group owner")
+	}
+	repositories.GroupMemberRepository.Delete(sqls.DB(), targetMember.Id)
+	// Decrement member count atomically
+	return repositories.GroupRepository.UpdateColumn(sqls.DB(), groupId, "member_count", gorm.Expr("member_count - 1"))
 }

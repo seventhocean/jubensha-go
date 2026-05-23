@@ -153,6 +153,7 @@ group:
   owner_cannot_leave: "群主不能退出群组，请先转让群主"
   private_group: "这是私有群组，仅成员可以发帖"
   disabled: "群组功能未启用"
+  owner_only: "仅群主可执行此操作"
 
 check_in:
   already_checked_in: "你已签到"

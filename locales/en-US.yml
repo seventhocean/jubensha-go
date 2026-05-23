@@ -153,6 +153,7 @@ group:
   owner_cannot_leave: "Group owner cannot leave. Please transfer ownership first."
   private_group: "This is a private group. Only members can post."
   disabled: "Group feature is not enabled"
+  owner_only: "Only the group owner can do this"
 
 check_in:
   already_checked_in: "You have already checked in today"

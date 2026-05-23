@@ -79,3 +79,17 @@ export function updateGroup(data: {
     body: data,
   })
 }
+
+export function setMemberRole(groupId: number, userId: string, role: number) {
+  return apiFetch<void>("/api/group/set_member_role", {
+    method: "POST",
+    body: { groupId, userId: Number(userId), role },
+  })
+}
+
+export function kickMember(groupId: number, userId: string) {
+  return apiFetch<void>("/api/group/kick_member", {
+    method: "POST",
+    body: { groupId, userId: Number(userId) },
+  })
+}

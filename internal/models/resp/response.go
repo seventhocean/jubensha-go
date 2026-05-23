@@ -153,6 +153,7 @@ type GroupMemberResponse struct {
 	Id         int64     `json:"id"`
 	GroupId    int64     `json:"groupId"`
 	User       *UserInfo `json:"user"`
+	Role       int       `json:"role"`
 	CreateTime int64     `json:"createTime"`
 }
 

@@ -291,3 +291,60 @@ func GroupCreate(ctx *gin.Context) {
 	}
 	ginx.WriteJSON(ctx, render.BuildGroup(group, true))
 }
+
+type groupSetMemberRoleReq struct {
+	GroupId int64 `json:"groupId"`
+	UserId  int64 `json:"userId"`
+	Role    int   `json:"role"`
+}
+
+// GroupSetMemberRole sets member role (owner only)
+func GroupSetMemberRole(ctx *gin.Context) {
+	user := common.GetCurrentUser(ctx)
+	if user == nil {
+		ginx.WriteJSON(ctx, errs.NotLogin())
+		return
+	}
+	var body groupSetMemberRoleReq
+	if err := ginx.BindJSON(ctx, &body); err != nil {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage("invalid request"))
+		return
+	}
+	if body.GroupId <= 0 || body.UserId <= 0 {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage("groupId and userId are required"))
+		return
+	}
+	if err := services.GroupService.SetMemberRole(user.Id, body.GroupId, body.UserId, body.Role); err != nil {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage(err.Error()))
+		return
+	}
+	ginx.WriteJSON(ctx, nil)
+}
+
+type groupKickMemberReq struct {
+	GroupId int64 `json:"groupId"`
+	UserId  int64 `json:"userId"`
+}
+
+// GroupKickMember removes a member from the group
+func GroupKickMember(ctx *gin.Context) {
+	user := common.GetCurrentUser(ctx)
+	if user == nil {
+		ginx.WriteJSON(ctx, errs.NotLogin())
+		return
+	}
+	var body groupKickMemberReq
+	if err := ginx.BindJSON(ctx, &body); err != nil {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage("invalid request"))
+		return
+	}
+	if body.GroupId <= 0 || body.UserId <= 0 {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage("groupId and userId are required"))
+		return
+	}
+	if err := services.GroupService.KickMember(user.Id, body.GroupId, body.UserId); err != nil {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage(err.Error()))
+		return
+	}
+	ginx.WriteJSON(ctx, nil)
+}

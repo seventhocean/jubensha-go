@@ -138,6 +138,7 @@ export interface GroupMember {
   id: number
   groupId: number
   user: UserSummary
+  role?: number
   createTime: number
 }
 
