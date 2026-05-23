@@ -1,0 +1,35 @@
+{
+  "id": "FEAT-004",
+  "type": "feat",
+  "description": "Update user pages, auth pages, article pages, and remaining feature pages (groups, search, tasks, links, about, messages, favorites, scores, dashboard, install) to use the design system tokens for a complete visual refresh.",
+  "status": "in_progress",
+  "steps": [
+    "Update web/components/user/user-info.tsx, user-profile-card.tsx, user-center-shell.tsx, user-badges.tsx: Apply design system colors. Level badges use var(--color-primary-muted) bg with var(--color-primary) text. Progress bars use forum-progress-bar classes. Avatar borders use var(--color-surface-2). Online indicator uses var(--color-online-indicator).",
+    "Update web/components/user/user-follow-list.tsx, user-lists.tsx: Style follow items with proper spacing, var(--color-ink) for names, var(--color-ink-muted) for descriptions, var(--color-hairline) borders.",
+    "Update web/components/auth/signin-form.tsx and signup-form.tsx: Apply design system to form layout. Use bg-[var(--color-surface-1)] for card backgrounds. Inputs use the token focus ring. Buttons use var(--color-primary) with proper hover/active states. Third-party login section uses var(--color-hairline) divider.",
+    "Update web/components/auth/password-reset-forms.tsx: Same pattern as signin/signup forms.",
+    "Update web/app/routes/user.signin.tsx, user.signup.tsx, user.password.forgot.tsx, user.password.reset.tsx, user.email.verify.tsx: Ensure auth pages use var(--color-canvas) background, centered card layout with var(--color-surface-1) bg.",
+    "Update web/components/article/article-list.tsx: Article cards use var(--color-surface-1) bg, var(--shadow-sm) shadow, var(--rounded-lg) corners. Hover lifts with var(--shadow-md). Title uses var(--color-ink), meta uses var(--color-ink-muted).",
+    "Update web/app/routes/article.$id.tsx, articles.tsx, article.create.tsx, article.edit.$id.tsx: Ensure article reading uses max-width 720px with prose typography (already from bbs-content). Article list page uses proper background.",
+    "Update web/app/routes/groups._index.tsx, groups.$slug.tsx, groups.$slug.settings.tsx, groups.create.tsx: Group cards use forum-group-card pattern: var(--color-surface-1) bg, var(--color-hairline) border, var(--shadow-sm) shadow, hover with var(--shadow-md) and translateY(-2px). Replace hardcoded bg-gradient-to-br classes with design token gradients.",
+    "Update web/app/routes/search.tsx and web/components/search/: Search input uses design system input tokens. Results use proper card/list styling.",
+    "Update web/components/tasks/task-widgets.tsx and tasks-page.tsx: Replace hardcoded slate-* and indigo-* colors with design token variables. Check-in button uses var(--color-primary) bg with checkin-pop animation. Progress bars use forum-progress-bar. User card uses var(--color-surface-1) bg with proper border.",
+    "Update web/app/routes/tasks.tsx, links.tsx, about.tsx: Ensure pages use var(--color-canvas) bg, content cards use var(--color-surface-1).",
+    "Update web/app/routes/user.messages.tsx, user.favorites.tsx, user.scores.tsx: List items use var(--color-hairline) separators, proper text colors from design system.",
+    "Update web/app/routes/user.profile.tsx, user.profile_.account.tsx: Settings forms use design token input styling.",
+    "Update dashboard routes and components (web/app/routes/dashboard.*, web/components/dashboard/): Apply --dashboard-surface and --dashboard-panel variables. Sidebar uses var(--color-surface-1). Panel backgrounds use var(--dashboard-panel).",
+    "Update web/app/routes/install.tsx: Install wizard form uses design system input and button tokens."
+  ],
+  "acceptance_criteria": [
+    "Auth pages use design system surface/ink colors without hardcoded slate/indigo classes",
+    "User profile pages use design system level badges and progress bars",
+    "Group cards use design system shadow/border/hover patterns",
+    "Task widgets use design tokens instead of hardcoded slate/indigo colors",
+    "Dashboard panels use the dashboard token variables",
+    "All pages use var(--color-canvas) as page background",
+    "Build passes"
+  ],
+  "verification": ["Run 'pnpm build' in /projects/sandbox/jubensha-go/web/ and confirm no errors"],
+  "blocked_reason": null,
+  "findings": ""
+}

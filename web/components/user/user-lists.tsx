@@ -176,7 +176,7 @@ export function ScoreLogList({
               <span
                 className={
                   gain
-                    ? "inline-flex items-center rounded-full bg-emerald-400/20 px-2.5 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300"
+                    ? "inline-flex items-center rounded-full bg-[var(--color-semantic-success-muted)] px-2.5 py-0.5 text-xs font-medium text-[var(--color-semantic-success)]"
                     : "inline-flex items-center rounded-full bg-rose-400/20 px-2.5 py-0.5 text-xs font-medium text-rose-700 dark:bg-rose-500/15 dark:text-rose-300"
                 }
               >
@@ -187,7 +187,7 @@ export function ScoreLogList({
               <span
                 className={
                   gain
-                    ? "inline-flex items-center gap-1 font-semibold text-emerald-700 tabular-nums dark:text-emerald-300"
+                    ? "inline-flex items-center gap-1 font-semibold text-[var(--color-semantic-success)] tabular-nums"
                     : "inline-flex items-center gap-1 font-semibold text-rose-700 tabular-nums dark:text-rose-300"
                 }
               >

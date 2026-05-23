@@ -84,23 +84,22 @@ function TasksUserCardContent({
         href={buildSigninHref(
           pathname?.startsWith("/user/signin") ? "/" : fullPath
         )}
-        className="relative flex w-full flex-col gap-3 overflow-hidden rounded-2xl border border-slate-200/70 bg-white p-4 text-left shadow-sm dark:border-slate-800/80 dark:bg-slate-900"
+        className="relative flex w-full flex-col gap-3 overflow-hidden rounded-2xl border border-[var(--color-hairline)] bg-[var(--color-surface-1)] p-4 text-left shadow-[var(--shadow-sm)]"
       >
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-indigo-50/80 via-white/70 to-emerald-50/80 dark:from-indigo-900/30 dark:via-slate-900/60 dark:to-emerald-900/20" />
         <div className="relative flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-base font-semibold text-slate-400 dark:bg-slate-800">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-surface-3)] text-base font-semibold text-[var(--color-ink-muted)]">
             ?
           </div>
           <div className="min-w-0 flex-1">
-            <div className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+            <div className="text-sm font-semibold text-[var(--color-ink)]">
               {t("user.tasks.userCard.guestTitle")}
             </div>
-            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+            <p className="mt-1 text-xs text-[var(--color-ink-muted)]">
               {t("user.tasks.userCard.guestHint")}
             </p>
           </div>
         </div>
-        <span className="relative inline-flex items-center justify-center rounded-lg bg-indigo-600 px-3 py-2 text-[11px] font-semibold text-white shadow-sm transition hover:bg-indigo-500">
+        <span className="relative inline-flex items-center justify-center rounded-lg bg-[var(--color-primary)] px-3 py-2 text-[11px] font-semibold text-[var(--color-on-primary)] shadow-sm transition hover:opacity-90">
           {t("user.tasks.userCard.signInAction")}
           <ArrowRight className="h-3.5 w-3.5" />
         </span>
@@ -115,11 +114,11 @@ function TasksUserCardContent({
         <div className="min-w-0 flex-1">
           <Link
             href={`/user/${effectiveUser.id}`}
-            className="block truncate text-base font-semibold text-slate-900 hover:text-indigo-600 dark:text-slate-50"
+            className="block truncate text-base font-semibold text-[var(--color-ink)] hover:text-[var(--color-primary)]"
           >
             {displayName(effectiveUser)}
           </Link>
-          <p className="mt-1 line-clamp-2 text-xs text-slate-500 dark:text-slate-400">
+          <p className="mt-1 line-clamp-2 text-xs text-[var(--color-ink-muted)]">
             {effectiveUser.description ||
               t("user.tasks.userCard.noDescription")}
           </p>
@@ -128,7 +127,7 @@ function TasksUserCardContent({
       {effectiveUser.levelTitle || ownedBadges.length > 0 ? (
         <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
           {effectiveUser.levelTitle ? (
-            <span className="inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-700 dark:bg-amber-900/40 dark:text-amber-100">
+            <span className="inline-flex items-center rounded-full bg-[var(--color-highlight-muted)] px-2 py-0.5 text-[11px] font-semibold text-[var(--color-highlight)]">
               {effectiveUser.levelTitle}
             </span>
           ) : null}
@@ -146,11 +145,11 @@ function TasksUserCardContent({
                       className="h-5 w-5 object-contain"
                     />
                   ) : (
-                    <Medal className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
+                    <Medal className="h-3.5 w-3.5 text-[var(--color-highlight)]" />
                   )}
                 </span>
               ))}
-              <ChevronRight className="h-4 w-4 shrink-0 text-slate-400 dark:text-slate-500" />
+              <ChevronRight className="h-4 w-4 shrink-0 text-[var(--color-ink-muted)]" />
             </Link>
           ) : null}
         </div>
@@ -158,17 +157,17 @@ function TasksUserCardContent({
 
       {effectiveUser.expProgress ? (
         <div className="relative mt-4">
-          <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+          <div className="flex items-center justify-between text-[11px] text-[var(--color-ink-muted)]">
             <span>{t("user.tasks.userCard.expProgress")}</span>
-            <span className="font-semibold text-slate-700 dark:text-slate-200">
+            <span className="font-semibold text-[var(--color-ink)]">
               {effectiveUser.expProgress.isMaxLevel
                 ? t("user.tasks.userCard.expProgressMaxLevel")
                 : `${effectiveUser.expProgress.expInCurrentLevel || 0} / ${effectiveUser.expProgress.expNeedForNextLevel || 0}`}
             </span>
           </div>
-          <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-slate-200/70 dark:bg-slate-800">
+          <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-[var(--color-exp-bar-track)]">
             <div
-              className="h-full rounded-full bg-gradient-to-r from-indigo-500 via-indigo-500/80 to-emerald-400"
+              className="h-full rounded-full bg-[var(--color-exp-bar-fill)]"
               style={{
                 width: `${effectiveUser.expProgress.expProgressPercent || 0}%`,
               }}
@@ -201,11 +200,11 @@ function TasksUserCardContent({
 
 function TaskUserStat({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-xl bg-white/70 px-2 py-2 text-xs shadow-sm ring-1 ring-slate-100/80 dark:bg-slate-900/70 dark:ring-slate-800">
-      <div className="text-[11px] text-slate-500 dark:text-slate-400">
+    <div className="rounded-xl bg-[var(--color-surface-1)] px-2 py-2 text-xs shadow-[var(--shadow-sm)] ring-1 ring-[var(--color-hairline)]">
+      <div className="text-[11px] text-[var(--color-ink-muted)]">
         {label}
       </div>
-      <div className="text-sm font-semibold text-slate-900 dark:text-slate-50">
+      <div className="text-sm font-semibold text-[var(--color-ink)]">
         {value}
       </div>
     </div>
@@ -296,7 +295,7 @@ export function CheckInCard({
           <div className="min-h-9">
             {!isCheckedIn ? (
               <button
-                className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-indigo-500 focus-visible:ring-2 focus-visible:ring-indigo-300/60 focus-visible:outline-none disabled:opacity-60"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-[var(--color-primary)] px-4 py-2 text-xs font-semibold text-[var(--color-on-primary)] shadow-sm transition hover:opacity-90 focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/60 focus-visible:outline-none disabled:opacity-60"
                 type="button"
                 disabled={pending}
                 onClick={() => void doCheckIn()}
@@ -305,11 +304,11 @@ export function CheckInCard({
                 {t("component.checkIn.checkInNow")}
               </button>
             ) : (
-              <div className="flex w-full items-center gap-3 rounded-lg border border-emerald-200/80 bg-gradient-to-r from-emerald-50/90 to-teal-50/80 px-4 py-3 text-sm dark:border-emerald-800/50 dark:from-emerald-950/40 dark:to-teal-950/30">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/50">
-                  <CircleCheck className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+              <div className="flex w-full items-center gap-3 rounded-lg border border-[var(--color-semantic-success)]/30 bg-[var(--color-semantic-success-muted)] px-4 py-3 text-sm">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--color-semantic-success-muted)]">
+                  <CircleCheck className="h-5 w-5 text-[var(--color-semantic-success)]" />
                 </div>
-                <p className="min-w-0 text-slate-600 dark:text-slate-300">
+                <p className="min-w-0 text-[var(--color-ink-secondary)]">
                   {t("component.checkIn.consecutiveDays", {
                     days: checkIn?.consecutiveDays || 0,
                   })}
@@ -321,7 +320,7 @@ export function CheckInCard({
       </div>
       {rank.length ? (
         <div className="relative mt-4">
-          <div className="text-sm font-semibold text-slate-900 dark:text-slate-50">
+          <div className="text-sm font-semibold text-[var(--color-ink)]">
             {t("component.checkIn.todayRanking")}
           </div>
           <ul className="mt-3 space-y-2">
@@ -329,18 +328,18 @@ export function CheckInCard({
               item.user ? (
                 <li
                   key={item.id || `${item.user.id}-${item.updateTime || ""}`}
-                  className="flex items-center gap-3 rounded-lg border border-slate-200/70 bg-white/70 px-3 py-2 text-sm transition hover:bg-white dark:border-slate-800/80 dark:bg-slate-900/70 dark:hover:bg-slate-900"
+                  className="flex items-center gap-3 rounded-lg border border-[var(--color-hairline)] bg-[var(--color-surface-1)] px-3 py-2 text-sm transition hover:bg-[var(--color-surface-2)]"
                 >
                   <UserAvatar user={item.user} size={30} />
                   <div className="min-w-0 flex-1">
                     <Link
-                      className="truncate font-semibold text-slate-900 hover:text-indigo-600 dark:text-slate-50"
+                      className="truncate font-semibold text-[var(--color-ink)] hover:text-[var(--color-primary)]"
                       href={`/user/${item.user.id}`}
                     >
                       {displayName(item.user)}
                     </Link>
                     {item.updateTime ? (
-                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                      <p className="text-xs text-[var(--color-ink-muted)]">
                         @{prettyDate(item.updateTime, t)}
                       </p>
                     ) : null}

@@ -1,0 +1,7 @@
+{
+  "task_id": "task-design-system-rollout",
+  "task_description": "Apply the new design system tokens across all remaining frontend pages and components. Update CSS files to use token variables, and update TSX components to reference design system classes and colors instead of hardcoded values.",
+  "status": "in_progress",
+  "feature_order": ["FEAT-001", "FEAT-002", "FEAT-003", "FEAT-004"],
+  "blocked_reason": null
+}

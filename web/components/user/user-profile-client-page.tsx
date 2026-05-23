@@ -261,10 +261,10 @@ export function UserBadgesClientPage() {
     >
       <WidgetCard>
         <div className="mb-4">
-          <p className="text-lg font-semibold text-slate-900 dark:text-slate-50">
+          <p className="text-lg font-semibold text-[var(--color-ink)]">
             {t("pages.user.badgesTitle")}
           </p>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
+          <p className="text-sm text-[var(--color-ink-muted)]">
             {t("pages.user.badgesSubtitle")}
           </p>
         </div>
@@ -274,8 +274,8 @@ export function UserBadgesClientPage() {
               key={badge.id}
               className={
                 badge.owned
-                  ? "flex flex-col items-center gap-2 rounded-xl border border-amber-200/80 bg-amber-50/50 p-4 transition dark:border-amber-800/60 dark:bg-amber-900/20"
-                  : "flex flex-col items-center gap-2 rounded-xl border border-slate-200 bg-slate-50/50 p-4 opacity-70 transition dark:border-slate-700 dark:bg-slate-900/40"
+                  ? "flex flex-col items-center gap-2 rounded-xl border border-[var(--color-highlight)]/30 bg-[var(--color-highlight-muted)] p-4 transition"
+                  : "flex flex-col items-center gap-2 rounded-xl border border-[var(--color-hairline)] bg-[var(--color-surface-2)] p-4 opacity-70 transition"
               }
             >
               <div className="relative">
@@ -293,15 +293,15 @@ export function UserBadgesClientPage() {
                   <div
                     className={
                       badge.owned
-                        ? "flex h-14 w-14 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700"
-                        : "flex h-14 w-14 items-center justify-center rounded-full bg-slate-200 opacity-40 dark:bg-slate-700"
+                        ? "flex h-14 w-14 items-center justify-center rounded-full bg-[var(--color-surface-3)]"
+                        : "flex h-14 w-14 items-center justify-center rounded-full bg-[var(--color-surface-3)] opacity-40"
                     }
                   >
-                    <Medal className="h-8 w-8 text-slate-600 dark:text-slate-300" />
+                    <Medal className="h-8 w-8 text-[var(--color-ink-secondary)]" />
                   </div>
                 )}
                 {badge.worn ? (
-                  <span className="absolute -top-1 -right-4 rounded-full bg-amber-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
+                  <span className="absolute -top-1 -right-4 rounded-full bg-[var(--color-highlight)] px-1.5 py-0.5 text-[10px] font-bold text-white">
                     {t("component.userBadges.worn")}
                   </span>
                 ) : null}
@@ -309,19 +309,19 @@ export function UserBadgesClientPage() {
               <span
                 className={
                   badge.owned
-                    ? "line-clamp-2 text-center text-sm font-medium text-slate-800 dark:text-slate-100"
-                    : "line-clamp-2 text-center text-sm font-medium text-slate-500 dark:text-slate-400"
+                    ? "line-clamp-2 text-center text-sm font-medium text-[var(--color-ink)]"
+                    : "line-clamp-2 text-center text-sm font-medium text-[var(--color-ink-muted)]"
                 }
               >
                 {badge.title}
               </span>
               {badge.owned && badge.obtainTime ? (
-                <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                <span className="text-[11px] text-[var(--color-ink-muted)]">
                   {t("component.userBadges.obtainedAt")}{" "}
                   {formatDate(badge.obtainTime, "yyyy-MM-dd")}
                 </span>
               ) : !badge.owned ? (
-                <span className="text-[11px] text-slate-400 dark:text-slate-500">
+                <span className="text-[11px] text-[var(--color-ink-muted)]">
                   {t("component.userBadges.notObtained")}
                 </span>
               ) : null}

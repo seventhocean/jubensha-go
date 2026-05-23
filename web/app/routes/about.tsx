@@ -44,7 +44,7 @@ export default function AboutRoute() {
   return (
     <section className="main">
       <div className="container">
-        <div className="rounded-md bg-card px-8 py-3">
+        <div className="rounded-[var(--rounded-lg)] bg-[var(--color-surface-1)] px-8 py-4 shadow-[var(--shadow-sm)] dark:shadow-none dark:border dark:border-[var(--color-hairline)]">
           {html ? (
             <div
               className="bbs-content"

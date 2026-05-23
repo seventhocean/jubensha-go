@@ -34,7 +34,7 @@ function GroupCard({
 }) {
   const isJoining = joiningId === group.id
   return (
-    <div className="relative overflow-hidden rounded-lg border bg-card hover:shadow-md hover:-translate-y-0.5 transition-transform">
+    <div className="relative overflow-hidden rounded-[var(--rounded-lg)] border border-[var(--color-hairline)] bg-[var(--color-surface-1)] shadow-[var(--shadow-sm)] transition-all duration-[var(--motion-duration-normal)] hover:-translate-y-0.5 hover:shadow-[var(--shadow-md)]">
       {/* Banner header */}
       {group.banner ? (
         <Link to={`/groups/${group.slug}`} className="block">
@@ -48,7 +48,7 @@ function GroupCard({
         </Link>
       ) : (
         <Link to={`/groups/${group.slug}`} className="block">
-          <div className="h-24 w-full bg-gradient-to-br from-primary/10 to-primary/5" />
+          <div className="h-24 w-full bg-[var(--color-primary-subtle)]" />
         </Link>
       )}
 
@@ -59,10 +59,10 @@ function GroupCard({
               <img
                 src={group.icon}
                 alt={group.name}
-                className="w-10 h-10 rounded-full object-cover border border-border"
+                className="w-10 h-10 rounded-full object-cover border border-[var(--color-hairline)]"
               />
             ) : (
-              <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
+              <div className="w-10 h-10 rounded-full bg-[var(--color-surface-3)] flex items-center justify-center text-muted-foreground">
                 {group.name.charAt(0)}
               </div>
             )}
@@ -92,7 +92,7 @@ function GroupCard({
             disabled={isJoining}
             className={`px-3 py-1 rounded-full text-xs font-medium ${
               group.joined
-                ? "bg-muted text-muted-foreground hover:bg-red-100 hover:text-red-600"
+                ? "bg-[var(--color-surface-3)] text-muted-foreground hover:bg-red-100 hover:text-red-600"
                 : "bg-primary text-primary-foreground hover:opacity-90"
             }`}
           >
@@ -118,7 +118,7 @@ function MyGroupCard({
   t: (key: string) => string
 }) {
   return (
-    <div className="relative overflow-hidden rounded-lg border bg-card hover:shadow-md transition-shadow">
+    <div className="relative overflow-hidden rounded-[var(--rounded-lg)] border border-[var(--color-hairline)] bg-[var(--color-surface-1)] shadow-[var(--shadow-sm)] transition-all duration-[var(--motion-duration-normal)] hover:shadow-[var(--shadow-md)]">
       {/* Banner header */}
       {group.banner ? (
         <Link to={`/groups/${group.slug}`} className="block">
@@ -132,7 +132,7 @@ function MyGroupCard({
         </Link>
       ) : (
         <Link to={`/groups/${group.slug}`} className="block">
-          <div className="h-24 w-full bg-gradient-to-br from-primary/10 to-primary/5" />
+          <div className="h-24 w-full bg-[var(--color-primary-subtle)]" />
         </Link>
       )}
 
@@ -143,10 +143,10 @@ function MyGroupCard({
               <img
                 src={group.icon}
                 alt={group.name}
-                className="w-10 h-10 rounded-full object-cover border border-border"
+                className="w-10 h-10 rounded-full object-cover border border-[var(--color-hairline)]"
               />
             ) : (
-              <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
+              <div className="w-10 h-10 rounded-full bg-[var(--color-surface-3)] flex items-center justify-center text-muted-foreground">
                 {group.name.charAt(0)}
               </div>
             )}
@@ -172,7 +172,7 @@ function MyGroupCard({
           </span>
           <Link
             to={`/groups/${group.slug}`}
-            className="px-3 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground hover:bg-primary/10 hover:text-primary"
+            className="px-3 py-1 rounded-full text-xs font-medium bg-[var(--color-surface-3)] text-muted-foreground hover:bg-[var(--color-primary-muted)] hover:text-[var(--color-primary)]"
           >
             {t("user.groups.enter")}
           </Link>

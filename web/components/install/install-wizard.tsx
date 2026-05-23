@@ -292,7 +292,7 @@ export function InstallWizard({
   }
 
   return (
-    <div className="page-glow flex min-h-screen items-start justify-center bg-slate-50 p-4 pt-10">
+    <div className="page-glow flex min-h-screen items-start justify-center bg-[var(--color-canvas)] p-4 pt-10">
       {pageBlocking ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
           <div className="flex items-center space-x-3 text-sm font-medium text-white">
@@ -307,7 +307,7 @@ export function InstallWizard({
       ) : null}
       <div className="w-full max-w-5xl">
         <div className="mb-5 text-center">
-          <h1 className="mb-2 text-3xl font-bold text-gray-900">
+          <h1 className="mb-2 text-3xl font-bold text-[var(--color-ink)]">
             {t("pages.install.title")}
           </h1>
           <div className="mx-auto h-1.5 w-32 rounded-full bg-primary" />
@@ -315,7 +315,7 @@ export function InstallWizard({
 
         <InstallSteps steps={steps} currentStepIndex={currentStepIndex} />
 
-        <section className="card-animate rounded-2xl border bg-white/80 p-4 shadow-lg backdrop-blur-md md:p-5">
+        <section className="card-animate rounded-2xl border border-[var(--color-hairline)] bg-[var(--color-surface-1)] p-4 shadow-lg backdrop-blur-md md:p-5">
           {step === "welcome" ? (
             <div className="space-y-3">
               <SectionTitle
@@ -338,11 +338,11 @@ export function InstallWizard({
                   </RequirementItem>
                 </ul>
               </div>
-              <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
-                <h3 className="mb-2.5 font-medium text-gray-900">
+              <div className="rounded-lg border border-[var(--color-hairline)] bg-[var(--color-surface-2)] p-4">
+                <h3 className="mb-2.5 font-medium text-[var(--color-ink)]">
                   {t("pages.install.language.title")}
                 </h3>
-                <p className="mb-3 text-gray-600">
+                <p className="mb-3 text-[var(--color-ink-secondary)]">
                   {t("pages.install.language.description")}
                 </p>
                 <div className="space-y-2">
@@ -355,10 +355,10 @@ export function InstallWizard({
                     <button
                       key={value}
                       type="button"
-                      className={`flex w-full cursor-pointer items-center space-x-4 rounded-lg border p-3 text-left transition-colors hover:bg-gray-100/50 ${
+                      className={`flex w-full cursor-pointer items-center space-x-4 rounded-lg border p-3 text-left transition-colors hover:bg-[var(--color-surface-2)] ${
                         language === value
                           ? "border-primary/50 bg-primary/10"
-                          : "border-border bg-white"
+                          : "border-[var(--color-hairline)] bg-[var(--color-surface-1)]"
                       }`}
                       onClick={() => setLanguage(value)}
                     >
@@ -494,7 +494,7 @@ export function InstallWizard({
                         </AlertDescription>
                       </div>
                     </Alert>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-[var(--color-ink-secondary)]">
                       {t("pages.install.database.sqliteAutoPath")}
                     </p>
                   </div>
@@ -673,11 +673,11 @@ export function InstallWizard({
                       className="h-full w-full object-cover"
                     />
                   </div>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-[var(--color-ink-secondary)]">
                     {t("pages.install.admin.avatarDescription")}
                   </p>
                 </div>
-                <div className="grid max-h-56 grid-cols-8 gap-2 overflow-y-auto rounded-xl border bg-gray-50 p-3 sm:grid-cols-10">
+                <div className="grid max-h-56 grid-cols-8 gap-2 overflow-y-auto rounded-xl border bg-[var(--color-surface-2)] p-3 sm:grid-cols-10">
                   {avatars.map((item) => (
                     <button
                       key={item}
@@ -685,7 +685,7 @@ export function InstallWizard({
                       className={`relative flex aspect-square h-12 w-12 items-center justify-center overflow-hidden rounded-full ring-2 transition hover:ring-primary/60 focus:outline-none ${
                         avatar === item
                           ? "bg-primary/15 shadow-md ring-primary"
-                          : "bg-white ring-gray-200"
+                          : "bg-[var(--color-surface-1)] ring-[var(--color-hairline)]"
                       }`}
                       onClick={() => setAvatar(item)}
                     >                      <img
@@ -735,7 +735,7 @@ export function InstallWizard({
                   />
                 </div>
                 <div className="text-center">
-                  <span className="text-sm font-medium text-gray-700">
+                  <span className="text-sm font-medium text-[var(--color-ink-secondary)]">
                     {installProgress}%
                   </span>
                 </div>
@@ -764,17 +764,17 @@ export function InstallWizard({
 
           {step === "complete" ? (
             <div className="space-y-3 text-center">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-                <CheckCircle className="h-8 w-8 text-green-600" />
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-semantic-success-muted)]">
+                <CheckCircle className="h-8 w-8 text-[var(--color-semantic-success)]" />
               </div>
               <div>
-                <h2 className="mb-4 text-2xl font-semibold text-gray-900">
+                <h2 className="mb-4 text-2xl font-semibold text-[var(--color-ink)]">
                   {t("pages.install.step.complete")}
                 </h2>
-                <p className="mb-6 text-gray-600">
+                <p className="mb-6 text-[var(--color-ink-secondary)]">
                   {t("pages.install.complete.congratulations")}
                 </p>
-                <p className="text-gray-600">
+                <p className="text-[var(--color-ink-secondary)]">
                   {t("pages.install.complete.description")}
                 </p>
               </div>
@@ -814,7 +814,7 @@ function InstallSteps({
           <div key={step.key} className="flex items-start">
             <div className="flex w-20 flex-col items-center text-center">
               <div
-                className={`flex h-10 w-10 items-center justify-center rounded-full text-base font-semibold transition-all duration-300 ease-in-out ${index === currentStepIndex ? "pulse-glow scale-110 bg-primary text-primary-foreground shadow-lg ring-4 ring-primary/20" : index < currentStepIndex ? "bg-green-500 text-white" : "bg-gray-200 text-gray-600"}`}
+                className={`flex h-10 w-10 items-center justify-center rounded-full text-base font-semibold transition-all duration-300 ease-in-out ${index === currentStepIndex ? "pulse-glow scale-110 bg-primary text-primary-foreground shadow-lg ring-4 ring-primary/20" : index < currentStepIndex ? "bg-[var(--color-semantic-success)] text-white" : "bg-[var(--color-surface-3)] text-[var(--color-ink-secondary)]"}`}
               >
                 {index < currentStepIndex ? (
                   <Check className="h-6 w-6" />
@@ -822,13 +822,13 @@ function InstallSteps({
                   index + 1
                 )}
               </div>
-              <div className="mt-2 text-xs leading-tight font-medium text-gray-600">
+              <div className="mt-2 text-xs leading-tight font-medium text-[var(--color-ink-secondary)]">
                 {step.title}
               </div>
             </div>
             {index < steps.length - 1 ? (
               <div
-                className={`mx-2 mt-4 h-1 w-12 rounded-full ${index < currentStepIndex ? "bg-green-500" : "bg-gray-200"}`}
+                className={`mx-2 mt-4 h-1 w-12 rounded-full ${index < currentStepIndex ? "bg-[var(--color-semantic-success)]" : "bg-[var(--color-surface-3)]"}`}
               />
             ) : null}
           </div>
@@ -847,8 +847,8 @@ function SectionTitle({
 }) {
   return (
     <div className="text-center">
-      <h2 className="mb-3 text-2xl font-semibold text-gray-900">{title}</h2>
-      {description ? <p className="mb-4 text-gray-600">{description}</p> : null}
+      <h2 className="mb-3 text-2xl font-semibold text-[var(--color-ink)]">{title}</h2>
+      {description ? <p className="mb-4 text-[var(--color-ink-secondary)]">{description}</p> : null}
     </div>
   )
 }
@@ -921,7 +921,7 @@ function FormField({
         onBlur={onBlur}
         onChange={(event) => onChange(event.currentTarget.value)}
       />
-      {help ? <p className="text-xs text-gray-500">{help}</p> : null}
+      {help ? <p className="text-xs text-[var(--color-ink-muted)]">{help}</p> : null}
     </div>
   )
 }
