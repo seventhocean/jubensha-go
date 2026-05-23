@@ -2,7 +2,7 @@
   "id": "FEAT-001",
   "type": "feat",
   "description": "Enable link prefetch support and add prefetch='intent' to key navigation links for instant perceived navigation.",
-  "status": "in_progress",
+  "status": "completed",
   "steps": [
     "Step 1: Update web/lib/router/link.tsx to pass the `prefetch` prop through to React Router's Link component. Currently the component destructures prefetch as `_prefetch` and discards it. Change: (a) import Link from 'react-router' (not react-router-dom, since the framework-mode Link from react-router has prefetch support built in), (b) update the LinkProps type to include `prefetch?: 'intent' | 'render' | 'viewport' | 'none'`, (c) pass `prefetch` through to <RouterLink> for internal links. For external links (http/mailto), ignore the prefetch prop.",
     "Step 2: Update web/components/common/link.tsx to change the default from `prefetch = false` to `prefetch = 'intent'` so that all internal navigation links get prefetch-on-hover by default. This single change covers: topic list item links, sidebar navigation links, header nav links, article list links, and any other Link usage across the app. The type of the prefetch prop should be updated to match the React Router PrefetchBehavior type (string union).",
@@ -20,5 +20,5 @@
     "Run `pnpm build` in /projects/sandbox/jubensha-go/web/ and confirm exit code 0"
   ],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "Build passes cleanly. Imported Link from 'react-router' (not react-router-dom) for framework-mode prefetch support. Boolean backward compat maintained: true maps to 'intent', false maps to undefined (default behavior). All group card links and create link got prefetch='intent'."
 }
