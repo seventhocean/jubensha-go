@@ -253,7 +253,7 @@ function TaskCard({ task }: { task: TaskInfo }) {
             kind === "done" &&
               "border-[var(--color-semantic-success)]/30 bg-[var(--color-semantic-success-muted)] text-[var(--color-semantic-success)]",
             kind === "progress" &&
-              "border-blue-300/70 bg-blue-50/90 text-blue-800 dark:border-blue-700/80 dark:bg-blue-900/40 dark:text-blue-100",
+              "border-[var(--color-semantic-info)] bg-[var(--color-semantic-info-muted)] text-[var(--color-semantic-info)]",
             kind === "idle" &&
               "border-[var(--color-hairline)] bg-[var(--color-surface-3)] text-[var(--color-ink-secondary)]"
           )}

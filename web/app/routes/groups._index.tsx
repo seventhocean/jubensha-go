@@ -92,7 +92,7 @@ function GroupCard({
             disabled={isJoining}
             className={`px-3 py-1 rounded-full text-xs font-medium ${
               group.joined
-                ? "bg-[var(--color-surface-3)] text-muted-foreground hover:bg-red-100 hover:text-red-600"
+                ? "bg-[var(--color-surface-3)] text-muted-foreground hover:bg-[var(--color-semantic-danger-muted)] hover:text-[var(--color-semantic-danger)]"
                 : "bg-primary text-primary-foreground hover:opacity-90"
             }`}
           >

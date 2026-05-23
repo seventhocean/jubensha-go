@@ -177,7 +177,7 @@ export function ScoreLogList({
                 className={
                   gain
                     ? "inline-flex items-center rounded-full bg-[var(--color-semantic-success-muted)] px-2.5 py-0.5 text-xs font-medium text-[var(--color-semantic-success)]"
-                    : "inline-flex items-center rounded-full bg-rose-400/20 px-2.5 py-0.5 text-xs font-medium text-rose-700 dark:bg-rose-500/15 dark:text-rose-300"
+                    : "inline-flex items-center rounded-full bg-[var(--color-semantic-danger-muted)] px-2.5 py-0.5 text-xs font-medium text-[var(--color-semantic-danger)]"
                 }
               >
                 {gain
@@ -188,7 +188,7 @@ export function ScoreLogList({
                 className={
                   gain
                     ? "inline-flex items-center gap-1 font-semibold text-[var(--color-semantic-success)] tabular-nums"
-                    : "inline-flex items-center gap-1 font-semibold text-rose-700 tabular-nums dark:text-rose-300"
+                    : "inline-flex items-center gap-1 font-semibold text-[var(--color-semantic-danger)] tabular-nums"
                 }
               >
                 <Trophy className="h-3.5 w-3.5 shrink-0 opacity-70" />
