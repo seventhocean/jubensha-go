@@ -77,7 +77,6 @@ func (s *groupService) GetPublicGroups() []models.Group {
 	return repositories.GroupRepository.Find(sqls.DB(), sqls.NewCnd().
 		Eq("status", constants.StatusOk).
 		Eq("visibility", 0).
-		Eq("is_default", 0).
 		Asc("sort_no").Desc("id"))
 }
 
@@ -204,6 +203,6 @@ func (s *groupService) GetNextSortNo() int {
 func (s *groupService) GetGroupStickyTopics(groupId int64) []models.Topic {
 	var topics []models.Topic
 	sqls.DB().Where("group_id = ? AND sticky = ? AND status = ?", groupId, true, constants.StatusOk).
-		Order("sticky_time desc").Find(&topics)
+		Order("sticky_time desc").Limit(50).Find(&topics)
 	return topics
 }

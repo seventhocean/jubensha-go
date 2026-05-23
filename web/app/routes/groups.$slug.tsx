@@ -337,30 +337,6 @@ export default function GroupDetailRoute() {
 
         <TabsContent value="about">
           <div className="space-y-4">
-            {/* Announcement */}
-            <Card size="sm">
-              <CardHeader>
-                <CardTitle>{t("user.groups.announcement")}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground whitespace-pre-line">
-                  {group.notice || t("user.groups.noAnnouncement")}
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Rules */}
-            <Card size="sm">
-              <CardHeader>
-                <CardTitle>{t("user.groups.rules")}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground whitespace-pre-line">
-                  {group.rules || t("user.groups.noRules")}
-                </p>
-              </CardContent>
-            </Card>
-
             {/* Group Info */}
             <Card size="sm">
               <CardHeader>
