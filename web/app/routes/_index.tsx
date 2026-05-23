@@ -41,7 +41,7 @@ export function TopicListRoute({ title }: { title?: string }) {
       <div className="topics-wrapper">
         <TopicsNavContent initialNodes={nodes} />
         <div className="topics-main">
-          <div className="rounded-lg bg-background">
+          <div className="rounded-[var(--rounded-lg)] bg-[var(--color-surface-1)] shadow-[var(--shadow-sm)] dark:shadow-none dark:border dark:border-[var(--color-hairline)]">
             <LoadMore<Topic>
               initialItems={topics.results}
               initialCursor={topics.cursor || ""}

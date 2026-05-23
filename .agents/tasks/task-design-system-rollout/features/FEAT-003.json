@@ -1,0 +1,24 @@
+{
+  "id": "FEAT-003",
+  "type": "feat",
+  "description": "Update topic components and pages to fully use the design system. This includes topic-list-item, topic-detail, topic-comments, topic-create/edit forms, and the topic list pages (_index, topics.tsx, topics_.node.$id.tsx, topics_.tag.$id.tsx).",
+  "status": "in_progress",
+  "steps": [
+    "Update web/components/topic/topic-list-item.tsx: Replace Tailwind hardcoded classes with design system token references. Use forum-topic-item classes from topic.css for the list item wrapper. Apply var(--color-surface-1) on hover. Use var(--color-ink) for title, var(--color-ink-muted) for meta. Badge colors should use the forum-qa-badge and forum-node-chip classes. Ensure 44px min touch target on the item. Add transition using motion tokens.",
+    "Update web/components/topic/topic-content.tsx: Ensure it uses the bbs-content class which now references design system tokens (from FEAT-001 content.css update).",
+    "Update web/components/topic/topic-comments.tsx and comment-list.tsx: Apply forum-comment-thread classes for proper nesting with left-border. Use var(--color-hairline) for thread borders. Apply var(--color-ink) for comment text, prose-sm line height (1.70). Nested comments should use forum-comment-thread--nested class.",
+    "Update web/components/topic/topic-detail-client-page.tsx: Use proper surface background for the detail container. Apply prose typography for content area. Ensure vote buttons use forum-vote-btn classes. Apply proper spacing between sections.",
+    "Update web/components/topic/topic-create-form.tsx and topic-edit-form.tsx: Ensure form inputs use the design token styling (var(--color-surface-1) background, var(--color-hairline) border, focus ring with var(--color-primary-muted)). Topic tag chips should use forum-node-chip classes.",
+    "Update web/app/routes/_index.tsx, topics.tsx, topics_.node.$id.tsx, topics_.tag.$id.tsx: Ensure the topic list wrapper uses var(--color-surface-1) for the list background with proper rounded corners and shadow/border per mode. Apply var(--color-canvas) for the page background."
+  ],
+  "acceptance_criteria": [
+    "Topic list items use design token colors and have smooth hover transitions",
+    "QA badges use the forum-qa-badge-- classes from topic.css",
+    "Comment threading uses left-border nesting pattern from the design system",
+    "Topic forms use design system input styling",
+    "Build passes"
+  ],
+  "verification": ["Run 'pnpm build' in /projects/sandbox/jubensha-go/web/ and confirm no errors"],
+  "blocked_reason": null,
+  "findings": ""
+}

@@ -181,7 +181,7 @@ export function TopicDetailClientPage({
             {t("pages.topic.detail.pending")}
           </div>
         ) : null}
-        <article className="mb-5 rounded-lg bg-background animate-in fade-in duration-300">
+        <article className="mb-5 rounded-[var(--rounded-lg)] bg-[var(--color-surface-1)] shadow-[var(--shadow-sm)] dark:shadow-none dark:border dark:border-[var(--color-hairline)] animate-in fade-in duration-300">
           <TopicActionProvider
             topicId={topic.id}
             liked={topic.liked}

@@ -33,7 +33,7 @@ export function TopicListItem({
   const imageSizeClass = getTopicImageSizeClass(topic.imageList?.length || 0)
 
   return (
-    <li className="px-4 py-4 border-l-2 border-transparent hover:border-primary hover:bg-muted/30 transition-all duration-200">
+    <li className={`forum-topic-item${showSticky && topic.sticky ? " forum-topic-item--sticky" : ""}`}>
       <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-2">
           <UserAvatar user={topic.user} size={24} className="shrink-0" />
@@ -52,7 +52,7 @@ export function TopicListItem({
           </div>
         </div>
         {showSticky && topic.sticky ? (
-          <span className="inline-flex items-center rounded-sm bg-orange-100 px-1.5 py-0.5 text-[11px] text-orange-700">
+          <span className="inline-flex items-center rounded-sm bg-[var(--color-highlight-muted)] px-1.5 py-0.5 text-[11px] text-[var(--color-sticky-accent)]">
             {t("component.topicList.sticky")}
           </span>
         ) : null}
@@ -69,10 +69,10 @@ export function TopicListItem({
             >
               {topic.type === 2 ? (
                 <span
-                  className={`inline-flex h-5 items-center rounded-full px-2 text-[11px] leading-none font-medium ring-1 ${
+                  className={`forum-qa-badge ${
                     topic.qaStatus === "solved"
-                      ? "bg-emerald-50 text-emerald-700 ring-emerald-200"
-                      : "bg-amber-50 text-amber-700 ring-amber-200"
+                      ? "forum-qa-badge--solved"
+                      : "forum-qa-badge--unsolved"
                   }`}
                 >
                   {topic.qaStatus === "solved" ? (
@@ -86,7 +86,7 @@ export function TopicListItem({
                 </span>
               ) : null}
               {topic.type === 2 && topic.bountyScore ? (
-                <span className="inline-flex h-5 items-center rounded-full bg-amber-100 px-2 text-[11px] leading-none font-medium text-amber-800 ring-1 ring-amber-200">
+                <span className="forum-qa-badge forum-qa-badge--bounty">
                   {t("pages.topic.detail.bountyLabel", {
                     score: topic.bountyScore,
                   })}
@@ -154,7 +154,7 @@ export function TopicListItem({
               href={`/groups/${topic.group.slug}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex max-w-full items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-xs text-primary hover:text-primary/80"
+              className="inline-flex max-w-full items-center gap-1 rounded-full bg-[var(--color-primary-muted)] px-2.5 py-1 text-xs text-[var(--color-primary)] hover:text-primary/80"
             >
               {topic.group.icon ? (
                 <img
@@ -171,7 +171,7 @@ export function TopicListItem({
               href={`/topics/node/${topic.node.id}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex max-w-full items-center gap-1 rounded-full bg-accent px-2.5 py-1 text-xs text-muted-foreground hover:text-foreground"
+              className="forum-node-chip inline-flex max-w-full items-center gap-1 rounded-full px-2.5 py-1 text-xs hover:text-foreground"
             >
               {topic.node.logo ? (
                 <img

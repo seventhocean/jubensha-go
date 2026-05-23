@@ -366,7 +366,7 @@ function CommentSubList({
 
   return (
     <>
-      <div className="mt-2.5 text-sm">
+      <div className="mt-2.5 text-sm forum-comment-thread--nested">
         {replies.results.map((comment) => (
           <div key={comment.id} className="flex py-2">
             <div>
@@ -661,7 +661,7 @@ function CommentItem({
           "flex py-2.5",
           isAccepted
             ? "mb-2 rounded-lg border border-primary/20 bg-primary/[0.06] p-3"
-            : "border-b border-border last:border-b-0"
+            : "forum-comment-thread last:border-b-0"
         )}
       >
         <div>
@@ -914,7 +914,7 @@ export function CommentSection({
   }
 
   return (
-    <section id="JComment" className="rounded-lg bg-background p-4">
+    <section id="JComment" className="rounded-[var(--rounded-lg)] bg-[var(--color-surface-1)] p-4 shadow-[var(--shadow-sm)] dark:shadow-none dark:border dark:border-[var(--color-hairline)]">
       <div className="flex text-base font-medium text-foreground">
         <span>{title || t("component.comment.title")}</span>
         {commentCount && commentCount > 0 ? (

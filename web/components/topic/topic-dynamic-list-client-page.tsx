@@ -58,7 +58,7 @@ export function TopicTagClientPage({
       <div className="topics-wrapper">
         <TopicsNavContent initialNodes={initialData?.nodes || []} />
         <div className="topics-main">
-          <div className="rounded-lg bg-background">
+          <div className="rounded-[var(--rounded-lg)] bg-[var(--color-surface-1)] shadow-[var(--shadow-sm)] dark:shadow-none dark:border dark:border-[var(--color-hairline)]">
             {loading ? <PageLoading /> : null}
             <LoadMore<Topic>
               initialItems={initialData?.topics?.results || []}
@@ -190,7 +190,7 @@ export function NodeTopicClientPage({
         />
         <div className="topics-main">
           {currentNode?.name ? (
-            <div className="mb-3 rounded-lg bg-background px-4 py-4">
+            <div className="mb-3 rounded-[var(--rounded-lg)] bg-[var(--color-surface-1)] px-4 py-4 shadow-[var(--shadow-sm)] dark:shadow-none dark:border dark:border-[var(--color-hairline)]">
               <div className="flex items-start gap-3">
                 {currentNode.logo ? (
                   <img
@@ -212,7 +212,7 @@ export function NodeTopicClientPage({
               </div>
             </div>
           ) : null}
-          <div className="rounded-lg bg-background">
+          <div className="rounded-[var(--rounded-lg)] bg-[var(--color-surface-1)] shadow-[var(--shadow-sm)] dark:shadow-none dark:border dark:border-[var(--color-hairline)]">
             <TopicSubNodeNav
               rootNodeId={rootNodeId}
               nodes={subNodes}
