@@ -2,7 +2,7 @@
   "id": "FEAT-003",
   "type": "feat",
   "description": "Optimistic UI for follow button and route-level shouldRevalidate for preventing unnecessary data reloads on tab switches.",
-  "status": "pending",
+  "status": "in_progress",
   "steps": [
     "Step 1: Update web/components/user/follow-button.tsx to add optimistic state toggling. Currently the button uses `useTransition` and only updates state after the API returns. Change: (a) immediately toggle the `followed` state and call `onChanged?.(nextFollowed)` before the API call, (b) on API error, roll back to the previous state. The pending state from useTransition can still disable the button during the operation. The key change is that `setFollowed(nextFollowed)` should happen before the `await followAction()`.",
     "Step 2: Add a `shouldRevalidate` export to web/app/routes/_index.tsx (topic list page). The function should return false when only the hash changes (e.g., same pathname with different hash for tab switching) but the search params relevant to pagination haven't changed. Use the pattern: export function shouldRevalidate({ currentUrl, nextUrl, defaultShouldRevalidate }) { if (currentUrl.pathname === nextUrl.pathname) return false; return defaultShouldRevalidate; }",

@@ -1,4 +1,5 @@
 import { useLoaderData } from "react-router"
+import type { ShouldRevalidateFunctionArgs } from "react-router"
 
 import { EmptyState } from "@/components/common/empty-state"
 import { LoadMore } from "@/components/common/load-more"
@@ -18,6 +19,13 @@ import {
 } from "../route-helpers/loaders"
 
 export { loader } from "../route-helpers/loaders"
+
+export function shouldRevalidate({ currentUrl, nextUrl, defaultShouldRevalidate }: ShouldRevalidateFunctionArgs) {
+  if (currentUrl.pathname === nextUrl.pathname) {
+    return false
+  }
+  return defaultShouldRevalidate
+}
 
 export async function clientLoader() {
   return loadTopicListRouteData()

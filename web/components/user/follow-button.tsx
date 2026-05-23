@@ -22,15 +22,27 @@ export function FollowButton({
   const [pending, startTransition] = React.useTransition()
 
   function submit() {
+    const previousFollowed = followed
+    const nextFollowed = !followed
+    // Optimistically update state immediately
+    setFollowed(nextFollowed)
+    onChanged?.(nextFollowed)
+
     startTransition(async () => {
-      const result = await followAction(userId, followed)
+      const result = await followAction(userId, previousFollowed)
       if (!result.ok) {
+        // Roll back on error
+        setFollowed(previousFollowed)
+        onChanged?.(previousFollowed)
         toast.error(result.message || t("composables.unknownError"))
         return
       }
-      const next = Boolean(result.followed)
-      setFollowed(next)
-      onChanged?.(next)
+      // Confirm final state from server
+      const confirmed = Boolean(result.followed)
+      if (confirmed !== nextFollowed) {
+        setFollowed(confirmed)
+        onChanged?.(confirmed)
+      }
     })
   }
 

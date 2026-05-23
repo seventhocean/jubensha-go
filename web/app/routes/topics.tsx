@@ -1,4 +1,5 @@
 import { useI18n } from "@/lib/i18n/provider"
+import type { ShouldRevalidateFunctionArgs } from "react-router"
 import { localizedTitle, rootDataFromMatches, sitePageMeta } from "@/lib/seo"
 
 import { TopicListRoute } from "./_index"
@@ -24,4 +25,11 @@ export function meta({
 export default function TopicsRoute() {
   const { t } = useI18n()
   return <TopicListRoute title={t("pages.topics.title")} />
+}
+
+export function shouldRevalidate({ currentUrl, nextUrl, defaultShouldRevalidate }: ShouldRevalidateFunctionArgs) {
+  if (currentUrl.pathname === nextUrl.pathname) {
+    return false
+  }
+  return defaultShouldRevalidate
 }

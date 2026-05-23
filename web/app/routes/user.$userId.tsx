@@ -1,4 +1,5 @@
 import { useLoaderData } from "react-router"
+import type { ShouldRevalidateFunctionArgs } from "react-router"
 
 import { UserProfileClientPage } from "@/components/user/user-profile-client-page"
 import { rootDataFromMatches, userMeta } from "@/lib/seo"
@@ -41,4 +42,11 @@ export function meta({
 export default function UserProfileRoute() {
   const { user } = useLoaderData<typeof loader>()
   return <UserProfileClientPage initialUser={user} />
+}
+
+export function shouldRevalidate({ currentUrl, nextUrl, defaultShouldRevalidate }: ShouldRevalidateFunctionArgs) {
+  if (currentUrl.pathname === nextUrl.pathname) {
+    return false
+  }
+  return defaultShouldRevalidate
 }
