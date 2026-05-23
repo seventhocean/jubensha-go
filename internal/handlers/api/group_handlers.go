@@ -11,6 +11,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/mlogclub/simple/web"
 
 	"bbs-go/internal/pkg/ginx"
 )
@@ -37,6 +38,80 @@ func GroupList(ctx *gin.Context) {
 		joinedMap = services.GroupService.GetUserJoinedGroupIds(user.Id)
 	}
 	ginx.WriteJSON(ctx, render.BuildGroups(groups, joinedMap))
+}
+
+// GroupPage returns aggregated group detail page data
+func GroupPage(ctx *gin.Context) {
+	slug := ctx.Param("slug")
+	group := services.GroupService.GetBySlug(slug)
+	if group == nil {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage("Group not found"))
+		return
+	}
+
+	user := common.GetCurrentUser(ctx)
+	joined := false
+	if user != nil {
+		joined = services.GroupService.IsMember(group.Id, user.Id)
+	}
+
+	// Topics (first page, latest sort)
+	topics, nextCursor, hasMore := services.GroupService.GetGroupTopics(group.Id, 0, 0)
+	topicResults := render.BuildSimpleTopics(ctx, topics)
+	if topicResults == nil {
+		topicResults = []resp.TopicResponse{}
+	}
+	topicsData := &web.CursorResult{
+		Results: topicResults,
+		Cursor:  strconv.FormatInt(nextCursor, 10),
+		HasMore: hasMore,
+	}
+
+	// Sticky topics
+	stickyTopics := services.GroupService.GetGroupStickyTopics(group.Id)
+	stickyData := render.BuildSimpleTopics(ctx, stickyTopics)
+	if stickyData == nil {
+		stickyData = []resp.TopicResponse{}
+	}
+
+	// Members (first page)
+	members, memberNextCursor, memberHasMore := services.GroupService.GetMembers(group.Id, 0)
+	var memberResults []resp.GroupMemberResponse
+	for _, m := range members {
+		userInfo := render.BuildUserInfoDefaultIfNull(m.UserId)
+		if userInfo != nil {
+			item := render.BuildGroupMember(&m, userInfo)
+			if item != nil {
+				memberResults = append(memberResults, *item)
+			}
+		}
+	}
+	if memberResults == nil {
+		memberResults = []resp.GroupMemberResponse{}
+	}
+
+	// Check-in status (if logged in)
+	var checkInStatus *resp.GroupCheckInStatusResponse
+	if user != nil {
+		checkedIn, days := services.GroupCheckInService.GetStatus(user.Id, group.Id)
+		checkInStatus = &resp.GroupCheckInStatusResponse{
+			CheckedIn:       checkedIn,
+			ConsecutiveDays: days,
+		}
+	}
+
+	// Check-in rank
+	rankRecords := services.GroupCheckInService.GetRank(group.Id)
+	checkInRank := render.BuildGroupCheckInRank(rankRecords)
+
+	ginx.WriteJSON(ctx, map[string]interface{}{
+		"group":         render.BuildGroup(group, joined),
+		"topics":        topicsData,
+		"stickyTopics":  stickyData,
+		"members":       &web.CursorResult{Results: memberResults, Cursor: strconv.FormatInt(memberNextCursor, 10), HasMore: memberHasMore},
+		"checkinStatus": checkInStatus,
+		"checkinRank":   checkInRank,
+	})
 }
 
 // GroupDetail 群组详情

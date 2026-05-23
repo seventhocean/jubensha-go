@@ -21,13 +21,11 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
-  getGroup,
   getGroupCheckInRank,
-  getGroupCheckInStatus,
   getGroupHotTopics,
   getGroupMembers,
-  getGroupStickyTopics,
   getGroupTopics,
+  getGroupPage,
   groupCheckIn,
   joinGroup,
   kickMember,
@@ -215,13 +213,30 @@ export default function GroupDetailRoute() {
 
   useEffect(() => {
     if (!slug) return
-    getGroup(slug)
-      .then((g) => setGroup(g))
+    getGroupPage(slug)
+      .then((data) => {
+        if (data) {
+          setGroup(data.group)
+          setTopics(data.topics.results || [])
+          setCursor(data.topics.cursor || "")
+          setHasMore(data.topics.hasMore)
+          setStickyTopics(Array.isArray(data.stickyTopics) ? data.stickyTopics : [])
+          setStickyLoaded(true)
+          setMembers(data.members.results || [])
+          setCheckInRank(Array.isArray(data.checkinRank) ? data.checkinRank : [])
+          if (data.checkinStatus) {
+            setCheckInStatus(data.checkinStatus)
+          }
+        }
+      })
+      .catch(() => {
+        setGroup(null)
+      })
       .finally(() => setLoading(false))
   }, [slug])
 
   useEffect(() => {
-    if (!group) return
+    if (!group || sort === "latest") return
     getGroupTopics(group.id, undefined, sort).then((data) => {
       if (data) {
         setTopics(data.results || [])
@@ -235,46 +250,6 @@ export default function GroupDetailRoute() {
       }
     })
   }, [group, sort])
-
-  useEffect(() => {
-    if (!group) return
-    getGroupMembers(group.id).then((data) => {
-      if (data) {
-        setMembers(data.results || [])
-      }
-    })
-    // Load sticky topics immediately
-    getGroupStickyTopics(group.id)
-      .then((data) => {
-        setStickyTopics(Array.isArray(data) ? data : [])
-      })
-      .catch(() => {
-        setStickyTopics([])
-      })
-      .finally(() => setStickyLoaded(true))
-    // Load check-in rank
-    getGroupCheckInRank(group.id)
-      .then((data) => {
-        setCheckInRank(Array.isArray(data) ? data : [])
-      })
-      .catch(() => {
-        setCheckInRank([])
-      })
-  }, [group])
-
-  // Load check-in status when group loads and user is logged in
-  useEffect(() => {
-    if (!group || !currentUser) return
-    getGroupCheckInStatus(group.id)
-      .then((data) => {
-        if (data) {
-          setCheckInStatus(data)
-        }
-      })
-      .catch(() => {
-        setCheckInStatus(null)
-      })
-  }, [group, currentUser])
 
   // hotLoaded prevents re-fetching the hot topics list on every tab switch within a session.
   // This is intentional: hot topics are a ranked snapshot and do not need real-time updates

@@ -112,3 +112,16 @@ export function getGroupCheckInRank(groupId: number) {
     params: { groupId },
   })
 }
+
+export interface GroupPageData {
+  group: GroupItem
+  topics: PageData<Topic>
+  stickyTopics: Topic[]
+  members: PageData<GroupMember>
+  checkinStatus?: GroupCheckInStatus
+  checkinRank: GroupCheckInRankItem[]
+}
+
+export function getGroupPage(slug: string) {
+  return apiFetch<GroupPageData>(`/api/group/${slug}/page`)
+}
