@@ -144,55 +144,61 @@ func (s *groupService) GetMembers(groupId int64, cursor int64) ([]models.GroupMe
 	return list, nextCursor, hasMore
 }
 
-func (s *groupService) GetGroupTopics(groupId int64, cursor int64, sort ...string) ([]models.Topic, int64, bool) {
+func (s *groupService) GetGroupTopics(groupId int64, cursor int64, page int, sort ...string) ([]models.Topic, int64, bool) {
 	const limit = 20
 	db := sqls.DB().Where("group_id = ? and status = ?", groupId, constants.StatusOk)
-	if cursor > 0 {
-		db = db.Where("id < ?", cursor)
-	}
 
-	sortOrder := "id desc"
+	sortMode := ""
 	if len(sort) > 0 {
-		switch sort[0] {
-		case "most_replies":
-			sortOrder = "comment_count desc, id desc"
-		case "most_active":
-			sortOrder = "last_comment_time desc, id desc"
+		sortMode = sort[0]
+	}
+
+	switch sortMode {
+	case "most_replies":
+		// Offset-based pagination for non-ID sort
+		var topics []models.Topic
+		db.Order("comment_count desc, id desc").Offset(page * limit).Limit(limit + 1).Find(&topics)
+		hasMore := len(topics) > limit
+		if hasMore {
+			topics = topics[:limit]
 		}
+		return topics, 0, hasMore
+	case "most_active":
+		// Offset-based pagination for non-ID sort
+		var topics []models.Topic
+		db.Order("last_comment_time desc, id desc").Offset(page * limit).Limit(limit + 1).Find(&topics)
+		hasMore := len(topics) > limit
+		if hasMore {
+			topics = topics[:limit]
+		}
+		return topics, 0, hasMore
+	default:
+		// "latest" - cursor-based pagination (by ID desc) works correctly
+		if cursor > 0 {
+			db = db.Where("id < ?", cursor)
+		}
+		var topics []models.Topic
+		db.Order("id desc").Limit(limit + 1).Find(&topics)
+		hasMore := len(topics) > limit
+		if hasMore {
+			topics = topics[:limit]
+		}
+		var nextCursor int64
+		if len(topics) > 0 {
+			nextCursor = topics[len(topics)-1].Id
+		}
+		return topics, nextCursor, hasMore
 	}
-
-	var topics []models.Topic
-	db.Order(sortOrder).Limit(limit + 1).Find(&topics)
-
-	hasMore := len(topics) > limit
-	if hasMore {
-		topics = topics[:limit]
-	}
-	var nextCursor int64
-	if len(topics) > 0 {
-		nextCursor = topics[len(topics)-1].Id
-	}
-	return topics, nextCursor, hasMore
 }
 
-func (s *groupService) GetGroupHotTopics(groupId int64, cursor int64) ([]models.Topic, int64, bool) {
-	const limit = 20
-	db := sqls.DB().Where("group_id = ? AND status = ?", groupId, constants.StatusOk)
-	if cursor > 0 {
-		db = db.Where("id < ?", cursor)
-	}
+// GetGroupHotTopics returns a capped list of hot topics (max 50) ranked by engagement score.
+// No pagination is needed since this is a fixed-rank view.
+func (s *groupService) GetGroupHotTopics(groupId int64) []models.Topic {
+	const limit = 50
 	var topics []models.Topic
-	db.Order("(like_count + comment_count) DESC, id DESC").Limit(limit + 1).Find(&topics)
-
-	hasMore := len(topics) > limit
-	if hasMore {
-		topics = topics[:limit]
-	}
-	var nextCursor int64
-	if len(topics) > 0 {
-		nextCursor = topics[len(topics)-1].Id
-	}
-	return topics, nextCursor, hasMore
+	sqls.DB().Where("group_id = ? AND status = ?", groupId, constants.StatusOk).
+		Order("(like_count + comment_count) DESC, id DESC").Limit(limit).Find(&topics)
+	return topics
 }
 
 func (s *groupService) CreateGroup(userId int64, name, slug, description, icon, banner string) (*models.Group, error) {
@@ -237,7 +243,11 @@ func (s *groupService) CreateGroup(userId int64, name, slug, description, icon, 
 		UserId:     userId,
 		CreateTime: dates.NowTimestamp(),
 	}
-	repositories.GroupMemberRepository.Create(sqls.DB(), member)
+	if err := repositories.GroupMemberRepository.Create(sqls.DB(), member); err != nil {
+		// Member insert failed; delete the group to avoid inconsistency
+		repositories.GroupRepository.Delete(sqls.DB(), group.Id)
+		return nil, err
+	}
 	return group, nil
 }
 

@@ -1,0 +1,30 @@
+{
+  "id": "FEAT-003",
+  "type": "fix",
+  "description": "Address review issues: pagination fix, slug validation, error handling, useEffect split, hot topics comment",
+  "status": "in_progress",
+  "steps": [
+    "Step 1: Fix hot topics endpoint to cap at 50 results with no pagination. Fix sorted topics to use offset-based pagination with page param. Keep latest sort using cursor-based pagination.",
+    "Step 2: Add slug format validation regex and reserved words blocklist in GroupCreate handler.",
+    "Step 3: Check error from GroupMemberRepository.Create in CreateGroup service, delete group on failure.",
+    "Step 4: Split useEffect in groups.$slug.tsx into two: one for members/sticky (depends on group), one for topics (depends on group, sort).",
+    "Step 5: Add comment explaining hotLoaded design choice."
+  ],
+  "acceptance_criteria": [
+    "go build ./... passes",
+    "pnpm typecheck passes",
+    "pnpm lint passes",
+    "Hot topics endpoint returns capped list without pagination",
+    "Sorted topics use offset/page-based pagination",
+    "Slug validation rejects invalid formats and reserved words",
+    "Member insert error is checked and group is deleted on failure",
+    "Sticky topics useEffect does not depend on sort"
+  ],
+  "verification": [
+    "cd /projects/sandbox/jubensha-go && go build ./...",
+    "cd /projects/sandbox/jubensha-go/web && pnpm typecheck",
+    "cd /projects/sandbox/jubensha-go/web && pnpm lint"
+  ],
+  "blocked_reason": null,
+  "findings": null
+}

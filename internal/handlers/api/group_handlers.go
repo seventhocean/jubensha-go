@@ -7,6 +7,7 @@ import (
 	"bbs-go/internal/pkg/errs"
 	"bbs-go/internal/pkg/params"
 	"bbs-go/internal/services"
+	"regexp"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -140,7 +141,20 @@ func GroupTopics(ctx *gin.Context) {
 	}
 	cursor, _ := params.GetInt64(ctx, "cursor")
 	sort := ctx.Query("sort")
-	topics, nextCursor, hasMore := services.GroupService.GetGroupTopics(groupId, cursor, sort)
+
+	// For non-ID sorts, use page-based pagination
+	page := 0
+	if sort == "most_replies" || sort == "most_active" {
+		pageStr := ctx.Query("page")
+		if pageStr != "" {
+			p, err := strconv.Atoi(pageStr)
+			if err == nil && p >= 0 {
+				page = p
+			}
+		}
+	}
+
+	topics, nextCursor, hasMore := services.GroupService.GetGroupTopics(groupId, cursor, page, sort)
 
 	ginx.WriteJSON(ctx, ginx.CursorData(render.BuildSimpleTopics(ctx, topics), strconv.FormatInt(nextCursor, 10), hasMore))
 }
@@ -163,9 +177,8 @@ func GroupHotTopics(ctx *gin.Context) {
 		ginx.WriteJSON(ctx, ginx.ErrorMessage("groupId is required"))
 		return
 	}
-	cursor, _ := params.GetInt64(ctx, "cursor")
-	topics, nextCursor, hasMore := services.GroupService.GetGroupHotTopics(groupId, cursor)
-	ginx.WriteJSON(ctx, ginx.CursorData(render.BuildSimpleTopics(ctx, topics), strconv.FormatInt(nextCursor, 10), hasMore))
+	topics := services.GroupService.GetGroupHotTopics(groupId)
+	ginx.WriteJSON(ctx, render.BuildSimpleTopics(ctx, topics))
 }
 
 type groupCreateReq struct {
@@ -194,6 +207,28 @@ func GroupCreate(ctx *gin.Context) {
 	}
 	if body.Slug == "" {
 		ginx.WriteJSON(ctx, ginx.ErrorMessage("slug is required"))
+		return
+	}
+	// Validate slug format: lowercase alphanumeric with hyphens, 2-64 chars
+	slugRegex := regexp.MustCompile(`^[a-z0-9]+(-[a-z0-9]+)*$`)
+	if len(body.Slug) < 2 || len(body.Slug) > 64 || !slugRegex.MatchString(body.Slug) {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage("slug must be 2-64 characters, lowercase alphanumeric with hyphens only"))
+		return
+	}
+	// Check reserved slugs that would conflict with routes
+	reservedSlugs := map[string]bool{
+		"create":       true,
+		"hot_topics":   true,
+		"sticky_topics": true,
+		"list":         true,
+		"navs":         true,
+		"members":      true,
+		"topics":       true,
+		"join":         true,
+		"leave":        true,
+	}
+	if reservedSlugs[body.Slug] {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage("this slug is reserved and cannot be used"))
 		return
 	}
 	group, err := services.GroupService.CreateGroup(user.Id, body.Name, body.Slug, body.Description, body.Icon, body.Banner)

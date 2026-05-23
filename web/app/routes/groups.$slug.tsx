@@ -118,8 +118,6 @@ export default function GroupDetailRoute() {
   const [isJoining, setIsJoining] = useState(false)
   const [sort, setSort] = useState("latest")
   const [hotTopics, setHotTopics] = useState<Topic[]>([])
-  const [hotCursor, setHotCursor] = useState<string>("")
-  const [hotHasMore, setHotHasMore] = useState(true)
   const [hotLoaded, setHotLoaded] = useState(false)
 
   useDocumentTitle(group?.name)
@@ -136,10 +134,19 @@ export default function GroupDetailRoute() {
     getGroupTopics(group.id, undefined, sort).then((data) => {
       if (data) {
         setTopics(data.results || [])
-        setCursor(data.cursor || "")
+        // For non-ID sorts, cursor represents next page number (starting at 1)
+        if (sort === "most_replies" || sort === "most_active") {
+          setCursor("1")
+        } else {
+          setCursor(data.cursor || "")
+        }
         setHasMore(data.hasMore)
       }
     })
+  }, [group, sort])
+
+  useEffect(() => {
+    if (!group) return
     getGroupMembers(group.id).then((data) => {
       if (data) {
         setMembers(data.results || [])
@@ -154,17 +161,16 @@ export default function GroupDetailRoute() {
         setStickyTopics([])
       })
       .finally(() => setStickyLoaded(true))
-  }, [group, sort])
+  }, [group])
 
+  // hotLoaded prevents re-fetching the hot topics list on every tab switch within a session.
+  // This is intentional: hot topics are a ranked snapshot and do not need real-time updates
+  // during a single page visit. Users can reload the page to get fresh rankings.
   useEffect(() => {
     if (activeTab !== "hot" || hotLoaded || !group) return
     getGroupHotTopics(group.id)
       .then((data) => {
-        if (data) {
-          setHotTopics(data.results || [])
-          setHotCursor(data.cursor || "")
-          setHotHasMore(data.hasMore)
-        }
+        setHotTopics(Array.isArray(data) ? data : [])
       })
       .catch(() => {
         setHotTopics([])
@@ -350,6 +356,17 @@ export default function GroupDetailRoute() {
                   error: t("common.loadMore.error"),
                 }}
                 loadPage={async (c) => {
+                  if (sort === "most_replies" || sort === "most_active") {
+                    // Offset-based pagination: cursor stores the page number
+                    const page = c.cursor ? parseInt(c.cursor, 10) : 1
+                    const data = await getGroupTopics(group.id, undefined, sort, page)
+                    return {
+                      cursor: String(page + 1),
+                      hasMore: data?.hasMore ?? false,
+                      results: data?.results || [],
+                    }
+                  }
+                  // Cursor-based pagination for "latest"
                   const data = await getGroupTopics(group.id, c.cursor, sort)
                   return {
                     cursor: data?.cursor || "",
@@ -385,40 +402,15 @@ export default function GroupDetailRoute() {
             ) : hotTopics.length === 0 ? (
               <EmptyState title={t("user.groups.noHotTopics")} />
             ) : (
-              <LoadMore<Topic>
-                initialItems={hotTopics}
-                initialCursor={hotCursor}
-                initialHasMore={hotHasMore}
-                initialLoad={false}
-                resetKey={`/api/group/hot_topics?groupId=${group.id}`}
-                labels={{
-                  loadMore: t("common.loadMore.loadMore"),
-                  noMore: t("common.loadMore.noMore"),
-                  error: t("common.loadMore.error"),
-                }}
-                loadPage={async (c) => {
-                  const data = await getGroupHotTopics(group.id, c.cursor)
-                  return {
-                    cursor: data?.cursor || "",
-                    hasMore: data?.hasMore ?? false,
-                    results: data?.results || [],
-                  }
-                }}
-                renderItems={(items) => (
-                  <ul className="divide-y divide-border">
-                    {items.map((topic) => (
-                      <TopicListItem
-                        key={topic.id}
-                        topic={topic}
-                        t={t}
-                      />
-                    ))}
-                  </ul>
-                )}
-                renderEmpty={() => (
-                  <EmptyState title={t("user.groups.noHotTopics")} />
-                )}
-              />
+              <ul className="divide-y divide-border">
+                {hotTopics.map((topic) => (
+                  <TopicListItem
+                    key={topic.id}
+                    topic={topic}
+                    t={t}
+                  />
+                ))}
+              </ul>
             )}
           </div>
         </TabsContent>

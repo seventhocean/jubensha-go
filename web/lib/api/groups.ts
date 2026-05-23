@@ -34,9 +34,9 @@ export function getGroupMembers(groupId: number, cursor?: string) {
   })
 }
 
-export function getGroupTopics(groupId: number, cursor?: string, sort?: string) {
+export function getGroupTopics(groupId: number, cursor?: string, sort?: string, page?: number) {
   return apiFetch<PageData<Topic>>("/api/group/topics", {
-    params: { groupId, cursor, sort },
+    params: { groupId, cursor, sort, page },
   })
 }
 
@@ -46,9 +46,9 @@ export function getGroupStickyTopics(groupId: number) {
   })
 }
 
-export function getGroupHotTopics(groupId: number, cursor?: string) {
-  return apiFetch<PageData<Topic>>("/api/group/hot_topics", {
-    params: { groupId, cursor },
+export function getGroupHotTopics(groupId: number) {
+  return apiFetch<Topic[]>("/api/group/hot_topics", {
+    params: { groupId },
   })
 }
 
