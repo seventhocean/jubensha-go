@@ -1,0 +1,23 @@
+{
+  "id": "FEAT-001",
+  "type": "chore",
+  "description": "Update all CSS style files (content.css, auth.css, editor.css, user.css, pages.css, common.css) to use design system tokens instead of hardcoded values. This ensures the foundation styles leverage the new color, spacing, typography, and motion tokens defined in globals.css.",
+  "status": "in_progress",
+  "steps": [
+    "Update web/styles/content.css: Replace var(--foreground) with var(--color-ink), var(--primary) with var(--color-primary), var(--border) with var(--color-hairline), var(--muted) with var(--color-surface-3). Apply prose typography tokens (line-height: 1.75 for paragraph text). Use var(--rounded-md) for border-radius. Use var(--color-surface-1) for blockquote and code block backgrounds.",
+    "Update web/styles/auth.css: Replace var(--background) with var(--color-surface-1) for card backgrounds. Use var(--color-hairline) for borders. Use var(--color-ink) for text. Add focus ring using var(--color-primary-muted). Apply var(--motion-duration-fast) for transitions. Use var(--rounded-md) for border-radius values.",
+    "Update web/styles/editor.css: Replace hardcoded .dark color values in .m-editor-container with design token references. Replace border-radius: 8px with var(--rounded-md). Replace border-radius: 2px/4px/6px with appropriate token values. Use var(--color-surface-1) for editor bg, var(--color-hairline) for borders, var(--color-ink) for text, var(--color-primary) for focus. Replace all 0.2s/0.16s transitions with var(--motion-duration-fast/normal). Replace hardcoded colors in .slash-commands (#f0f2f5, #6b7280, #111827, white) with token variables. Update toolbar button sizing/spacing.",
+    "Update web/styles/user.css: Replace hardcoded gradient in .profile .profile-info (linear-gradient with #fff) with design token references. Replace .level-badge hardcoded colors (#fef3c7, #92400e) with var(--color-highlight-muted) and var(--color-bounty-gold). Use var(--color-hairline) for borders. Replace var(--radius) with var(--rounded-md). Add transitions using motion tokens.",
+    "Update web/styles/pages.css: Replace hardcoded colors in .page-glow (rgba blue values, #f8fafc) with design token equivalents using var(--color-primary-subtle) and var(--color-canvas). Replace hardcoded shadow colors with var(--shadow-md). Replace animation durations with motion tokens. Use var(--color-primary) for ring pulse. Use var(--color-hairline) for link borders.",
+    "Update web/styles/common.css: Replace var(--body-background) reference (already mapped). Add var(--color-canvas) to body background. Ensure .footer uses var(--color-ink-muted) for text color and var(--color-hairline) for borders. Use var(--spacing-*) tokens for padding where appropriate. Update .main padding to use spacing tokens."
+  ],
+  "acceptance_criteria": [
+    "No hardcoded hex color values remain in content.css, auth.css, user.css, or pages.css (editor.css may keep some in the image resize handles)",
+    "All border-radius values use var(--rounded-*) tokens",
+    "All transition durations use var(--motion-duration-*) tokens",
+    "Build passes successfully with pnpm build"
+  ],
+  "verification": ["Run 'pnpm build' in /projects/sandbox/jubensha-go/web/ and confirm no errors"],
+  "blocked_reason": null,
+  "findings": ""
+}

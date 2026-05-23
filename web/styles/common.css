@@ -74,7 +74,7 @@
 
   .main-container.left-main .left-container {
     width: calc(100% - 260px - 10px);
-    transition: width 0.2s;
+    transition: width var(--motion-duration-normal);
   }
 
   .main-container.left-main .right-container {
@@ -97,7 +97,7 @@
 
   .main-container.right-main .right-container {
     width: calc(100% - 260px - 10px);
-    transition: width 0.2s;
+    transition: width var(--motion-duration-normal);
   }
 
   .main-container.left-main.side-size-320 .left-container {

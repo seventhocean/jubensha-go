@@ -4,12 +4,12 @@
     width: 100%;
     overflow: hidden;
     border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
-    border-radius: 8px;
+    border-radius: var(--rounded-md);
     background: var(--background);
-    box-shadow: 0 1px 2px rgb(0 0 0 / 0.03);
+    box-shadow: var(--shadow-sm);
     transition:
-      border-color 0.16s ease,
-      box-shadow 0.16s ease;
+      border-color var(--motion-duration-normal) var(--motion-easing-default),
+      box-shadow var(--motion-duration-normal) var(--motion-easing-default);
   }
 
   .simple-editor:focus-within {
@@ -42,15 +42,15 @@
     min-height: 30px;
     padding: 0 10px;
     border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
-    border-radius: 6px;
+    border-radius: var(--rounded-sm);
     background: var(--background);
     color: var(--muted-foreground);
     font-size: 13px;
     line-height: 1;
     transition:
-      border-color 0.16s ease,
-      background-color 0.16s ease,
-      color 0.16s ease;
+      border-color var(--motion-duration-normal) var(--motion-easing-default),
+      background-color var(--motion-duration-normal) var(--motion-easing-default),
+      color var(--motion-duration-normal) var(--motion-easing-default);
   }
 
   .simple-editor .act-icon:hover:not(:disabled) {
@@ -95,7 +95,7 @@
     resize: none;
     overflow: auto;
     overscroll-behavior: contain;
-    transition: all 100ms linear;
+    transition: all var(--motion-duration-fast) linear;
   }
 
   .simple-editor textarea::placeholder {
@@ -111,35 +111,35 @@
     --editor-bg: var(--background);
     --editor-border: var(--border);
     --editor-text: var(--foreground);
-    --editor-placeholder: rgb(100, 100, 100);
+    --editor-placeholder: var(--color-ink-muted);
     --editor-toolbar-bg: var(--background);
     --editor-hover: var(--muted);
-    --editor-focus: #60a5fa;
-    --editor-link-color: #2563eb;
-    --editor-code-bg: #f1f5f9;
-    --editor-code-text: #e11d48;
-    --editor-blockquote-border: #60a5fa;
-    --editor-blockquote-bg: rgba(96, 165, 250, 0.05);
-    --editor-scrollbar-thumb: #c1c1c1;
-    --editor-scrollbar-track: #f1f1f1;
+    --editor-focus: var(--color-primary);
+    --editor-link-color: var(--color-semantic-info);
+    --editor-code-bg: var(--color-surface-2);
+    --editor-code-text: var(--color-semantic-danger);
+    --editor-blockquote-border: var(--color-primary);
+    --editor-blockquote-bg: var(--color-primary-subtle);
+    --editor-scrollbar-thumb: var(--color-hairline-strong);
+    --editor-scrollbar-track: var(--color-surface-2);
     display: flex;
     flex-direction: column;
     border: 1px solid var(--editor-border);
-    border-radius: 2px;
+    border-radius: var(--rounded-xs);
     background: var(--editor-bg);
   }
 
   .dark .m-editor-container {
-    --editor-bg: #2d2d2d;
-    --editor-border: #4a4a4a;
-    --editor-text: #e5e7eb;
-    --editor-placeholder: #6b7280;
-    --editor-toolbar-bg: #2d2d2d;
-    --editor-hover: rgba(96, 165, 250, 0.2);
-    --editor-link-color: #60a5fa;
-    --editor-code-bg: #374151;
-    --editor-code-text: #fbbf24;
-    --editor-blockquote-bg: rgba(96, 165, 250, 0.1);
+    --editor-bg: var(--color-surface-1);
+    --editor-border: var(--color-hairline);
+    --editor-text: var(--color-ink);
+    --editor-placeholder: var(--color-ink-muted);
+    --editor-toolbar-bg: var(--color-surface-1);
+    --editor-hover: var(--color-primary-muted);
+    --editor-link-color: var(--color-semantic-info);
+    --editor-code-bg: var(--color-surface-3);
+    --editor-code-text: var(--color-highlight);
+    --editor-blockquote-bg: var(--color-primary-subtle);
   }
 
   .editor-toolbar {
@@ -181,12 +181,12 @@
     width: 24px;
     height: 24px;
     border: none;
-    border-radius: 4px;
+    border-radius: var(--rounded-xs);
     background: var(--editor-bg);
     padding: 0.25rem;
     color: var(--editor-text);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all var(--motion-duration-normal) var(--motion-easing-default);
   }
 
   .m-editor-toolbar-button:hover,
@@ -213,7 +213,7 @@
     flex: 1;
     flex-direction: column;
     overflow-y: auto;
-    border-radius: 0 0 8px 8px;
+    border-radius: 0 0 var(--rounded-md) var(--rounded-md);
     background: var(--editor-bg);
   }
 
@@ -325,7 +325,7 @@
   }
 
   .editor-content .tiptap code {
-    border-radius: 4px;
+    border-radius: var(--rounded-xs);
     background: var(--editor-code-bg);
     padding: 2px 4px;
     color: var(--editor-code-text);
@@ -334,7 +334,7 @@
 
   .editor-content .tiptap pre {
     overflow-x: auto;
-    border-radius: 6px;
+    border-radius: var(--rounded-sm);
     background: var(--muted);
     padding: 12px;
   }
@@ -360,11 +360,11 @@
   .resizable-image-wrapper .editor-image.resizable {
     display: block;
     border: none !important;
-    border-radius: 4px;
+    border-radius: var(--rounded-xs);
     background: transparent !important;
     outline: none !important;
     box-shadow: none !important;
-    transition: all 0.2s ease;
+    transition: all var(--motion-duration-normal) var(--motion-easing-default);
   }
 
   .resizable-image-wrapper .selection-border {
@@ -500,11 +500,11 @@
     z-index: 1000;
     min-width: 220px;
     border: 1px solid var(--editor-border);
-    border-radius: 4px;
+    border-radius: var(--rounded-xs);
     background: var(--editor-bg);
     padding: 8px;
     color: var(--editor-text);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-md);
   }
 
   .color-popup {
@@ -512,11 +512,11 @@
     z-index: 1000;
     min-width: 220px;
     border: 1px solid var(--editor-border);
-    border-radius: 4px;
+    border-radius: var(--rounded-xs);
     background: var(--editor-bg);
     padding: 8px;
     color: var(--editor-text);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-md);
   }
 
   .color-picker-header {
@@ -541,7 +541,7 @@
     width: 20px;
     height: 20px;
     border: 1px solid color-mix(in srgb, var(--editor-border) 65%, var(--foreground));
-    border-radius: 3px;
+    border-radius: var(--rounded-xs);
     box-shadow:
       inset 0 0 0 1px rgba(255, 255, 255, 0.55),
       0 1px 2px rgba(0, 0, 0, 0.12);
@@ -550,9 +550,9 @@
   .color-option {
     cursor: pointer;
     transition:
-      border-color 0.12s ease,
-      box-shadow 0.12s ease,
-      transform 0.12s ease;
+      border-color var(--motion-duration-fast) var(--motion-easing-default),
+      box-shadow var(--motion-duration-fast) var(--motion-easing-default),
+      transform var(--motion-duration-fast) var(--motion-easing-default);
   }
 
   .color-option:hover,
@@ -585,7 +585,7 @@
   .link-input-group input {
     height: 30px;
     border: 1px solid var(--editor-border);
-    border-radius: 3px;
+    border-radius: var(--rounded-xs);
     background: var(--editor-bg);
     padding: 0 8px;
     color: var(--editor-text);
@@ -597,7 +597,7 @@
   }
 
   .link-dialog-actions button {
-    border-radius: 3px;
+    border-radius: var(--rounded-xs);
     padding: 4px 8px;
     font-size: 12px;
   }
@@ -609,7 +609,7 @@
 
   .link-dialog-actions .btn-danger {
     background: var(--destructive);
-    color: #fff;
+    color: var(--color-ink-inverse);
   }
 
   .link-dialog-actions .btn-secondary {
@@ -644,24 +644,24 @@
   }
 
   .slash-commands {
-    --slash-scrollbar-thumb: #d1d5db;
-    --slash-scrollbar-thumb-hover: #9ca3af;
+    --slash-scrollbar-thumb: var(--color-hairline-strong);
+    --slash-scrollbar-thumb-hover: var(--color-ink-muted);
     --slash-scrollbar-track: transparent;
     width: 280px;
     max-height: 400px;
     overflow-y: auto;
-    border-radius: 8px;
-    background: white;
+    border-radius: var(--rounded-md);
+    background: var(--color-surface-1);
     padding: 0.5rem;
     box-shadow:
       0 0 0 1px rgba(0, 0, 0, 0.05),
-      0 10px 20px rgba(0, 0, 0, 0.1);
-    animation: popup-fade 0.15s ease-out;
+      var(--shadow-lg);
+    animation: popup-fade var(--motion-duration-normal) var(--motion-easing-enter);
   }
 
   .dark .slash-commands {
-    --slash-scrollbar-thumb: #4b5563;
-    --slash-scrollbar-thumb-hover: #6b7280;
+    --slash-scrollbar-thumb: var(--color-ink-tertiary);
+    --slash-scrollbar-thumb-hover: var(--color-ink-muted);
   }
 
   .slash-commands-popup {
@@ -672,7 +672,7 @@
   .search-hint {
     margin-bottom: 0.5rem;
     padding: 0 0.5rem;
-    color: #6b7280;
+    color: var(--color-ink-muted);
     font-size: 12px;
   }
 
@@ -695,7 +695,7 @@
 
   .slash-items-container::-webkit-scrollbar-thumb {
     border: 2px solid transparent;
-    border-radius: 999px;
+    border-radius: var(--rounded-pill);
     background-color: var(--slash-scrollbar-thumb);
     background-clip: content-box;
   }
@@ -710,23 +710,23 @@
     align-items: center;
     margin: 0.125rem 0;
     border: none;
-    border-radius: 6px;
+    border-radius: var(--rounded-sm);
     background: none;
     padding: 0.625rem;
     text-align: left;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all var(--motion-duration-normal) var(--motion-easing-default);
   }
 
   .slash-item:hover,
   .slash-item.is-selected {
-    background-color: #f0f2f5;
+    background-color: var(--color-surface-3);
   }
 
   .slash-item .item-icon {
     flex-shrink: 0;
     margin-right: 0.75rem;
-    color: #6b7280;
+    color: var(--color-ink-muted);
   }
 
   .slash-item .item-content {
@@ -738,22 +738,22 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    color: #111827;
+    color: var(--color-ink);
     font-size: 14px;
   }
 
   .slash-item .item-aliases {
     margin-left: 4px;
-    border-radius: 4px;
-    background-color: #f3f4f6;
+    border-radius: var(--rounded-xs);
+    background-color: var(--color-surface-3);
     padding: 1px 4px;
-    color: #6b7280;
+    color: var(--color-ink-muted);
     font-size: 12px;
   }
 
   .slash-item .item-description {
     overflow: hidden;
-    color: #6b7280;
+    color: var(--color-ink-muted);
     font-size: 12px;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -761,7 +761,7 @@
 
   .no-results {
     padding: 1rem;
-    color: #6b7280;
+    color: var(--color-ink-muted);
     font-size: 14px;
     text-align: center;
   }

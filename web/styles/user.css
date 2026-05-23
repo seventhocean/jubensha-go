@@ -4,8 +4,8 @@
     position: relative;
     height: 220px;
     margin-bottom: 10px;
-    border-top-left-radius: var(--radius);
-    border-top-right-radius: var(--radius);
+    border-top-left-radius: var(--rounded-md);
+    border-top-right-radius: var(--rounded-md);
     background-color: var(--muted);
     background-position: 50%;
     background-size: cover;
@@ -37,9 +37,9 @@
     padding: 10px 10px 10px 120px;
     background-image: linear-gradient(
       90deg,
-      #ffffffff,
-      rgba(255, 255, 255, 0.5),
-      #dce9f200
+      var(--color-surface-1),
+      color-mix(in srgb, var(--color-surface-1) 50%, transparent),
+      transparent
     );
   }
 
@@ -68,9 +68,9 @@
     align-items: center;
     gap: 5px;
     padding: 1px 8px;
-    border-radius: var(--radius);
-    background: #fef3c7;
-    color: #92400e;
+    border-radius: var(--rounded-md);
+    background: var(--color-highlight-muted);
+    color: var(--color-bounty-gold);
     font-size: 12px;
     font-weight: 500;
   }

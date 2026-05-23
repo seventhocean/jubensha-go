@@ -13,7 +13,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    transition: all 0.2s ease;
+    transition: all var(--motion-duration-normal) var(--motion-easing-default);
   }
 
   .login-tab-icon {
@@ -90,7 +90,7 @@
     margin-top: 1rem;
     padding: 1rem;
     background: color-mix(in oklab, var(--muted) 30%, transparent);
-    border-radius: calc(var(--radius) - 2px);
+    border-radius: var(--rounded-sm);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -111,12 +111,12 @@
     display: flex;
     align-items: center;
     border: 1px solid var(--input);
-    border-radius: calc(var(--radius) - 2px);
+    border-radius: var(--rounded-sm);
     background: var(--background);
     overflow: hidden;
     transition:
-      border-color 0.2s ease,
-      box-shadow 0.2s ease;
+      border-color var(--motion-duration-normal) var(--motion-easing-default),
+      box-shadow var(--motion-duration-normal) var(--motion-easing-default);
     min-height: 2.25rem;
     box-sizing: border-box;
   }

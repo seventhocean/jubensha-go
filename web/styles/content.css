@@ -28,7 +28,7 @@
 
   .bbs-content p {
     margin: 1rem 0;
-    line-height: 1.7;
+    line-height: 1.75;
   }
 
   .bbs-content a {
@@ -59,22 +59,22 @@
     margin: 1rem 0;
     max-width: 100%;
     height: auto;
-    border-radius: 6px;
+    border-radius: var(--rounded-md);
   }
 
   .bbs-content pre {
     margin: 1rem 0;
     overflow-x: auto;
-    border-radius: 6px;
-    background: var(--muted);
+    border-radius: var(--rounded-md);
+    background: var(--color-surface-1);
     padding: 1rem;
     font-size: 14px;
     line-height: 1.7;
   }
 
   .bbs-content code {
-    border-radius: 3px;
-    background: var(--muted);
+    border-radius: var(--rounded-xs);
+    background: var(--color-surface-1);
     padding: 0.2em 0.4em;
     font-size: 0.9em;
   }
@@ -88,9 +88,9 @@
 
   .bbs-content blockquote {
     margin: 1rem 0;
-    border-left: 4px solid var(--border);
-    border-radius: 0 6px 6px 0;
-    background: var(--muted);
+    border-left: 4px solid var(--color-primary-muted);
+    border-radius: 0 var(--rounded-md) var(--rounded-md) 0;
+    background: var(--color-surface-1);
     padding: 0.25rem 1rem;
     color: var(--muted-foreground);
   }
