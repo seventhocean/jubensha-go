@@ -1,0 +1,31 @@
+{
+  "id": "FEAT-001",
+  "type": "feat",
+  "description": "Backend enhancements: Add new Group fields (Banner, Notice, Rules), new API endpoint for group sticky topics, and update response structures to support the Tieba-style group detail page.",
+  "status": "in_progress",
+  "steps": [
+    "Add new fields to the Group model in internal/models/models.go: Banner (string, cover/banner image URL), Notice (text, group announcement), Rules (text, group rules/guidelines).",
+    "Add IsDefault field to GroupResponse in internal/models/resp/response.go, and add the new fields Banner, Notice, Rules to GroupResponse.",
+    "Update the BuildGroup function in internal/handlers/render/group_render.go to include the new fields (Banner, Notice, Rules, IsDefault) in the response.",
+    "Add a new method to groupService in internal/services/group_service.go: GetGroupStickyTopics(groupId int64) []models.Topic - queries topics where group_id=groupId AND sticky=true AND status=ok, ordered by sticky_time desc.",
+    "Add a new API handler GroupStickyTopics in internal/handlers/api/group_handlers.go that takes groupId param and returns sticky topics for that group using render.BuildSimpleTopics.",
+    "Register the new route GET /api/group/sticky_topics in internal/server/router.go within the groupGroup.",
+    "Add Banner, Notice, Rules fields to the admin dashboard group form fields in web/app/routes/dashboard.groups.tsx (Banner as image type, Notice and Rules as textarea).",
+    "Create a database migration file migrations/000023_migration_script_group_tieba_fields.go that uses AutoMigrate to add the new columns to the groups table."
+  ],
+  "acceptance_criteria": [
+    "go test ./... passes with no errors",
+    "The Group model has Banner, Notice, and Rules fields with proper GORM tags",
+    "GroupResponse includes banner, notice, rules, and isDefault fields in JSON",
+    "New /api/group/sticky_topics endpoint is registered and handler implemented",
+    "Migration file exists and follows the project migration pattern",
+    "Dashboard form includes the new fields"
+  ],
+  "verification": [
+    "Run 'go build ./...' from project root to confirm compilation",
+    "Run 'go test ./...' from project root to confirm tests pass",
+    "Run 'pnpm typecheck' in web/ to confirm frontend still compiles after dashboard changes"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

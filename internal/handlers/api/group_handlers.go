@@ -143,3 +143,14 @@ func GroupTopics(ctx *gin.Context) {
 
 	ginx.WriteJSON(ctx, ginx.CursorData(render.BuildSimpleTopics(ctx, topics), strconv.FormatInt(nextCursor, 10), hasMore))
 }
+
+// GroupStickyTopics 群组置顶帖子列表
+func GroupStickyTopics(ctx *gin.Context) {
+	groupId, _ := params.GetInt64(ctx, "groupId")
+	if groupId <= 0 {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage("groupId is required"))
+		return
+	}
+	topics := services.GroupService.GetGroupStickyTopics(groupId)
+	ginx.WriteJSON(ctx, render.BuildSimpleTopics(ctx, topics))
+}

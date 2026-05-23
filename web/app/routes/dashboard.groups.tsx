@@ -48,6 +48,12 @@ export default function DashboardGroupsRoute() {
           dashboardData.imageCell(record.icon, String(record.name || "")),
       },
       {
+        key: "banner",
+        label: dashboardData.label(t, "banner"),
+        render: (record) =>
+          dashboardData.imageCell(record.banner, String(record.name || "")),
+      },
+      {
         key: "visibility",
         label: dashboardData.label(t, "visibility"),
         render: (record) => {
@@ -59,6 +65,8 @@ export default function DashboardGroupsRoute() {
       },
       { key: "memberCount", label: dashboardData.label(t, "memberCount") },
       { key: "topicCount", label: dashboardData.label(t, "topicCount") },
+      { key: "notice", label: dashboardData.label(t, "notice") },
+      { key: "rules", label: dashboardData.label(t, "rules") },
       { key: "sortNo", label: dashboardData.label(t, "sortNo") },
       {
         key: "showInNav",
@@ -82,6 +90,9 @@ export default function DashboardGroupsRoute() {
       { name: "slug", label: dashboardData.label(t, "slug"), required: true },
       { name: "description", label: dashboardData.label(t, "description"), type: "textarea" },
       { name: "icon", label: dashboardData.label(t, "icon"), type: "image", colSpan: 2 },
+      { name: "banner", label: dashboardData.label(t, "banner"), type: "image", colSpan: 2 },
+      { name: "notice", label: dashboardData.label(t, "notice"), type: "textarea" },
+      { name: "rules", label: dashboardData.label(t, "rules"), type: "textarea" },
       {
         name: "visibility",
         label: dashboardData.label(t, "visibility"),

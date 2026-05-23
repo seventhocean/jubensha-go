@@ -135,7 +135,11 @@ type GroupResponse struct {
 	Slug        string `json:"slug"`
 	Description string `json:"description"`
 	Icon        string `json:"icon"`
+	Banner      string `json:"banner"`
+	Notice      string `json:"notice"`
+	Rules       string `json:"rules"`
 	Visibility  int    `json:"visibility"`
+	IsDefault   int    `json:"isDefault"`
 	OwnerId     int64  `json:"ownerId"`
 	MemberCount int    `json:"memberCount"`
 	TopicCount  int    `json:"topicCount"`

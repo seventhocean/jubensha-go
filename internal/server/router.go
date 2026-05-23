@@ -240,6 +240,7 @@ func registerAPIRoutes(group *gin.RouterGroup) {
 	groupGroup.GET("/navs", apiHandlers.GroupNavs)
 	groupGroup.GET("/members", apiHandlers.GroupMembers)
 	groupGroup.GET("/topics", apiHandlers.GroupTopics)
+	groupGroup.GET("/sticky_topics", apiHandlers.GroupStickyTopics)
 	groupGroup.POST("/join", apiHandlers.GroupJoin)
 	groupGroup.POST("/leave", apiHandlers.GroupLeave)
 	groupGroup.GET("/:slug", apiHandlers.GroupDetail)

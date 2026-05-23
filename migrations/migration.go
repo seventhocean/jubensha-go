@@ -122,4 +122,5 @@ func init() {
 	register(20, "group permissions seed", migrate_group_permissions)
 	register(21, "update default group is_default flag", migrate_update_default_group)
 	register(22, "add group module config", migrate_group_module_config)
+	register(23, "add group tieba fields (banner, notice, rules)", migrate_group_tieba_fields)
 }

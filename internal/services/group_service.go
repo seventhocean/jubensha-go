@@ -200,3 +200,10 @@ func (s *groupService) GetNextSortNo() int {
 	sqls.DB().Model(&models.Group{}).Select("COALESCE(MAX(sort_no), 0)").Scan(&maxSortNo)
 	return maxSortNo + 1
 }
+
+func (s *groupService) GetGroupStickyTopics(groupId int64) []models.Topic {
+	var topics []models.Topic
+	sqls.DB().Where("group_id = ? AND sticky = ? AND status = ?", groupId, true, constants.StatusOk).
+		Order("sticky_time desc").Find(&topics)
+	return topics
+}
