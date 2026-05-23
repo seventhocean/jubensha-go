@@ -1863,6 +1863,7 @@ function UploadSettings({
                 ["AliyunOss", s("upload.aliyunOss")],
                 ["TencentCos", s("upload.tencentCos")],
                 ["AwsS3", s("upload.awsS3")],
+                ["R2", s("upload.cloudflareR2")],
               ]}
               showCheckbox
               onChange={(value) =>
@@ -1957,6 +1958,29 @@ function UploadSettings({
                 placeholder={s(`upload.placeholder.${placeholderKey}`)}
                 onChange={(event) =>
                   update(`uploadConfig.awsS3.${field}`, event.target.value)
+                }
+              />
+            </Field>
+          ))}
+        </ProviderCard>
+      ) : null}
+
+      {method === "R2" ? (
+        <ProviderCard title={s("upload.cloudflareR2")}>
+          {[
+            ["accountId", "r2AccountId", "r2AccountId"],
+            ["bucket", "bucket", "r2Bucket"],
+            ["publicHost", "r2PublicHost", "r2PublicHost"],
+            ["accessKeyId", "accessKeyId", "r2AccessKeyId"],
+            ["accessKeySecret", "accessKeySecret", "r2AccessKeySecret"],
+          ].map(([field, labelKey, placeholderKey]) => (
+            <Field key={field} label={s(`upload.${labelKey}`)}>
+              <Input
+                type={field === "accessKeySecret" ? "password" : "text"}
+                value={getString(getPathValue(config, `r2.${field}`))}
+                placeholder={s(`upload.placeholder.${placeholderKey}`)}
+                onChange={(event) =>
+                  update(`uploadConfig.r2.${field}`, event.target.value)
                 }
               />
             </Field>

@@ -184,6 +184,7 @@ const (
 	AliyunOss  UploadMethod = "AliyunOss"
 	TencentCos UploadMethod = "TencentCos"
 	AwsS3      UploadMethod = "AwsS3"
+	R2         UploadMethod = "R2"
 )
 
 type UploadConfig struct {
@@ -191,6 +192,7 @@ type UploadConfig struct {
 	AliyunOss          AliyunOssUploadConfig  `json:"aliyunOss"`
 	TencentCos         TencentCosUploadConfig `json:"tencentCos"`
 	AwsS3              AwsS3UploadConfig      `json:"awsS3"`
+	R2                 R2UploadConfig         `json:"r2"`
 }
 
 type SmtpConfig struct {
@@ -226,6 +228,14 @@ type AwsS3UploadConfig struct {
 	Bucket          string `json:"bucket"`
 	AccessKeyId     string `json:"accessKeyId"`
 	AccessKeySecret string `json:"accessKeySecret"`
+}
+
+type R2UploadConfig struct {
+	AccountId       string `json:"accountId"`
+	Bucket          string `json:"bucket"`
+	AccessKeyId     string `json:"accessKeyId"`
+	AccessKeySecret string `json:"accessKeySecret"`
+	PublicHost      string `json:"publicHost"`
 }
 
 // AttachmentConfig 帖子附件配置（单 Key 存 JSON）

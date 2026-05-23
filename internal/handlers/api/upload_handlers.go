@@ -37,19 +37,13 @@ func UploadHandle(ctx *gin.Context) {
 	contentType := header.Header.Get("Content-Type")
 	slog.Info("上传文件：", slog.Any("filename", header.Filename), slog.Any("size", header.Size))
 
-	var body io.Reader
-	var size int64
-	if header.Size > 0 {
-		body, size = file, header.Size
-	} else {
-		fileBytes, err := io.ReadAll(file)
-		if err != nil {
-			ginx.WriteJSON(ctx, err)
-			return
-		}
-		body = bytes.NewReader(fileBytes)
-		size = int64(len(fileBytes))
+	fileBytes, err := io.ReadAll(file)
+	if err != nil {
+		ginx.WriteJSON(ctx, err)
+		return
 	}
+	size := int64(len(fileBytes))
+	body := bytes.NewReader(fileBytes)
 
 	url, err := services.UploadService.PutImageStream(body, size, contentType)
 	if err != nil {

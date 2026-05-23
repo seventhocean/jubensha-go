@@ -96,15 +96,17 @@ function GroupCard({
           )}
         </Link>
         <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-          <span className="flex items-center gap-1">
-            <Users className="h-3 w-3" />
-            {group.memberCount} · {group.topicCount}
+          <span className="flex items-center gap-1 min-w-0">
+            <Users className="h-3 w-3 shrink-0" />
+            <span className="truncate">
+              {group.memberCount} {t("user.groups.members")} · {group.topicCount} {t("user.groups.topics")}
+            </span>
           </span>
           {group.joined ? (
             <button
               type="button"
               onClick={() => onLeave(group)}
-              className="px-2.5 py-1 rounded-full text-[11px] font-medium bg-[var(--color-surface-3)] text-muted-foreground hover:bg-[var(--color-semantic-danger-muted)] hover:text-[var(--color-semantic-danger)]"
+              className="shrink-0 px-2.5 py-1 rounded-full text-[11px] font-medium bg-[var(--color-surface-3)] text-muted-foreground hover:bg-[var(--color-semantic-danger-muted)] hover:text-[var(--color-semantic-danger)]"
             >
               {t("user.groups.leave")}
             </button>
@@ -113,7 +115,7 @@ function GroupCard({
               type="button"
               onClick={() => onJoin(group)}
               disabled={isJoining}
-              className="px-2.5 py-1 rounded-full text-[11px] font-medium bg-primary text-primary-foreground hover:opacity-90"
+              className="shrink-0 px-2.5 py-1 rounded-full text-[11px] font-medium bg-primary text-primary-foreground hover:opacity-90"
             >
               {isJoining ? (
                 <Loader2 className="h-3 w-3 animate-spin" />
@@ -188,11 +190,13 @@ function MyGroupCard({
           )}
         </Link>
         <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-          <span className="flex items-center gap-1">
-            <Users className="h-3 w-3" />
-            {group.memberCount} · {group.topicCount}
+          <span className="flex items-center gap-1 min-w-0">
+            <Users className="h-3 w-3 shrink-0" />
+            <span className="truncate">
+              {group.memberCount} {t("user.groups.members")} · {group.topicCount} {t("user.groups.topics")}
+            </span>
           </span>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5 shrink-0">
             <Link
               to={`/groups/${group.slug}`}
               prefetch="intent"
@@ -328,7 +332,7 @@ export default function GroupsIndexRoute() {
                 <h2 className="text-lg font-semibold mb-3">
                   {t("user.groups.myGroups")}
                 </h2>
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                   {myGroups.map((group) => (
                     <MyGroupCard
                       key={group.id}
@@ -346,7 +350,7 @@ export default function GroupsIndexRoute() {
                 <h2 className="text-lg font-semibold mb-3">
                   {t("user.groups.allGroups")}
                 </h2>
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                   {availableGroups.map((group) => (
                     <GroupCard
                       key={group.id}

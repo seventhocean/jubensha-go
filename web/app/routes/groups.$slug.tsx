@@ -345,6 +345,10 @@ export default function GroupDetailRoute() {
       return
     }
     if (!group || checkingIn) return
+    if (!group.joined) {
+      toast.error(t("user.groups.checkInNotMember"))
+      return
+    }
     setCheckingIn(true)
     try {
       const result = await groupCheckIn(group.id)
@@ -424,7 +428,9 @@ export default function GroupDetailRoute() {
 
   // If a child route (e.g. settings) is active, render it instead of group content
   const { pathname } = useLocation()
-  const isChildRoute = pathname !== `/groups/${slug}`
+  const basePath = `/groups/${slug}`
+  const isChildRoute = pathname !== basePath && pathname !== `${basePath}/` && pathname.startsWith(`${basePath}/`)
+
   if (isChildRoute) {
     return (
       <MainShell>
@@ -491,35 +497,48 @@ export default function GroupDetailRoute() {
 
       {/* Action buttons */}
       <div className="flex items-center gap-3 mb-4">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button
-              type="button"
-              className="inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium bg-primary text-primary-foreground hover:opacity-90"
-              onClick={(e) => {
-                if (!currentUser) {
-                  e.preventDefault()
-                  navigate(buildSigninHref(`/groups/${slug}`))
-                }
-              }}
-            >
-              <Pin className="h-4 w-4" />
-              {t("user.groups.createPost")}
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start">
-            <DropdownMenuItem asChild>
-              <Link to={`/topic/create?groupId=${group.id}&type=0&groupSlug=${group.slug}`}>
-                {t("common.createBtn.topic")}
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link to={`/topic/create?groupId=${group.id}&type=2&groupSlug=${group.slug}`}>
-                {t("common.createBtn.qa")}
-              </Link>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {!currentUser ? (
+          <Link
+            to={buildSigninHref(`/groups/${slug}`)}
+            className="inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium bg-primary text-primary-foreground hover:opacity-90"
+          >
+            <Pin className="h-4 w-4" />
+            {t("user.groups.createPost")}
+          </Link>
+        ) : !group.joined ? (
+          <button
+            type="button"
+            className="inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium bg-primary text-primary-foreground hover:opacity-90"
+            onClick={() => toast.error(t("user.groups.createPostNotMember"))}
+          >
+            <Pin className="h-4 w-4" />
+            {t("user.groups.createPost")}
+          </button>
+        ) : (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                className="inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium bg-primary text-primary-foreground hover:opacity-90"
+              >
+                <Pin className="h-4 w-4" />
+                {t("user.groups.createPost")}
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              <DropdownMenuItem asChild>
+                <Link to={`/topic/create?groupId=${group.id}&type=0&groupSlug=${group.slug}`}>
+                  {t("common.createBtn.topic")}
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to={`/topic/create?groupId=${group.id}&type=2&groupSlug=${group.slug}`}>
+                  {t("common.createBtn.qa")}
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
         {currentUser ? (
           <button
             type="button"

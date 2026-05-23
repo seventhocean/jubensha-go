@@ -40,10 +40,10 @@ function ImageUploader({
     try {
       const resp = await fetch("/api/upload", { method: "POST", body: form })
       const data = await resp.json()
-      if (data.code === 0) {
+      if (data.errorCode === 0) {
         onChange(data.data.url)
       } else {
-        toast.error(data.msg || t("user.groups.operationFailed"))
+        toast.error(data.message || t("user.groups.operationFailed"))
       }
     } catch {
       toast.error(t("user.groups.operationFailed"))

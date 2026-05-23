@@ -29,10 +29,16 @@ export async function clientLoader(args: { request: Request }) {
 }
 
 function slugify(value: string): string {
-  return value
+  const slug = value
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
+  // If the name contains no ASCII letters/digits (e.g. Chinese only), generate a fallback
+  if (!slug) {
+    const suffix = Math.random().toString(36).slice(2, 8)
+    return `group-${suffix}`
+  }
+  return slug
 }
 
 function ImageUploader({
@@ -58,10 +64,10 @@ function ImageUploader({
     try {
       const resp = await fetch("/api/upload", { method: "POST", body: form })
       const data = await resp.json()
-      if (data.code === 0) {
+      if (data.errorCode === 0) {
         onChange(data.data.url)
       } else {
-        toast.error(data.msg || t("user.groups.operationFailed"))
+        toast.error(data.message || t("user.groups.operationFailed"))
       }
     } catch {
       toast.error(t("user.groups.operationFailed"))

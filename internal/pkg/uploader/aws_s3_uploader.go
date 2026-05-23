@@ -69,12 +69,10 @@ func (u *AwsS3Uploader) initClient(cfg dto.UploadConfig) error {
 	u.m.Lock()
 	defer u.m.Unlock()
 
-	// 验证必要配置项不能为空
 	if strs.IsAnyBlank(cfg.AwsS3.Region, cfg.AwsS3.Bucket, cfg.AwsS3.AccessKeyId, cfg.AwsS3.AccessKeySecret) {
 		return fmt.Errorf("AWS S3 configuration is incomplete: Region, Bucket, AccessKeyId, and AccessKeySecret are required")
 	}
 
-	// 创建 AWS 配置（使用标准 AWS S3）
 	awsCfg, err := config.LoadDefaultConfig(context.TODO(),
 		config.WithRegion(cfg.AwsS3.Region),
 		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(
@@ -88,7 +86,6 @@ func (u *AwsS3Uploader) initClient(cfg dto.UploadConfig) error {
 		return fmt.Errorf("failed to load AWS config: %w", err)
 	}
 
-	// 创建 S3 客户端
 	u.client = s3.NewFromConfig(awsCfg)
 
 	u.currentCfg = cfg
