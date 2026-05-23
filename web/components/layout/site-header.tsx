@@ -596,7 +596,7 @@ export function SiteHeader() {
   const showColorModeToggle = true
 
   return (
-    <header className="sticky top-0 z-[var(--z-sticky-header)] w-full border-b border-[var(--color-hairline)] bg-[rgba(250,250,248,0.88)] backdrop-blur-[12px] backdrop-saturate-[1.2] transition-[background] duration-[var(--motion-duration-normal)] dark:bg-[rgba(10,10,15,0.85)]">
+    <header className="sticky top-0 z-[var(--z-sticky-header)] w-full border-b border-[var(--color-hairline)] bg-[var(--color-header-bg)] backdrop-blur-[12px] backdrop-saturate-[1.2] transition-[background] duration-[var(--motion-duration-normal)]">
       <div className="container mx-auto px-4">
         <div className="flex h-[52px] items-center justify-between">
           <div className="flex items-center space-x-8">

@@ -3,6 +3,7 @@
 import type * as React from "react"
 import { usePathname } from "@/lib/router/navigation"
 
+import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { SiteHeader } from "@/components/layout/site-header"
 
@@ -18,6 +19,7 @@ export function LayoutChrome({ children }: { children: React.ReactNode }) {
       <SiteHeader />
       {children}
       <SiteFooter />
+      <MobileBottomNav />
     </>
   )
 }

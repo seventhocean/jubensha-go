@@ -90,6 +90,7 @@
   --color-surface-2: #f8f7f5;
   --color-surface-3: #f0efec;
   --color-surface-4: #e8e7e4;
+  --color-header-bg: rgba(250, 250, 248, 0.88);
 
   /* Ink */
   --color-ink: #1a1a2e;
@@ -296,6 +297,7 @@
   --color-surface-2: #1a1a24;
   --color-surface-3: #22222e;
   --color-surface-4: #2a2a38;
+  --color-header-bg: rgba(10, 10, 15, 0.85);
 
   /* Ink */
   --color-ink: #e8e6e3;
