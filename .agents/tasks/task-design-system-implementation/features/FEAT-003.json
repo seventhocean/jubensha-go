@@ -2,7 +2,7 @@
   "id": "FEAT-003",
   "type": "feat",
   "description": "Update the site header component to match the DESIGN.md sticky-header spec, add forum component styles (topic list, comment thread, node chips, vote buttons, QA badges, notification badges, level/EXP progress bar), and add a placeholder mobile bottom tab bar component.",
-  "status": "pending",
+  "status": "in_progress",
   "steps": [
     "Update `web/components/layout/site-header.tsx`: Change the header element className to apply the sticky-header spec from DESIGN.md. The header should be: sticky top-0, z-index using --z-sticky-header (200), height 52px (h-[52px] or h-[var(--layout-header-height)]), backdrop-blur-[12px] saturate-[1.2], hairline bottom border (border-b border-[var(--color-hairline)]), and semi-transparent background. In light mode: bg rgba(250,250,248,0.88). In dark mode: bg rgba(10,10,15,0.85). Use the new CSS custom properties. Change h-14 to h-[52px]. Keep all existing functionality intact.",
     "Add forum component styles to `web/styles/topic.css` (append to existing file): Add styles for topic list items (.forum-topic-item with padding, min-height 64px, border-bottom hairline, transition), hover state (surface-1 background, 2px primary left border), unread state (font-weight 600), sticky state (amber left border), expanded state (shadow, rounded, padding). Use CSS custom properties from the design tokens.",

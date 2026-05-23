@@ -21,6 +21,12 @@
     overflow: hidden;
   }
 
+  @media screen and (max-width: 639px) {
+    body {
+      padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+    }
+  }
+
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
