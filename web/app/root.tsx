@@ -80,6 +80,7 @@ export function meta({ data }: Route.MetaArgs) {
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const rootData = useRouteLoaderData<typeof loader>("root")
+  const favicon = rootData?.config?.siteLogo
 
   return (
     <html lang={rootData?.locale || "en-US"}>
@@ -89,6 +90,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+        {favicon ? <link rel="icon" type="image/png" href={favicon} /> : null}
         <Meta />
         <Links />
       </head>
