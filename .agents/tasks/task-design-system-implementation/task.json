@@ -1,0 +1,7 @@
+{
+  "task_id": "task-design-system-implementation",
+  "task_description": "Implement the DESIGN.md design system into the frontend codebase: overhaul CSS tokens/variables with hex-based colors, add all semantic/node/gradient/shadow/motion tokens, update typography to Inter, update layout breakpoints, update header component, add forum component styles, and add keyframe animations.",
+  "status": "in_progress",
+  "feature_order": ["FEAT-001", "FEAT-002", "FEAT-003"],
+  "blocked_reason": null
+}

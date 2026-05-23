@@ -1,0 +1,37 @@
+{
+  "id": "FEAT-003",
+  "type": "feat",
+  "description": "Update the site header component to match the DESIGN.md sticky-header spec, add forum component styles (topic list, comment thread, node chips, vote buttons, QA badges, notification badges, level/EXP progress bar), and add a placeholder mobile bottom tab bar component.",
+  "status": "pending",
+  "steps": [
+    "Update `web/components/layout/site-header.tsx`: Change the header element className to apply the sticky-header spec from DESIGN.md. The header should be: sticky top-0, z-index using --z-sticky-header (200), height 52px (h-[52px] or h-[var(--layout-header-height)]), backdrop-blur-[12px] saturate-[1.2], hairline bottom border (border-b border-[var(--color-hairline)]), and semi-transparent background. In light mode: bg rgba(250,250,248,0.88). In dark mode: bg rgba(10,10,15,0.85). Use the new CSS custom properties. Change h-14 to h-[52px]. Keep all existing functionality intact.",
+    "Add forum component styles to `web/styles/topic.css` (append to existing file): Add styles for topic list items (.forum-topic-item with padding, min-height 64px, border-bottom hairline, transition), hover state (surface-1 background, 2px primary left border), unread state (font-weight 600), sticky state (amber left border), expanded state (shadow, rounded, padding). Use CSS custom properties from the design tokens.",
+    "Add comment thread styles to `web/styles/topic.css`: .forum-comment-thread (padding 16px 0, border-bottom hairline), .forum-comment-thread--nested (padding-left 24px, 2px left border in hairline color, margin-left 16px), .forum-comment-reply-highlight (primary-subtle bg, rounded-sm, padding 4px 8px).",
+    "Add node/tag chip styles to `web/styles/topic.css`: .forum-node-chip (surface-2 bg, ink-secondary text, caption typography 12px, rounded-sm, padding 2px 8px), .forum-node-chip--colored (uses --node-color-muted bg, --node-color text), .forum-node-chip--active (primary-muted bg, primary text).",
+    "Add vote/like button styles to `web/styles/topic.css`: .forum-vote-btn (transparent bg, vote-inactive color, rounded-sm, padding 4px 8px, min-height 32px, transition with spring easing), .forum-vote-btn--active (primary-subtle bg, vote-active color, scale 1.1), .forum-vote-btn:hover (surface-2 bg, ink-secondary color).",
+    "Add QA status badge styles to `web/styles/topic.css`: .forum-qa-badge--solved (semantic-success-muted bg, semantic-success text, rounded-sm, padding 2px 8px), .forum-qa-badge--unsolved (semantic-warning-muted bg, semantic-warning text), .forum-qa-badge--bounty (highlight-muted bg, bounty-gold text, 1px border rgba(240,160,60,0.3)).",
+    "Add notification badge styles to `web/styles/topic.css`: .forum-notification-badge (semantic-danger bg, white text, caption-sm font 11px/500, rounded-pill, padding 0 5px, min-width 18px, height 18px, inline-flex centered).",
+    "Add level/EXP progress bar styles to `web/styles/topic.css`: .forum-progress-bar (6px height, rounded-pill, exp-bar-track bg, overflow hidden), .forum-progress-bar__fill (height 100%, exp-bar-fill bg, rounded-pill, transition width 0.6s ease), .forum-progress-bar__fill--animated (gradient-achievement background).",
+    "Create a placeholder mobile bottom tab bar component at `web/components/layout/mobile-bottom-nav.tsx`. It should be a simple React component that renders a fixed bottom navigation bar (visible only below 640px), with 5 placeholder tabs (Home, Explore, Create, Notifications, Profile) using Lucide icons. Apply styles matching DESIGN.md: surface-1 bg, 56px height, hairline top border, backdrop-blur, safe-area-inset-bottom padding. The Create button should use primary color. Use the existing cn() utility and Tailwind classes.",
+    "Update `web/styles/common.css` body rule to add padding-bottom for mobile to account for bottom nav (add pb-[56px] equivalent at mobile breakpoint, or env(safe-area-inset-bottom))."
+  ],
+  "acceptance_criteria": [
+    "Site header uses 52px height, backdrop-blur(12px), semi-transparent background (different for light/dark), and hairline bottom border",
+    "Forum topic list item styles (.forum-topic-item and states) are defined in topic.css",
+    "Comment thread nesting styles (.forum-comment-thread, --nested) are defined",
+    "Node/tag chip styles (.forum-node-chip and variants) are defined",
+    "Vote button styles (.forum-vote-btn and states) are defined",
+    "QA status badges (.forum-qa-badge--solved/unsolved/bounty) are defined",
+    "Notification badge style (.forum-notification-badge) is defined",
+    "Level/EXP progress bar (.forum-progress-bar) is defined",
+    "Mobile bottom tab bar component exists at web/components/layout/mobile-bottom-nav.tsx",
+    "pnpm typecheck passes",
+    "pnpm build succeeds"
+  ],
+  "verification": [
+    "Run `pnpm typecheck` in web/ directory and confirm it passes",
+    "Run `pnpm build` in web/ directory and confirm it succeeds"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

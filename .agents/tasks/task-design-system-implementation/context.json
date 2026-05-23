@@ -1,0 +1,27 @@
+{
+  "project_type": "React 19 + React Router 7 + Tailwind CSS 4 + shadcn/ui forum application",
+  "language": "TypeScript/CSS",
+  "build_system": "pnpm + Vite 8 + @tailwindcss/postcss",
+  "test_framework": "pnpm lint && pnpm typecheck (no unit test runner)",
+  "build_command": "pnpm build",
+  "test_command": "pnpm lint && pnpm typecheck",
+  "verification_instructions": "1. Run pnpm typecheck in web/ to verify TypeScript compiles. 2. Run pnpm lint in web/ to verify no lint errors. 3. Run pnpm build in web/ to verify production build succeeds.",
+  "snapshot_or_generated_files": null,
+  "setup_instructions": "cd web && pnpm install",
+  "environment_constraints": "Tailwind CSS 4 uses @theme inline directive in globals.css instead of tailwind.config.js. shadcn/ui components reference CSS variables like --primary, --background, --foreground, etc. Theme switching uses .dark class on <html> element. No tailwind.config.ts exists - all config is in CSS.",
+  "contribution_requirements": "Keep UI changes backward-compatible with existing shadcn/ui components. Support en-US and zh-CN. Include screenshots for UI changes when possible.",
+  "key_patterns": "CSS variables defined in :root and .dark selectors in globals.css. @theme inline block maps CSS vars to Tailwind utilities. @layer base for resets, @layer components for component styles. Separate CSS files imported into globals.css for each domain (topic, editor, user, auth, content, pages). shadcn/ui expects oklch color variables for --primary, --background, --foreground, --card, --border, --muted, --accent, --destructive, --secondary, --popover, --ring, --input, --chart-1 through chart-5, --sidebar-* vars. The @custom-variant dark (&:is(.dark *)) directive is used for dark mode variant.",
+  "relevant_files": [
+    "web/styles/globals.css",
+    "web/styles/variables.css",
+    "web/styles/common.css",
+    "web/styles/topic.css",
+    "web/styles/content.css",
+    "web/styles/pages.css",
+    "web/components/theme-provider.tsx",
+    "web/components/layout/site-header.tsx",
+    "web/app/root.tsx",
+    "DESIGN.md"
+  ],
+  "directory_structure": "web/styles/ - All CSS files. web/components/ - React components including layout/, ui/ (shadcn), common/. web/app/ - React Router routes and root. web/lib/ - Utilities and API client."
+}

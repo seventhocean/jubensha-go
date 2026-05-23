@@ -1,0 +1,40 @@
+{
+  "id": "FEAT-002",
+  "type": "feat",
+  "description": "Overhaul CSS tokens/variables system: replace oklch colors with DESIGN.md hex-based tokens, add all semantic colors, node/category palette, gradient tokens, shadow tokens, motion/animation tokens, spacing/layout tokens, and map everything to shadcn's expected variable names. Also add Inter font loading, typography tokens, theme transition class, and update layout breakpoints/dimensions.",
+  "status": "in_progress",
+  "steps": [
+    "Rewrite `web/styles/globals.css` :root and .dark blocks to use the DESIGN.md hex-based color tokens. Keep the @import structure, @theme inline block, and @layer base block. The :root block should define all light mode tokens: brand colors (primary #5e6ad2, secondary #e8725c, highlight #f0a03c with hover/active/muted/subtle variants), canvas/surface layers (#fafaf8, #f4f3f0, #ffffff, #f8f7f5, #f0efec, #e8e7e4), ink colors (#1a1a2e, #4a4a5e, #7a7a8e, #9a9aae, #c0c0cc), hairline borders (#e8e7e4, #d8d7d4, #5e6ad2 focus), shadows (sm/md/lg/xl), overlay, semantic colors (success/warning/danger/info with bg and muted variants), forum-specific colors (unread-dot, online-indicator, exp-bar, bounty-gold, vote states, trending, sticky), node/category colors (10 colors), gradient tokens, motion/animation tokens (durations, easings), spacing tokens (xxs through section), layout tokens (sidebar-width, content-max-width, header-height, etc.), rounded tokens (xs through full), z-index scale, and typography tokens (font-sans with Inter, font-mono with JetBrains Mono). The .dark block should override all color tokens with the dark mode values from DESIGN.md.",
+    "Map new design system tokens to shadcn's expected CSS variables so existing components keep working. Map: --background to canvas, --foreground to ink, --card to surface-1, --card-foreground to ink, --popover to surface-2, --popover-foreground to ink, --primary to primary brand color, --primary-foreground to on-primary, --secondary to surface-2, --secondary-foreground to ink, --muted to surface-3, --muted-foreground to ink-muted, --accent to surface-2, --accent-foreground to ink, --destructive to semantic-danger, --border to hairline, --input to hairline, --ring to primary. Keep --radius, --sidebar-* vars, --dashboard-* vars, and --chart-* vars.",
+    "Update the @theme inline block in globals.css to add any new Tailwind utility mappings needed (the existing ones for shadcn colors should still work; add font-sans/font-mono references if needed).",
+    "Rewrite `web/styles/variables.css` to contain: (a) gradient tokens as CSS custom properties, (b) the theme-transitioning class for smooth 200ms theme switch transitions (background-color, color, border-color), (c) body background using the new canvas token, (d) forum-specific variables that were previously there (topics-nav colors mapped to new surface/primary-subtle tokens).",
+    "Update `web/styles/common.css` to: (a) update breakpoints to match DESIGN.md (max-width: 639px for mobile, 1023px for tablet, 1279px for desktop), (b) set header height reference to 52px instead of 56px where referenced (the dock-nav sticky top calc), (c) update sidebar/right-container widths to use 240px where applicable, (d) set content max-width to 720px where applicable. Keep the existing class structure (.main, .main-container, etc.) but update numeric values.",
+    "Add Inter font via a <link> to Google Fonts in `web/app/root.tsx` <head> section (add preconnect and font stylesheet for Inter with weights 400,500,600,700 and display=swap). Also add JetBrains Mono with weight 400.",
+    "Add keyframe definitions for animations from DESIGN.md to `web/styles/variables.css`: shimmer (for skeleton loading), slide-up (for toasts), modal-enter (scale 0.95->1 + fade), dropdown-enter (translateY -4px->0 + fade), checkin-pop (scale 1->1.05->1).",
+    "Add prefers-reduced-motion media query that disables animations."
+  ],
+  "acceptance_criteria": [
+    "All shadcn/ui CSS variables (--primary, --background, --foreground, --card, --border, --muted, --accent, --destructive, --secondary, --popover, --ring, --input) are defined in both :root and .dark with values from DESIGN.md",
+    "All DESIGN.md color tokens are available as CSS custom properties (--color-canvas, --color-surface-1 through 4, --color-ink, --color-primary, --color-secondary, etc.)",
+    "Node/category colors are defined (--color-node-blue through --color-node-indigo) for both modes",
+    "Semantic colors (--color-semantic-success, warning, danger, info with -bg and -muted variants) are defined for both modes",
+    "Motion tokens (--motion-duration-*, --motion-easing-*) are defined as CSS custom properties",
+    "Spacing tokens (--spacing-*) are defined as CSS custom properties",
+    "Layout tokens (--layout-sidebar-width, --layout-content-max-width, etc.) are defined",
+    "Shadow tokens (--shadow-sm through --shadow-xl) are defined for both modes",
+    "Z-index tokens (--z-dropdown, --z-sticky-header, etc.) are defined",
+    "Inter and JetBrains Mono fonts are loaded and assigned to --font-sans and --font-mono",
+    "Keyframe animations (shimmer, slide-up, modal-enter, dropdown-enter, checkin-pop) are defined",
+    "Theme transition class (.theme-transitioning) is defined",
+    "prefers-reduced-motion media query disables animations",
+    "Breakpoints in common.css match DESIGN.md (639, 1023, 1279)",
+    "pnpm typecheck passes after changes",
+    "pnpm build succeeds after changes"
+  ],
+  "verification": [
+    "Run `pnpm typecheck` in web/ directory and confirm it passes",
+    "Run `pnpm build` in web/ directory and confirm it succeeds"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}
