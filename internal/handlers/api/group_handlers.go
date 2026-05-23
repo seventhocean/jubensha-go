@@ -35,12 +35,10 @@ func GroupList(ctx *gin.Context) {
 	groups := services.GroupService.GetPublicGroups()
 	user := common.GetCurrentUser(ctx)
 	joinedMap := make(map[int64]bool)
-	var userId int64
 	if user != nil {
 		joinedMap = services.GroupService.GetUserJoinedGroupIds(user.Id)
-		userId = user.Id
 	}
-	ginx.WriteJSON(ctx, render.BuildGroupsWithPermission(groups, joinedMap, userId))
+	ginx.WriteJSON(ctx, render.BuildGroupsWithPermission(groups, joinedMap, user))
 }
 
 // GroupPage returns aggregated group detail page data
@@ -107,13 +105,8 @@ func GroupPage(ctx *gin.Context) {
 	rankRecords := services.GroupCheckInService.GetRank(group.Id)
 	checkInRank := render.BuildGroupCheckInRank(rankRecords)
 
-	var userId int64
-	if user != nil {
-		userId = user.Id
-	}
-
 	ginx.WriteJSON(ctx, map[string]interface{}{
-		"group":         render.BuildGroupWithPermission(group, joined, userId),
+		"group":         render.BuildGroupWithPermission(group, joined, user),
 		"topics":        topicsData,
 		"stickyTopics":  stickyData,
 		"members":       &web.CursorResult{Results: memberResults, Cursor: strconv.FormatInt(memberNextCursor, 10), HasMore: memberHasMore},
@@ -132,12 +125,10 @@ func GroupDetail(ctx *gin.Context) {
 	}
 	user := common.GetCurrentUser(ctx)
 	joined := false
-	var userId int64
 	if user != nil {
 		joined = services.GroupService.IsMember(group.Id, user.Id)
-		userId = user.Id
 	}
-	ginx.WriteJSON(ctx, render.BuildGroupWithPermission(group, joined, userId))
+	ginx.WriteJSON(ctx, render.BuildGroupWithPermission(group, joined, user))
 }
 
 type groupActionReq struct {
@@ -324,7 +315,7 @@ func GroupUpdate(ctx *gin.Context) {
 		return
 	}
 	updated := services.GroupService.Get(body.GroupId)
-	ginx.WriteJSON(ctx, render.BuildGroupWithPermission(updated, true, user.Id))
+	ginx.WriteJSON(ctx, render.BuildGroupWithPermission(updated, true, user))
 }
 
 type groupCreateReq struct {
@@ -382,7 +373,7 @@ func GroupCreate(ctx *gin.Context) {
 		ginx.WriteJSON(ctx, ginx.ErrorMessage(err.Error()))
 		return
 	}
-	ginx.WriteJSON(ctx, render.BuildGroupWithPermission(group, true, user.Id))
+	ginx.WriteJSON(ctx, render.BuildGroupWithPermission(group, true, user))
 }
 
 type groupSetMemberRoleReq struct {

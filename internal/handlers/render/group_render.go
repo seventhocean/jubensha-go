@@ -10,9 +10,8 @@ func BuildGroup(group *models.Group, joined bool) *resp.GroupResponse {
 	return buildGroup(group, joined, false)
 }
 
-func BuildGroupWithPermission(group *models.Group, joined bool, userId int64) *resp.GroupResponse {
-	canManage := userId > 0 && (group.OwnerId == userId || services.PermissionService.HasPermission(
-		&models.User{Model: models.Model{Id: userId}}, "dashboard.group.update"))
+func BuildGroupWithPermission(group *models.Group, joined bool, user *models.User) *resp.GroupResponse {
+	canManage := user != nil && (group.OwnerId == user.Id || services.PermissionService.HasPermission(user, "dashboard.group.update"))
 	return buildGroup(group, joined, canManage)
 }
 
@@ -52,15 +51,14 @@ func BuildGroups(groups []models.Group, joinedMap map[int64]bool) []resp.GroupRe
 	return ret
 }
 
-func BuildGroupsWithPermission(groups []models.Group, joinedMap map[int64]bool, userId int64) []resp.GroupResponse {
+func BuildGroupsWithPermission(groups []models.Group, joinedMap map[int64]bool, user *models.User) []resp.GroupResponse {
 	if len(groups) == 0 {
 		return nil
 	}
-	canManage := userId > 0 && services.PermissionService.HasPermission(
-		&models.User{Model: models.Model{Id: userId}}, "dashboard.group.update")
+	isAdmin := user != nil && services.PermissionService.HasPermission(user, "dashboard.group.update")
 	var ret []resp.GroupResponse
 	for _, g := range groups {
-		cm := canManage || g.OwnerId == userId
+		cm := isAdmin || (user != nil && g.OwnerId == user.Id)
 		ret = append(ret, *buildGroup(&g, joinedMap[g.Id], cm))
 	}
 	return ret
