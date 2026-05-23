@@ -348,3 +348,61 @@ func GroupKickMember(ctx *gin.Context) {
 	}
 	ginx.WriteJSON(ctx, nil)
 }
+
+// GroupCheckInSubmit handles daily check-in
+func GroupCheckInSubmit(ctx *gin.Context) {
+	user := common.GetCurrentUser(ctx)
+	if user == nil {
+		ginx.WriteJSON(ctx, errs.NotLogin())
+		return
+	}
+	var body groupActionReq
+	if err := ginx.Bind(ctx, &body); err != nil {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage("groupId is required"))
+		return
+	}
+	if body.GroupId <= 0 {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage("groupId is required"))
+		return
+	}
+	if err := services.GroupCheckInService.CheckIn(user.Id, body.GroupId); err != nil {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage(err.Error()))
+		return
+	}
+	// Return current status after check-in
+	checkedIn, days := services.GroupCheckInService.GetStatus(user.Id, body.GroupId)
+	ginx.WriteJSON(ctx, &resp.GroupCheckInStatusResponse{
+		CheckedIn:       checkedIn,
+		ConsecutiveDays: days,
+	})
+}
+
+// GroupCheckInStatus returns check-in status
+func GroupCheckInStatus(ctx *gin.Context) {
+	user := common.GetCurrentUser(ctx)
+	if user == nil {
+		ginx.WriteJSON(ctx, &resp.GroupCheckInStatusResponse{})
+		return
+	}
+	groupId, _ := params.GetInt64(ctx, "groupId")
+	if groupId <= 0 {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage("groupId is required"))
+		return
+	}
+	checkedIn, days := services.GroupCheckInService.GetStatus(user.Id, groupId)
+	ginx.WriteJSON(ctx, &resp.GroupCheckInStatusResponse{
+		CheckedIn:       checkedIn,
+		ConsecutiveDays: days,
+	})
+}
+
+// GroupCheckInRank returns top check-in users
+func GroupCheckInRank(ctx *gin.Context) {
+	groupId, _ := params.GetInt64(ctx, "groupId")
+	if groupId <= 0 {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage("groupId is required"))
+		return
+	}
+	records := services.GroupCheckInService.GetRank(groupId)
+	ginx.WriteJSON(ctx, render.BuildGroupCheckInRank(records))
+}

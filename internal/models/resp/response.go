@@ -419,3 +419,15 @@ type BadgeResponse struct {
 	Worn        bool   `json:"worn"`       // 是否已佩戴
 	ObtainTime  int64  `json:"obtainTime"` // 获得时间（未获得为0）
 }
+
+// GroupCheckInStatusResponse 签到状态
+type GroupCheckInStatusResponse struct {
+	CheckedIn       bool `json:"checkedIn"`
+	ConsecutiveDays int  `json:"consecutiveDays"`
+}
+
+// GroupCheckInRankItem 签到排行项
+type GroupCheckInRankItem struct {
+	User            *UserInfo `json:"user"`
+	ConsecutiveDays int       `json:"consecutiveDays"`
+}

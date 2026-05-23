@@ -52,3 +52,20 @@ func BuildGroupMember(member *models.GroupMember, userInfo *resp.UserInfo) *resp
 		CreateTime: member.CreateTime,
 	}
 }
+
+func BuildGroupCheckInRank(records []models.GroupCheckIn) []resp.GroupCheckInRankItem {
+	var items []resp.GroupCheckInRankItem
+	for _, r := range records {
+		userInfo := BuildUserInfoDefaultIfNull(r.UserId)
+		if userInfo != nil {
+			items = append(items, resp.GroupCheckInRankItem{
+				User:            userInfo,
+				ConsecutiveDays: r.ConsecutiveDays,
+			})
+		}
+	}
+	if items == nil {
+		items = []resp.GroupCheckInRankItem{}
+	}
+	return items
+}

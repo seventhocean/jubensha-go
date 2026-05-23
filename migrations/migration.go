@@ -124,4 +124,5 @@ func init() {
 	register(22, "add group module config", migrate_group_module_config)
 	register(23, "add group tieba fields (banner, notice, rules)", migrate_group_tieba_fields)
 	register(24, "add role field to group_member", migrate_group_member_role)
+	register(25, "create group_check_in table", migrate_group_checkin)
 }

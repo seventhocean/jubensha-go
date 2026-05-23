@@ -1,6 +1,6 @@
 import { serverApiFetch as apiFetch } from "./server"
 
-import type { GroupItem, GroupMember, PageData, Topic } from "./types"
+import type { GroupCheckInRankItem, GroupCheckInStatus, GroupItem, GroupMember, PageData, Topic } from "./types"
 
 export function getGroupList() {
   return apiFetch<GroupItem[]>("/api/group/list")
@@ -91,5 +91,24 @@ export function kickMember(groupId: number, userId: string) {
   return apiFetch<void>("/api/group/kick_member", {
     method: "POST",
     body: { groupId, userId: Number(userId) },
+  })
+}
+
+export function groupCheckIn(groupId: number) {
+  return apiFetch<GroupCheckInStatus>("/api/group/checkin", {
+    method: "POST",
+    body: { groupId },
+  })
+}
+
+export function getGroupCheckInStatus(groupId: number) {
+  return apiFetch<GroupCheckInStatus>("/api/group/checkin_status", {
+    params: { groupId },
+  })
+}
+
+export function getGroupCheckInRank(groupId: number) {
+  return apiFetch<GroupCheckInRankItem[]>("/api/group/checkin_rank", {
+    params: { groupId },
   })
 }

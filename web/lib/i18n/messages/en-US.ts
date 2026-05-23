@@ -1657,6 +1657,13 @@ const enUS = {
       kickConfirm: "Remove this member from the group?",
       roleUpdated: "Role updated",
       memberKicked: "Member removed",
+      checkIn: "Check In",
+      checkedIn: "Checked In",
+      checkInSuccess: "Checked in successfully!",
+      alreadyCheckedIn: "Already checked in today",
+      consecutiveDays: "{count} days",
+      checkInRank: "Check-in Rank",
+      days: "days",
     },
     tasks: {
       title: "Tasks",

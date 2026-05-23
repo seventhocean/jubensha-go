@@ -1619,6 +1619,13 @@ const zhCN = {
       kickConfirm: "确定将该成员移出群组？",
       roleUpdated: "角色已更新",
       memberKicked: "成员已移除",
+      checkIn: "签到",
+      checkedIn: "已签到",
+      checkInSuccess: "签到成功！",
+      alreadyCheckedIn: "今天已签到",
+      consecutiveDays: "连续 {count} 天",
+      checkInRank: "签到排行",
+      days: "天",
     },
     tasks: {
       title: "任务中心",

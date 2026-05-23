@@ -19,7 +19,7 @@ var Models = []interface{}{
 	&UserScoreLog{}, &UserExpLog{},
 	&OperateLog{}, &EmailLog{}, &EmailCode{}, &SmsCode{}, &CheckIn{}, &UserFollow{}, &UserFeed{}, &UserReport{},
 	&ForbiddenWord{},
-	&Group{}, &GroupMember{},
+	&Group{}, &GroupMember{}, &GroupCheckIn{},
 	&Attachment{}, &AttachmentDownloadLog{},
 }
 
@@ -597,6 +597,16 @@ type GroupMember struct {
 	UserId     int64 `gorm:"not null;uniqueIndex:uk_group_member_gu;index:idx_group_member_user_id" json:"userId" form:"userId"`   // 用户ID
 	Role       int   `gorm:"type:int(11);not null;default:0" json:"role" form:"role"`                                               // 0=member, 1=admin, 2=owner
 	CreateTime int64 `gorm:"not null;default:0" json:"createTime" form:"createTime"`                                                // 加入时间
+}
+
+// GroupCheckIn 群组签到记录
+type GroupCheckIn struct {
+	Model
+	GroupId         int64 `gorm:"not null;uniqueIndex:uk_group_checkin_gud;index:idx_group_checkin_group_id" json:"groupId" form:"groupId"`
+	UserId          int64 `gorm:"not null;uniqueIndex:uk_group_checkin_gud;index:idx_group_checkin_user_id" json:"userId" form:"userId"`
+	CheckInDate     int   `gorm:"type:int(11);not null;uniqueIndex:uk_group_checkin_gud" json:"checkInDate" form:"checkInDate"` // YYYYMMDD format
+	ConsecutiveDays int   `gorm:"type:int(11);not null;default:1" json:"consecutiveDays" form:"consecutiveDays"`
+	CreateTime      int64 `gorm:"not null;default:0" json:"createTime" form:"createTime"`
 }
 
 // Attachment 帖子附件

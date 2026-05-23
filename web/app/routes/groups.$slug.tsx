@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router"
-import { Crown, Loader2, Megaphone, Pin, ScrollText, Settings, Shield, Users } from "lucide-react"
+import { Crown, Loader2, Megaphone, Pin, ScrollText, Settings, Shield, Users, CalendarCheck } from "lucide-react"
 import { toast } from "sonner"
 
 import { useCurrentUser } from "@/components/app/app-provider"
@@ -22,16 +22,19 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   getGroup,
+  getGroupCheckInRank,
+  getGroupCheckInStatus,
   getGroupHotTopics,
   getGroupMembers,
   getGroupStickyTopics,
   getGroupTopics,
+  groupCheckIn,
   joinGroup,
   kickMember,
   leaveGroup,
   setMemberRole,
 } from "@/lib/api/groups"
-import type { GroupItem, GroupMember, Topic } from "@/lib/api/types"
+import type { GroupCheckInRankItem, GroupCheckInStatus, GroupItem, GroupMember, Topic } from "@/lib/api/types"
 import { prettyDate } from "@/lib/format"
 import { useI18n } from "@/lib/i18n/provider"
 import { buildSigninHref } from "@/lib/toast"
@@ -69,12 +72,14 @@ function GroupSidebar({
   t,
   isOwner,
   onManageMembers,
+  checkInRank,
 }: {
   group: GroupItem
   members: GroupMember[]
   t: (key: string) => string
   isOwner: boolean
   onManageMembers: () => void
+  checkInRank: GroupCheckInRankItem[]
 }) {
   return (
     <>
@@ -146,6 +151,33 @@ function GroupSidebar({
           </CardContent>
         </Card>
       ) : null}
+
+      {checkInRank.length > 0 ? (
+        <Card size="sm">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <CalendarCheck className="h-4 w-4" />
+              {t("user.groups.checkInRank")}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {checkInRank.map((item, index) => (
+                <div key={item.user.id} className="flex items-center gap-2">
+                  <span className="text-xs text-muted-foreground w-4">{index + 1}</span>
+                  <UserAvatar user={item.user} size={24} />
+                  <span className="text-sm truncate flex-1">
+                    {item.user.nickname || item.user.username}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    {item.consecutiveDays} {t("user.groups.days")}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      ) : null}
     </>
   )
 }
@@ -173,6 +205,9 @@ export default function GroupDetailRoute() {
   const [membersCursor, setMembersCursor] = useState<string>("")
   const [membersHasMore, setMembersHasMore] = useState(false)
   const [membersLoading, setMembersLoading] = useState(false)
+  const [checkInStatus, setCheckInStatus] = useState<GroupCheckInStatus | null>(null)
+  const [checkInRank, setCheckInRank] = useState<GroupCheckInRankItem[]>([])
+  const [checkingIn, setCheckingIn] = useState(false)
 
   const isOwner = !!(currentUser && group && String(group.ownerId) === currentUser.id)
 
@@ -217,7 +252,29 @@ export default function GroupDetailRoute() {
         setStickyTopics([])
       })
       .finally(() => setStickyLoaded(true))
+    // Load check-in rank
+    getGroupCheckInRank(group.id)
+      .then((data) => {
+        setCheckInRank(Array.isArray(data) ? data : [])
+      })
+      .catch(() => {
+        setCheckInRank([])
+      })
   }, [group])
+
+  // Load check-in status when group loads and user is logged in
+  useEffect(() => {
+    if (!group || !currentUser) return
+    getGroupCheckInStatus(group.id)
+      .then((data) => {
+        if (data) {
+          setCheckInStatus(data)
+        }
+      })
+      .catch(() => {
+        setCheckInStatus(null)
+      })
+  }, [group, currentUser])
 
   // hotLoaded prevents re-fetching the hot topics list on every tab switch within a session.
   // This is intentional: hot topics are a ranked snapshot and do not need real-time updates
@@ -296,6 +353,30 @@ export default function GroupDetailRoute() {
     }
   }
 
+  async function handleCheckIn() {
+    if (!currentUser) {
+      navigate(buildSigninHref(`/groups/${slug}`))
+      return
+    }
+    if (!group || checkingIn) return
+    setCheckingIn(true)
+    try {
+      const result = await groupCheckIn(group.id)
+      if (result) {
+        setCheckInStatus(result)
+        toast.success(t("user.groups.checkInSuccess"))
+        // Refresh rank
+        getGroupCheckInRank(group.id)
+          .then((data) => setCheckInRank(Array.isArray(data) ? data : []))
+          .catch(() => {})
+      }
+    } catch {
+      toast.error(t("user.groups.alreadyCheckedIn"))
+    } finally {
+      setCheckingIn(false)
+    }
+  }
+
   async function handleJoin() {
     if (!currentUser) {
       navigate(buildSigninHref(`/groups/${slug}`))
@@ -342,7 +423,7 @@ export default function GroupDetailRoute() {
   }
 
   const sidebar = (
-    <GroupSidebar group={group} members={members} t={t} isOwner={isOwner} onManageMembers={handleManageMembers} />
+    <GroupSidebar group={group} members={members} t={t} isOwner={isOwner} onManageMembers={handleManageMembers} checkInRank={checkInRank} />
   )
 
   return (
@@ -427,6 +508,30 @@ export default function GroupDetailRoute() {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        {currentUser ? (
+          <button
+            type="button"
+            onClick={handleCheckIn}
+            disabled={checkingIn || (checkInStatus?.checkedIn === true)}
+            className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-transform active:scale-95 ${
+              checkInStatus?.checkedIn
+                ? "bg-green-100 text-green-700 cursor-default"
+                : "bg-primary/10 text-primary hover:bg-primary/20"
+            }`}
+          >
+            {checkingIn ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <CalendarCheck className="h-4 w-4" />
+            )}
+            {checkInStatus?.checkedIn ? t("user.groups.checkedIn") : t("user.groups.checkIn")}
+            {checkInStatus?.checkedIn && checkInStatus.consecutiveDays > 0 ? (
+              <span className="ml-1 rounded-full bg-green-200 px-1.5 py-0.5 text-xs text-green-800">
+                {checkInStatus.consecutiveDays} {t("user.groups.days")}
+              </span>
+            ) : null}
+          </button>
+        ) : null}
         <button
           type="button"
           onClick={handleJoin}

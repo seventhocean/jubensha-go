@@ -142,6 +142,16 @@ export interface GroupMember {
   createTime: number
 }
 
+export interface GroupCheckInStatus {
+  checkedIn: boolean
+  consecutiveDays: number
+}
+
+export interface GroupCheckInRankItem {
+  user: UserSummary
+  consecutiveDays: number
+}
+
 export interface Topic {
   id: EntityId
   type?: number
