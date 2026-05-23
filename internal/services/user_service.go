@@ -73,10 +73,11 @@ func (s *userService) FindPageByCnd(cnd *sqls.Cnd) (list []models.User, paging *
 
 func (s *userService) Create(t *models.User) error {
 	err := repositories.UserRepository.Create(sqls.DB(), t)
-	if err == nil {
-		cache.UserCache.Invalidate(t.Id)
-		search.UpdateUserIndex(t)
+	if err != nil {
+		return err
 	}
+	cache.UserCache.Invalidate(t.Id)
+	search.UpdateUserIndex(t)
 	return nil
 }
 
@@ -148,7 +149,12 @@ func (s *userService) Forbidden(operatorId, userId int64, days int, reason strin
 		// 永久禁言
 		if days == -1 {
 			user := cache.UserCache.Get(userId)
-			_ = s.DecrScore(userId, user.Score, constants.EntityUser, strconv.FormatInt(operatorId, 10), "永久禁言")
+			if user == nil {
+				user = repositories.UserRepository.Get(sqls.DB(), userId)
+			}
+			if user != nil {
+				_ = s.DecrScore(userId, user.Score, constants.EntityUser, strconv.FormatInt(operatorId, 10), "永久禁言")
+			}
 			go func() {
 				// 删除话题
 				TopicService.ScanByUser(userId, func(topics []models.Topic) {
@@ -545,17 +551,17 @@ func (s *userService) IncrTopicCount(ctx *sqls.TxContext, userId int64) error {
 
 // IncrCommentCount comment_count + 1
 func (s *userService) IncrCommentCount(userId int64) int {
-	t := repositories.UserRepository.Get(sqls.DB(), userId)
-	if t == nil {
-		return 0
-	}
-	commentCount := t.CommentCount + 1
-	if err := repositories.UserRepository.UpdateColumn(sqls.DB(), userId, "comment_count", commentCount); err != nil {
+	if err := repositories.UserRepository.UpdateColumn(sqls.DB(), userId, "comment_count", gorm.Expr("comment_count + 1")); err != nil {
 		slog.Error(err.Error(), slog.Any("err", err))
 	} else {
 		cache.UserCache.Invalidate(userId)
 	}
-	return commentCount
+	// Return updated count from DB
+	t := repositories.UserRepository.Get(sqls.DB(), userId)
+	if t != nil {
+		return t.CommentCount
+	}
+	return 0
 }
 
 // SendEmailVerifyEmail 发送邮箱验证邮件

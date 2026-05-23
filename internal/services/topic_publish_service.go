@@ -26,7 +26,7 @@ type topicPublishService struct{}
 
 // Publish 发表
 func (s *topicPublishService) Publish(userId int64, form req.CreateTopicReq) (*models.Topic, error) {
-	if err := s.checkParams(userId, form); err != nil {
+	if err := s.checkParams(userId, &form); err != nil {
 		return nil, err
 	}
 
@@ -163,7 +163,7 @@ func (s *topicPublishService) _IsNeedReview(form req.CreateTopicReq) bool {
 	return false
 }
 
-func (s topicPublishService) checkParams(userId int64, form req.CreateTopicReq) (err error) {
+func (s topicPublishService) checkParams(userId int64, form *req.CreateTopicReq) (err error) {
 	modules := SysConfigService.GetModules()
 	if form.Type == constants.TopicTypeTweet {
 		if !modules.Tweet {

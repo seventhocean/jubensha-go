@@ -194,7 +194,9 @@ func (s *taskEngineService) grantReward(ctx *sqls.TxContext, logRow *models.User
 
 	// 发放积分
 	if logRow.Score != 0 {
-		UserService.addScore(ctx, logRow.UserId, logRow.Score, sourceType, sourceId, "task reward")
+		if err := UserService.addScore(ctx, logRow.UserId, logRow.Score, sourceType, sourceId, "task reward"); err != nil {
+			return err
+		}
 	}
 
 	// 发放经验

@@ -267,5 +267,12 @@ func (s *userLikeService) like(ctx *sqls.TxContext, userId int64, entityType str
 }
 
 func (s userLikeService) unlike(tx *gorm.DB, userId int64, entityType string, entityId int64) error {
-	return tx.Delete(&models.UserLike{}, "user_id = ? and entity_id = ? and entity_type = ?", userId, entityId, entityType).Error
+	result := tx.Delete(&models.UserLike{}, "user_id = ? and entity_id = ? and entity_type = ?", userId, entityId, entityType)
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return errors.New("not liked yet")
+	}
+	return nil
 }

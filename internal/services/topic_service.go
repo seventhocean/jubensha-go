@@ -361,10 +361,14 @@ func (s *topicService) _GetFollowTopics(userId int64, cursor int64) (topics []mo
 // 指定标签下话题列表
 func (s *topicService) GetTagTopics(tagId, cursor int64) (topics []models.Topic, nextCursor int64, hasMore bool) {
 	limit := 20
-	topicTags := repositories.TopicTagRepository.Find(sqls.DB(), sqls.NewCnd().
+	cnd := sqls.NewCnd().
 		Eq("tag_id", tagId).
 		Eq("status", constants.StatusOk).
-		Desc("last_comment_time").Limit(limit))
+		Desc("last_comment_time").Limit(limit)
+	if cursor > 0 {
+		cnd.Lt("last_comment_time", cursor)
+	}
+	topicTags := repositories.TopicTagRepository.Find(sqls.DB(), cnd)
 	if len(topicTags) > 0 {
 		nextCursor = topicTags[len(topicTags)-1].LastCommentTime
 

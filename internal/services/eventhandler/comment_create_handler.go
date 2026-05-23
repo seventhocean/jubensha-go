@@ -22,6 +22,9 @@ func handleCommentCreate(i interface{}) {
 	e := i.(event.CommentCreateEvent)
 
 	comment := services.CommentService.Get(e.CommentId)
+	if comment == nil {
+		return
+	}
 
 	// 发送消息
 	handleMsg(comment)

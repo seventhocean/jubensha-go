@@ -97,14 +97,12 @@ func (s *userFollowService) Follow(userId, otherId int64) error {
 		}); err != nil {
 			return err
 		}
-		cache.UserCache.Invalidate(userId)
 
 		if err := repositories.UserRepository.Updates(tx, otherId, map[string]interface{}{
 			"fans_count": gorm.Expr("fans_count + 1"),
 		}); err != nil {
 			return err
 		}
-		cache.UserCache.Invalidate(otherId)
 
 		return repositories.UserFollowRepository.Create(tx, &models.UserFollow{
 			UserId:     userId,
@@ -116,6 +114,8 @@ func (s *userFollowService) Follow(userId, otherId int64) error {
 	if err != nil {
 		return err
 	}
+	cache.UserCache.Invalidate(userId)
+	cache.UserCache.Invalidate(otherId)
 
 	// 发送mq消息
 	event.Send(event.FollowEvent{
@@ -145,20 +145,20 @@ func (s *userFollowService) UnFollow(userId, otherId int64) error {
 		}).Error; err != nil {
 			return err
 		}
-		cache.UserCache.Invalidate(userId)
 
 		if err := tx.Model(&models.User{}).Where("id = ? and fans_count > 0", otherId).Updates(map[string]interface{}{
 			"fans_count": gorm.Expr("fans_count - 1"),
 		}).Error; err != nil {
 			return err
 		}
-		cache.UserCache.Invalidate(otherId)
 
 		return nil
 	})
 	if err != nil {
 		return err
 	}
+	cache.UserCache.Invalidate(userId)
+	cache.UserCache.Invalidate(otherId)
 
 	// 发送mq消息
 	event.Send(event.UnFollowEvent{
