@@ -64,3 +64,18 @@ export function createGroup(data: {
     body: data,
   })
 }
+
+export function updateGroup(data: {
+  groupId: number
+  name?: string
+  description?: string
+  icon?: string
+  banner?: string
+  notice?: string
+  rules?: string
+}) {
+  return apiFetch<GroupItem>("/api/group/update", {
+    method: "POST",
+    body: data,
+  })
+}

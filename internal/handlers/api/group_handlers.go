@@ -181,6 +181,59 @@ func GroupHotTopics(ctx *gin.Context) {
 	ginx.WriteJSON(ctx, render.BuildSimpleTopics(ctx, topics))
 }
 
+type groupUpdateReq struct {
+	GroupId     int64  `json:"groupId"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Icon        string `json:"icon"`
+	Banner      string `json:"banner"`
+	Notice      string `json:"notice"`
+	Rules       string `json:"rules"`
+}
+
+// GroupUpdate 更新群组设置
+func GroupUpdate(ctx *gin.Context) {
+	user := common.GetCurrentUser(ctx)
+	if user == nil {
+		ginx.WriteJSON(ctx, errs.NotLogin())
+		return
+	}
+	var body groupUpdateReq
+	if err := ginx.BindJSON(ctx, &body); err != nil {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage("invalid request"))
+		return
+	}
+	if body.GroupId <= 0 {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage("groupId is required"))
+		return
+	}
+	group := services.GroupService.Get(body.GroupId)
+	if group == nil {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage("group not found"))
+		return
+	}
+	if group.OwnerId != user.Id {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage("only the group owner can update settings"))
+		return
+	}
+	columns := map[string]interface{}{
+		"description": body.Description,
+		"icon":        body.Icon,
+		"banner":      body.Banner,
+		"notice":      body.Notice,
+		"rules":       body.Rules,
+	}
+	if body.Name != "" {
+		columns["name"] = body.Name
+	}
+	if err := services.GroupService.Updates(body.GroupId, columns); err != nil {
+		ginx.WriteJSON(ctx, ginx.ErrorMessage(err.Error()))
+		return
+	}
+	updated := services.GroupService.Get(body.GroupId)
+	ginx.WriteJSON(ctx, render.BuildGroup(updated, true))
+}
+
 type groupCreateReq struct {
 	Name        string `json:"name"`
 	Slug        string `json:"slug"`

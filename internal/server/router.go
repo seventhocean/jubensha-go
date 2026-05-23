@@ -245,6 +245,7 @@ func registerAPIRoutes(group *gin.RouterGroup) {
 	groupGroup.POST("/join", apiHandlers.GroupJoin)
 	groupGroup.POST("/leave", apiHandlers.GroupLeave)
 	groupGroup.POST("/create", apiHandlers.GroupCreate)
+	groupGroup.POST("/update", apiHandlers.GroupUpdate)
 	groupGroup.GET("/:slug", apiHandlers.GroupDetail)
 
 	voteGroup := group.Group("/vote")

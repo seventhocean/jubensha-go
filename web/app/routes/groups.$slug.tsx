@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router"
-import { Loader2, Megaphone, Pin, ScrollText, Users } from "lucide-react"
+import { Loader2, Megaphone, Pin, ScrollText, Settings, Users } from "lucide-react"
 import { toast } from "sonner"
 
 import { useCurrentUser } from "@/components/app/app-provider"
@@ -337,6 +337,15 @@ export default function GroupDetailRoute() {
             t("user.groups.join")
           )}
         </button>
+        {currentUser && String(group.ownerId) === currentUser.id ? (
+          <Link
+            to={`/groups/${slug}/settings`}
+            className="inline-flex items-center justify-center rounded-lg px-3 py-2 text-sm font-medium bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
+            title={t("user.groups.settings")}
+          >
+            <Settings className="h-4 w-4" />
+          </Link>
+        ) : null}
       </div>
 
       {/* Tab navigation */}
