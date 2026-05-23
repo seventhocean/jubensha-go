@@ -2,7 +2,7 @@
   "id": "FEAT-002",
   "type": "feat",
   "description": "Backend endpoints for hot topics, sorted topics, and group creation",
-  "status": "in_progress",
+  "status": "completed",
   "steps": [
     "Step 1: In internal/services/group_service.go - Add method GetGroupHotTopics(groupId int64, cursor int64) ([]models.Topic, int64, bool) that queries topics ordered by (like_count + comment_count) DESC with cursor-based pagination (limit 20). Add sort parameter to GetGroupTopics to support 'latest' (default, by id desc), 'most_replies' (comment_count desc), 'most_active' (last_comment_time desc).",
     "Step 2: In internal/handlers/api/group_handlers.go - Add GroupHotTopics handler that reads groupId and cursor params, calls GetGroupHotTopics, renders with BuildSimpleTopics. Add sort query parameter handling to existing GroupTopics handler. Add GroupCreate handler that: requires auth, reads JSON body (name, slug, description, icon, banner), validates required fields, creates group with owner=current user, returns the created group.",
@@ -24,5 +24,5 @@
     "cd /projects/sandbox/jubensha-go/web && pnpm lint"
   ],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "Go build requires web/build/spa/ placeholder for embed.FS. All verification passes: go build ./..., pnpm typecheck, pnpm lint. Used ginx.BindJSON for JSON body parsing in GroupCreate handler."
 }
