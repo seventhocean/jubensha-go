@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Link, useNavigate, useParams } from "react-router"
+import { Link, Outlet, useNavigate, useOutlet, useParams } from "react-router"
 import { Crown, Loader2, Megaphone, Pin, ScrollText, Settings, Shield, Users, CalendarCheck } from "lucide-react"
 import { toast } from "sonner"
 
@@ -393,6 +393,16 @@ export default function GroupDetailRoute() {
     return (
       <MainShell>
         <EmptyState title={t("user.groups.not_found")} />
+      </MainShell>
+    )
+  }
+
+  // If a child route (e.g. settings) is active, render it instead of group content
+  const childOutlet = useOutlet()
+  if (childOutlet) {
+    return (
+      <MainShell>
+        <Outlet />
       </MainShell>
     )
   }
