@@ -2,7 +2,7 @@
   "id": "FEAT-003",
   "type": "fix",
   "description": "Address review issues: pagination fix, slug validation, error handling, useEffect split, hot topics comment",
-  "status": "in_progress",
+  "status": "completed",
   "steps": [
     "Step 1: Fix hot topics endpoint to cap at 50 results with no pagination. Fix sorted topics to use offset-based pagination with page param. Keep latest sort using cursor-based pagination.",
     "Step 2: Add slug format validation regex and reserved words blocklist in GroupCreate handler.",
@@ -26,5 +26,5 @@
     "cd /projects/sandbox/jubensha-go/web && pnpm lint"
   ],
   "blocked_reason": null,
-  "findings": null
+  "findings": "All 5 review issues addressed. go build, pnpm typecheck, and pnpm lint all pass. Hot topics uses simple capped list (no pagination). Sorted topics use offset/page-based approach with page number encoded in cursor string for LoadMore compatibility."
 }
