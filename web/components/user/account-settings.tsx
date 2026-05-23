@@ -502,8 +502,8 @@ function AccountDialog({
         >
           {dialog === "username" ? (
             <>
-              <Alert className="border-blue-200 bg-blue-50">
-                <AlertDescription className="text-sm text-blue-700">
+              <Alert className="border-[var(--color-hairline)] bg-[var(--color-semantic-info-bg)]">
+                <AlertDescription className="text-sm text-[var(--color-semantic-info)]">
                   {t("component.setUsernameDialog.usernameRule")}
                 </AlertDescription>
               </Alert>

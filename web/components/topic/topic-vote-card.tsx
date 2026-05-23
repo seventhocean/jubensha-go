@@ -222,7 +222,7 @@ function TopicVoteCardContent({ vote, className }: { vote: TopicVote; className?
       {options.length > OPTION_LIMIT ? (
         <button
           type="button"
-          className="mt-3 h-9 w-full max-w-[470px] rounded bg-white text-sm hover:bg-[#fff0ef] dark:bg-background dark:hover:bg-accent"
+          className="mt-3 h-9 w-full max-w-[470px] rounded bg-[var(--color-surface-1)] text-sm hover:bg-[var(--color-secondary-subtle)] dark:bg-background dark:hover:bg-accent"
           onClick={() => setShowMore((current) => !current)}
         >
           {showMore ? t("pages.topic.detail.vote.collapseOptions") : t("pages.topic.detail.vote.expandOptions")}

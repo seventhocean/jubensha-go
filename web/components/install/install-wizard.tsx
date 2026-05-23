@@ -753,7 +753,7 @@ export function InstallWizard({
                     <Loader2 className="mt-1 h-4 w-4 animate-spin" />
                   )}
                   <AlertDescription
-                    className={installFailed ? "text-red-800" : "text-[var(--color-semantic-info)]"}
+                    className={installFailed ? "text-[var(--color-semantic-danger)]" : "text-[var(--color-semantic-info)]"}
                   >
                     {installMessage}
                   </AlertDescription>
@@ -938,10 +938,10 @@ function Feedback({ error, success }: { error?: string; success?: string }) {
         </Alert>
       ) : null}
       {!error && success ? (
-        <Alert className="border-green-200 bg-green-50">
+        <Alert className="border-[var(--color-hairline)] bg-[var(--color-semantic-success-bg)]">
           <div className="flex gap-2">
-            <CheckCircle className="mt-1 h-4 w-4 text-green-600" />
-            <AlertDescription className="text-green-800">
+            <CheckCircle className="mt-1 h-4 w-4 text-[var(--color-semantic-success)]" />
+            <AlertDescription className="text-[var(--color-semantic-success)]">
               {success}
             </AlertDescription>
           </div>

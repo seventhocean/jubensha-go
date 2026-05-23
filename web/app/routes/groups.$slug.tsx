@@ -805,7 +805,7 @@ export default function GroupDetailRoute() {
                             <button
                               type="button"
                               onClick={() => handleKickMember(member.user.id)}
-                              className="rounded px-2 py-1 text-xs text-red-600 hover:bg-red-50"
+                              className="rounded px-2 py-1 text-xs text-[var(--color-semantic-danger)] hover:bg-[var(--color-semantic-danger-bg)]"
                             >
                               {t("user.groups.kickMember")}
                             </button>
