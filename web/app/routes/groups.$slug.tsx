@@ -2,17 +2,20 @@
 
 import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router"
-import { Megaphone, Pin, ScrollText, Users } from "lucide-react"
+import { Loader2, Megaphone, Pin, ScrollText, Users } from "lucide-react"
+import { toast } from "sonner"
 
 import { EmptyState } from "@/components/common/empty-state"
 import { UserAvatar } from "@/components/common/avatar"
 import { LoadMore } from "@/components/common/load-more"
+import { GroupDetailSkeleton } from "@/components/common/skeleton-list"
 import { MainShell } from "@/components/layout/main-shell"
 import { TopicListItem } from "@/components/topic/topic-list-item"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   getGroup,
+  getGroupHotTopics,
   getGroupMembers,
   getGroupStickyTopics,
   getGroupTopics,
@@ -112,6 +115,12 @@ export default function GroupDetailRoute() {
   const [stickyTopics, setStickyTopics] = useState<Topic[]>([])
   const [stickyLoaded, setStickyLoaded] = useState(false)
   const [activeTab, setActiveTab] = useState("all")
+  const [isJoining, setIsJoining] = useState(false)
+  const [sort, setSort] = useState("latest")
+  const [hotTopics, setHotTopics] = useState<Topic[]>([])
+  const [hotCursor, setHotCursor] = useState<string>("")
+  const [hotHasMore, setHotHasMore] = useState(true)
+  const [hotLoaded, setHotLoaded] = useState(false)
 
   useDocumentTitle(group?.name)
 
@@ -124,7 +133,7 @@ export default function GroupDetailRoute() {
 
   useEffect(() => {
     if (!group) return
-    getGroupTopics(group.id).then((data) => {
+    getGroupTopics(group.id, undefined, sort).then((data) => {
       if (data) {
         setTopics(data.results || [])
         setCursor(data.cursor || "")
@@ -136,10 +145,7 @@ export default function GroupDetailRoute() {
         setMembers(data.results || [])
       }
     })
-  }, [group])
-
-  useEffect(() => {
-    if (activeTab !== "pinned" || stickyLoaded || !group) return
+    // Load sticky topics immediately
     getGroupStickyTopics(group.id)
       .then((data) => {
         setStickyTopics(Array.isArray(data) ? data : [])
@@ -148,30 +154,53 @@ export default function GroupDetailRoute() {
         setStickyTopics([])
       })
       .finally(() => setStickyLoaded(true))
-  }, [activeTab, stickyLoaded, group])
+  }, [group, sort])
+
+  useEffect(() => {
+    if (activeTab !== "hot" || hotLoaded || !group) return
+    getGroupHotTopics(group.id)
+      .then((data) => {
+        if (data) {
+          setHotTopics(data.results || [])
+          setHotCursor(data.cursor || "")
+          setHotHasMore(data.hasMore)
+        }
+      })
+      .catch(() => {
+        setHotTopics([])
+      })
+      .finally(() => setHotLoaded(true))
+  }, [activeTab, hotLoaded, group])
 
   async function handleJoin() {
-    if (!group) return
-    if (group.joined) {
-      await leaveGroup(group.id)
-    } else {
-      await joinGroup(group.id)
+    if (!group || isJoining) return
+    setIsJoining(true)
+    try {
+      if (group.joined) {
+        await leaveGroup(group.id)
+        toast.success(t("user.groups.leaveSuccess"))
+      } else {
+        await joinGroup(group.id)
+        toast.success(t("user.groups.joinSuccess"))
+      }
+      setGroup({
+        ...group,
+        joined: !group.joined,
+        memberCount: group.joined
+          ? group.memberCount - 1
+          : group.memberCount + 1,
+      })
+    } catch {
+      toast.error(t("user.groups.operationFailed"))
+    } finally {
+      setIsJoining(false)
     }
-    setGroup({
-      ...group,
-      joined: !group.joined,
-      memberCount: group.joined
-        ? group.memberCount - 1
-        : group.memberCount + 1,
-    })
   }
 
   if (loading) {
     return (
       <MainShell>
-        <div className="p-8 text-center text-muted-foreground">
-          Loading...
-        </div>
+        <GroupDetailSkeleton />
       </MainShell>
     )
   }
@@ -202,7 +231,7 @@ export default function GroupDetailRoute() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
           </div>
         ) : (
-          <div className="h-40 md:h-48 bg-gradient-to-br from-primary/20 to-primary/5" />
+          <div className="h-40 md:h-48 bg-gradient-to-br from-slate-800 to-slate-900" />
         )}
         <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6">
           <div className="flex items-end gap-4">
@@ -251,13 +280,20 @@ export default function GroupDetailRoute() {
         <button
           type="button"
           onClick={handleJoin}
-          className={`px-4 py-2 rounded-lg text-sm font-medium ${
+          disabled={isJoining}
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-transform active:scale-95 ${
             group.joined
               ? "bg-muted text-muted-foreground hover:bg-red-100 hover:text-red-600"
               : "bg-primary/10 text-primary hover:bg-primary/20"
           }`}
         >
-          {group.joined ? t("user.groups.leave") : t("user.groups.join")}
+          {isJoining ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : group.joined ? (
+            t("user.groups.leave")
+          ) : (
+            t("user.groups.join")
+          )}
         </button>
       </div>
 
@@ -265,13 +301,41 @@ export default function GroupDetailRoute() {
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList variant="line">
           <TabsTrigger value="all">{t("user.groups.allPosts")}</TabsTrigger>
+          <TabsTrigger value="hot">{t("user.groups.hot")}</TabsTrigger>
           <TabsTrigger value="pinned">{t("user.groups.pinned")}</TabsTrigger>
           <TabsTrigger value="about">{t("user.groups.about")}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="all">
-          <div className="rounded-lg bg-background">
-            {topics.length === 0 ? (
+          <div className="animate-in fade-in-0 duration-200 rounded-lg bg-background">
+            {/* Sort dropdown */}
+            <div className="flex items-center justify-end px-4 py-2 border-b">
+              <select
+                value={sort}
+                onChange={(e) => setSort(e.target.value)}
+                className="rounded border bg-background px-2 py-1 text-xs"
+              >
+                <option value="latest">{t("user.groups.sortLatest")}</option>
+                <option value="most_replies">{t("user.groups.sortMostReplies")}</option>
+                <option value="most_active">{t("user.groups.sortMostActive")}</option>
+              </select>
+            </div>
+
+            {/* Sticky topics at the top */}
+            {stickyLoaded && stickyTopics.length > 0 ? (
+              <ul className="divide-y divide-border border-l-4 border-orange-400 bg-orange-50/50 dark:bg-orange-950/20">
+                {stickyTopics.map((topic) => (
+                  <TopicListItem
+                    key={topic.id}
+                    topic={topic}
+                    showSticky
+                    t={t}
+                  />
+                ))}
+              </ul>
+            ) : null}
+
+            {topics.length === 0 && stickyTopics.length === 0 ? (
               <EmptyState title={t("user.groups.no_topics")} />
             ) : (
               <LoadMore<Topic>
@@ -279,14 +343,14 @@ export default function GroupDetailRoute() {
                 initialCursor={cursor}
                 initialHasMore={hasMore}
                 initialLoad={false}
-                resetKey={`/api/group/topics?groupId=${group.id}`}
+                resetKey={`/api/group/topics?groupId=${group.id}&sort=${sort}`}
                 labels={{
                   loadMore: t("common.loadMore.loadMore"),
                   noMore: t("common.loadMore.noMore"),
                   error: t("common.loadMore.error"),
                 }}
                 loadPage={async (c) => {
-                  const data = await getGroupTopics(group.id, c.cursor)
+                  const data = await getGroupTopics(group.id, c.cursor, sort)
                   return {
                     cursor: data?.cursor || "",
                     hasMore: data?.hasMore ?? false,
@@ -312,11 +376,58 @@ export default function GroupDetailRoute() {
           </div>
         </TabsContent>
 
+        <TabsContent value="hot">
+          <div className="animate-in fade-in-0 duration-200 rounded-lg bg-background">
+            {!hotLoaded ? (
+              <div className="p-8 text-center text-muted-foreground">
+                <Loader2 className="h-5 w-5 animate-spin mx-auto" />
+              </div>
+            ) : hotTopics.length === 0 ? (
+              <EmptyState title={t("user.groups.noHotTopics")} />
+            ) : (
+              <LoadMore<Topic>
+                initialItems={hotTopics}
+                initialCursor={hotCursor}
+                initialHasMore={hotHasMore}
+                initialLoad={false}
+                resetKey={`/api/group/hot_topics?groupId=${group.id}`}
+                labels={{
+                  loadMore: t("common.loadMore.loadMore"),
+                  noMore: t("common.loadMore.noMore"),
+                  error: t("common.loadMore.error"),
+                }}
+                loadPage={async (c) => {
+                  const data = await getGroupHotTopics(group.id, c.cursor)
+                  return {
+                    cursor: data?.cursor || "",
+                    hasMore: data?.hasMore ?? false,
+                    results: data?.results || [],
+                  }
+                }}
+                renderItems={(items) => (
+                  <ul className="divide-y divide-border">
+                    {items.map((topic) => (
+                      <TopicListItem
+                        key={topic.id}
+                        topic={topic}
+                        t={t}
+                      />
+                    ))}
+                  </ul>
+                )}
+                renderEmpty={() => (
+                  <EmptyState title={t("user.groups.noHotTopics")} />
+                )}
+              />
+            )}
+          </div>
+        </TabsContent>
+
         <TabsContent value="pinned">
-          <div className="rounded-lg bg-background">
+          <div className="animate-in fade-in-0 duration-200 rounded-lg bg-background">
             {!stickyLoaded ? (
               <div className="p-8 text-center text-muted-foreground">
-                Loading...
+                <Loader2 className="h-5 w-5 animate-spin mx-auto" />
               </div>
             ) : stickyTopics.length === 0 ? (
               <EmptyState title={t("user.groups.noPinnedTopics")} />
@@ -336,7 +447,7 @@ export default function GroupDetailRoute() {
         </TabsContent>
 
         <TabsContent value="about">
-          <div className="space-y-4">
+          <div className="animate-in fade-in-0 duration-200 space-y-4">
             {/* Group Info */}
             <Card size="sm">
               <CardHeader>
@@ -365,6 +476,40 @@ export default function GroupDetailRoute() {
                 </dl>
               </CardContent>
             </Card>
+
+            {/* Announcement (mobile sidebar info) */}
+            {group.notice ? (
+              <Card size="sm">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Megaphone className="h-4 w-4" />
+                    {t("user.groups.announcement")}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground whitespace-pre-line">
+                    {group.notice}
+                  </p>
+                </CardContent>
+              </Card>
+            ) : null}
+
+            {/* Rules (mobile sidebar info) */}
+            {group.rules ? (
+              <Card size="sm">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <ScrollText className="h-4 w-4" />
+                    {t("user.groups.rules")}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground whitespace-pre-line">
+                    {group.rules}
+                  </p>
+                </CardContent>
+              </Card>
+            ) : null}
           </div>
         </TabsContent>
       </Tabs>

@@ -1,0 +1,31 @@
+{
+  "project_type": "Full-stack Go + React community app (bbs-go fork)",
+  "language": "Go (backend), TypeScript/React (frontend)",
+  "build_system": "Makefile with pnpm for web, go build for backend",
+  "test_framework": "Go tests (go test ./...), pnpm typecheck + pnpm lint for web",
+  "build_command": "make check (runs go test, typecheck, lint) or individually: cd web && pnpm typecheck && pnpm lint",
+  "test_command": "cd web && pnpm typecheck && pnpm lint",
+  "verification_instructions": "1. Run 'cd web && pnpm typecheck' to check TypeScript types. 2. Run 'cd web && pnpm lint' for linting. 3. Run 'go build ./...' from project root to verify Go compiles.",
+  "snapshot_or_generated_files": null,
+  "setup_instructions": "1. cd web && pnpm install --frozen-lockfile. 2. Go modules already vendored or downloaded.",
+  "environment_constraints": "OPEN_INTERNET - full network access. No database available for runtime testing, but build/compile verification works.",
+  "contribution_requirements": "Standard Go + React conventions. i18n keys in both en-US.ts and zh-CN.ts. Routes follow file-based routing with react-router.",
+  "key_patterns": "Frontend: React 19 with useEffect+useState for data fetching, react-router file-based routes, Tailwind CSS 4, shadcn UI components, lucide-react icons, sonner for toasts, i18next with useI18n() hook. Backend: Gin router, services layer, repositories layer, handlers/api for API endpoints, render package for response building.",
+  "relevant_files": [
+    "web/app/routes/groups.$slug.tsx",
+    "web/app/routes/groups._index.tsx",
+    "web/components/common/skeleton-list.tsx",
+    "web/components/topic/topics-nav-content.tsx",
+    "web/lib/i18n/messages/en-US.ts",
+    "web/lib/i18n/messages/zh-CN.ts",
+    "web/lib/api/groups.ts",
+    "web/lib/api/types.ts",
+    "internal/handlers/api/group_handlers.go",
+    "internal/services/group_service.go",
+    "internal/server/router.go",
+    "internal/models/models.go",
+    "internal/models/resp/response.go",
+    "internal/handlers/render/group_render.go"
+  ],
+  "directory_structure": "web/ - React frontend (app/routes for pages, components/, lib/api, lib/i18n). internal/ - Go backend (handlers/api, services, models, server/router.go). Makefile at root."
+}

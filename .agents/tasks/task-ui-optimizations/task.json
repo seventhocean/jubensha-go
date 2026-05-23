@@ -1,0 +1,7 @@
+{
+  "task_id": "task-ui-optimizations",
+  "task_description": "Implement all UI optimization items for the groups pages including skeleton loading, toast feedback, banner fix, sticky topics in All Posts, sort switcher, hot tab, search, create group, micro-animations, mobile sidebar in About tab, and i18n fixes.",
+  "status": "in_progress",
+  "feature_order": ["FEAT-001", "FEAT-002"],
+  "blocked_reason": null
+}

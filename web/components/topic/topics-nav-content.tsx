@@ -7,6 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { apiFetch } from "@/lib/api/client"
 import { getGroupNavs } from "@/lib/api/groups"
 import type { GroupItem, TopicNode } from "@/lib/api/types"
+import { useI18n } from "@/lib/i18n/provider"
 import { cn } from "@/lib/utils"
 
 function isBuiltInNode(node: TopicNode) {
@@ -48,6 +49,7 @@ export function TopicsNavContent({
 }) {
   const [nodes, setNodes] = React.useState(initialNodes)
   const [groups, setGroups] = React.useState<GroupItem[]>([])
+  const { t } = useI18n()
 
   React.useEffect(() => {
     if (initialNodes.length > 0) return
@@ -126,7 +128,7 @@ export function TopicsNavContent({
             <div className="px-3 pb-2">
               <div className="nodes-divider" aria-hidden="true" />
               <div className="text-xs text-muted-foreground/60 px-2 py-1">
-                Groups
+                {t("common.nav.groups")}
               </div>
               <ul>
                 {groups.map((group) => (
@@ -145,6 +147,12 @@ export function TopicsNavContent({
                   </li>
                 ))}
               </ul>
+              <Link
+                href="/groups"
+                className="block px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
+              >
+                {t("common.nav.viewAll")}
+              </Link>
             </div>
           ) : null}
         </ScrollArea>
