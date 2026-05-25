@@ -73,9 +73,7 @@ function HotArticlesWidget({
               href={`/article/${article.id}`}
               className="flex-1 text-foreground hover:text-[var(--color-primary)] transition-colors duration-[var(--motion-duration-fast)] line-clamp-1"
             >
-              {article.title.length > 40
-                ? article.title.slice(0, 40) + "..."
-                : article.title}
+              {article.title}
             </Link>
             <span className="shrink-0 text-xs text-muted-foreground">
               {article.viewCount ?? 0} {t("component.homeAside.views")}

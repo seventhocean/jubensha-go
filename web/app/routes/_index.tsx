@@ -124,7 +124,7 @@ function GroupsTabContent({
           }}
           loadPage={({ cursor }) =>
             apiFetch<PageData<Topic>>("/api/group/topics", {
-              params: { groupId: activeGroupId, cursor },
+              params: { groupId: activeGroupId, cursor, sort: sortMode },
             })
           }
           renderItems={(items) => (
@@ -217,7 +217,7 @@ export function TopicListRoute({ title }: { title?: string }) {
                 }}
                 loadPage={({ cursor }) =>
                   apiFetch<PageData<Topic>>("/api/topic/topics", {
-                    params: { cursor },
+                    params: { cursor, sort: sortMode },
                   })
                 }
                 renderItems={(items) => (
@@ -249,7 +249,7 @@ export function TopicListRoute({ title }: { title?: string }) {
                 }}
                 loadPage={({ cursor }) =>
                   apiFetch<PageData<Topic>>("/api/topic/topics", {
-                    params: { cursor, nodeId: -2 },
+                    params: { cursor, nodeId: -2, sort: sortMode },
                   })
                 }
                 renderItems={(items) => (

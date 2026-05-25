@@ -139,67 +139,6 @@ function MsgNotice({ count }: { count: number }) {
   )
 }
 
-function DesktopNav({ navs }: { navs: SiteNav[] }) {
-  return (
-    <nav className="hidden items-center md:flex" aria-label="Main">
-      <div className="group/navigation-menu relative flex max-w-max flex-1 items-center justify-center">
-        <div className="group flex flex-1 list-none items-center justify-center gap-1">
-          {navs.map((nav, index) =>
-            hasChildren(nav) ? (
-              <DropdownMenu key={`${nav.title}-${index}`} modal={false}>
-                <DropdownMenuTrigger asChild>
-                  <button
-                    type="button"
-                    className={cn(
-                      buttonVariants({ variant: "ghost", size: "default" }),
-                      "bg-transparent"
-                    )}
-                  >
-                    {nav.title}
-                    <ChevronDown
-                      className="relative top-px ml-1 size-3 transition duration-300"
-                      aria-hidden="true"
-                    />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-[200px]">
-                  {nav.children?.map((child, childIndex) => (
-                    <DropdownMenuItem
-                      key={`${child.title}-${childIndex}`}
-                      asChild
-                    >
-                      <Link
-                        href={child.url}
-                        target={targetFor(child.openInNewWindow)}
-                        rel={relFor(child.openInNewWindow)}
-                      >
-                        {child.title}
-                      </Link>
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <Link
-                key={`${nav.title}-${index}`}
-                href={nav.url}
-                target={targetFor(nav.openInNewWindow)}
-                rel={relFor(nav.openInNewWindow)}
-                className={cn(
-                  buttonVariants({ variant: "ghost", size: "default" }),
-                  "bg-transparent"
-                )}
-              >
-                {nav.title}
-              </Link>
-            )
-          )}
-        </div>
-      </div>
-    </nav>
-  )
-}
-
 function UserMenu({
   user,
   t,
