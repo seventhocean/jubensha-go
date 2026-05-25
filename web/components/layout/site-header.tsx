@@ -41,7 +41,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -508,6 +507,16 @@ export function SiteHeader() {
                   {t("common.nav.home")}
                 </Link>
                 <Link
+                  href="/topics"
+                  className={cn(
+                    buttonVariants({ variant: "ghost", size: "default" }),
+                    "bg-transparent",
+                    pathname.startsWith("/topics") && "text-foreground font-semibold"
+                  )}
+                >
+                  {t("common.nav.topics")}
+                </Link>
+                <Link
                   href="/articles"
                   className={cn(
                     buttonVariants({ variant: "ghost", size: "default" }),
@@ -527,18 +536,19 @@ export function SiteHeader() {
                 >
                   {t("common.nav.groups")}
                 </Link>
-                {(() => {
-                  const fixedPaths = ["/", "/articles", "/groups"]
-                  const filteredNavs = navs.filter(nav => !fixedPaths.includes(nav.url))
-
-                  const moreMenuItems = [
-                    { label: t("common.nav.tweets"), href: "/?tab=all" },
-                    { label: t("common.nav.topics"), href: "/topics" },
-                    { label: t("common.nav.qa"), href: "/topics?tab=all" },
-                  ]
-
-                  return (
-                    <DropdownMenu modal={false}>
+                <Link
+                  href="/tasks"
+                  className={cn(
+                    buttonVariants({ variant: "ghost", size: "default" }),
+                    "bg-transparent",
+                    pathname.startsWith("/tasks") && "text-foreground font-semibold"
+                  )}
+                >
+                  {t("common.header.tasks")}
+                </Link>
+                {navs.filter(nav => !["/", "/topics", "/articles", "/groups", "/tasks"].includes(nav.url)).map((nav, index) => (
+                  hasChildren(nav) ? (
+                    <DropdownMenu modal={false} key={`${nav.title}-${index}`}>
                       <DropdownMenuTrigger asChild>
                         <button
                           type="button"
@@ -547,56 +557,39 @@ export function SiteHeader() {
                             "bg-transparent"
                           )}
                         >
-                          {t("common.nav.more")}
+                          {nav.title}
                           <ChevronDown className="ml-1 h-4 w-4" />
                         </button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="start">
-                        {moreMenuItems.map((item) => (
-                          <DropdownMenuItem key={item.href} asChild>
-                            <Link href={item.href}>
-                              {item.label}
+                        {nav.children?.map((child, childIndex) => (
+                          <DropdownMenuItem key={`${index}-${childIndex}`} asChild>
+                            <Link
+                              href={child.url}
+                              target={targetFor(child.openInNewWindow)}
+                              rel={relFor(child.openInNewWindow)}
+                            >
+                              {child.title}
                             </Link>
                           </DropdownMenuItem>
                         ))}
-                        {filteredNavs.length > 0 && (
-                          <>
-                            <DropdownMenuSeparator />
-                            {filteredNavs.map((nav, index) =>
-                              hasChildren(nav) ? (
-                                <React.Fragment key={`${nav.title}-${index}`}>
-                                  <DropdownMenuLabel>{nav.title}</DropdownMenuLabel>
-                                  {nav.children?.map((child, childIndex) => (
-                                    <DropdownMenuItem key={`${index}-${childIndex}`} asChild>
-                                      <Link
-                                        href={child.url}
-                                        target={targetFor(child.openInNewWindow)}
-                                        rel={relFor(child.openInNewWindow)}
-                                      >
-                                        {child.title}
-                                      </Link>
-                                    </DropdownMenuItem>
-                                  ))}
-                                  {index < filteredNavs.length - 1 && <DropdownMenuSeparator />}
-                                </React.Fragment>
-                              ) : (
-                                <DropdownMenuItem key={`${nav.title}-${index}`} asChild>
-                                  <Link
-                                    href={nav.url}
-                                    target={targetFor(nav.openInNewWindow)}
-                                    rel={relFor(nav.openInNewWindow)}
-                                  >
-                                    {nav.title}
-                                  </Link>
-                                </DropdownMenuItem>
-                              )
-                            )}
-                          </>
-                        )}
                       </DropdownMenuContent>
                     </DropdownMenu>
+                  ) : (
+                    <Link
+                      key={`${nav.title}-${index}`}
+                      href={nav.url}
+                      target={targetFor(nav.openInNewWindow)}
+                      rel={relFor(nav.openInNewWindow)}
+                      className={cn(
+                        buttonVariants({ variant: "ghost", size: "default" }),
+                        "bg-transparent"
+                      )}
+                    >
+                      {nav.title}
+                    </Link>
                   )
-                })()}
+                ))}
               </div>
             </nav>
           </div>

@@ -13,10 +13,7 @@ const zhCN = {
       groups: "群组",
       me: "我的",
       viewAll: "查看全部",
-      more: "更多",
-      tweets: "动态",
       topics: "话题",
-      qa: "问答",
     },
     loadMore: {
       loadMore: "查看更多",
