@@ -74,7 +74,7 @@ export function ArticleListCompactItem({
   )
 }
 
-function ArticleListItem({ article, t }: { article: Article; t: TFunction }) {
+export function ArticleListItem({ article, t }: { article: Article; t: TFunction }) {
   const authorName =
     article.user.nickname || article.user.username || `#${article.user.id}`
   const articleUrl = `/article/${article.id}`

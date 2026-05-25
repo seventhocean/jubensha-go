@@ -4,7 +4,7 @@ import type { ShouldRevalidateFunctionArgs } from "react-router"
 import { ChevronDown } from "lucide-react"
 
 import { useAppState } from "@/components/app/app-provider"
-import { ArticleListCompactItem } from "@/components/article/article-list"
+import { ArticleList, ArticleListItem } from "@/components/article/article-list"
 import { EmptyState } from "@/components/common/empty-state"
 import Link from "@/components/common/link"
 import { LoadMore } from "@/components/common/load-more"
@@ -31,7 +31,6 @@ import {
   loadTopicListRouteData,
   type TopicListRouteData,
 } from "../route-helpers/loaders"
-import { ArticleList } from "@/components/article/article-list"
 
 export { loader } from "../route-helpers/loaders"
 
@@ -210,11 +209,7 @@ function MixedFeedItems({ items, t }: { items: FeedItem[]; t: ReturnType<typeof 
         if (item.feedType === "topic") {
           return <TopicListItem key={`topic-${item.id}`} topic={item} showSticky t={t} />
         }
-        return (
-          <li key={`article-${item.id}`}>
-            <ArticleListCompactItem article={item} t={t} />
-          </li>
-        )
+        return <ArticleListItem key={`article-${item.id}`} article={item} t={t} />
       })}
     </ul>
   )

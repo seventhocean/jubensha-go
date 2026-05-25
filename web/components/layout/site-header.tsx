@@ -530,7 +530,14 @@ export function SiteHeader() {
                 {(() => {
                   const fixedPaths = ["/", "/articles", "/groups"]
                   const filteredNavs = navs.filter(nav => !fixedPaths.includes(nav.url))
-                  if (filteredNavs.length === 0) return null
+
+                  const moreMenuItems = [
+                    { label: t("common.createBtn.tweet"), href: "/topics?type=1" },
+                    { label: t("common.createBtn.topic"), href: "/topics" },
+                    { label: t("common.createBtn.qa"), href: "/topics?type=2" },
+                    { label: t("common.header.tasks"), href: "/tasks" },
+                  ]
+
                   return (
                     <DropdownMenu modal={false}>
                       <DropdownMenuTrigger asChild>
@@ -546,34 +553,46 @@ export function SiteHeader() {
                         </button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="start">
-                        {filteredNavs.map((nav, index) =>
-                          hasChildren(nav) ? (
-                            <React.Fragment key={`${nav.title}-${index}`}>
-                              <DropdownMenuLabel>{nav.title}</DropdownMenuLabel>
-                              {nav.children?.map((child, childIndex) => (
-                                <DropdownMenuItem key={`${index}-${childIndex}`} asChild>
+                        {moreMenuItems.map((item) => (
+                          <DropdownMenuItem key={item.href} asChild>
+                            <Link href={item.href}>
+                              {item.label}
+                            </Link>
+                          </DropdownMenuItem>
+                        ))}
+                        {filteredNavs.length > 0 && (
+                          <>
+                            <DropdownMenuSeparator />
+                            {filteredNavs.map((nav, index) =>
+                              hasChildren(nav) ? (
+                                <React.Fragment key={`${nav.title}-${index}`}>
+                                  <DropdownMenuLabel>{nav.title}</DropdownMenuLabel>
+                                  {nav.children?.map((child, childIndex) => (
+                                    <DropdownMenuItem key={`${index}-${childIndex}`} asChild>
+                                      <Link
+                                        href={child.url}
+                                        target={targetFor(child.openInNewWindow)}
+                                        rel={relFor(child.openInNewWindow)}
+                                      >
+                                        {child.title}
+                                      </Link>
+                                    </DropdownMenuItem>
+                                  ))}
+                                  {index < filteredNavs.length - 1 && <DropdownMenuSeparator />}
+                                </React.Fragment>
+                              ) : (
+                                <DropdownMenuItem key={`${nav.title}-${index}`} asChild>
                                   <Link
-                                    href={child.url}
-                                    target={targetFor(child.openInNewWindow)}
-                                    rel={relFor(child.openInNewWindow)}
+                                    href={nav.url}
+                                    target={targetFor(nav.openInNewWindow)}
+                                    rel={relFor(nav.openInNewWindow)}
                                   >
-                                    {child.title}
+                                    {nav.title}
                                   </Link>
                                 </DropdownMenuItem>
-                              ))}
-                              {index < filteredNavs.length - 1 && <DropdownMenuSeparator />}
-                            </React.Fragment>
-                          ) : (
-                            <DropdownMenuItem key={`${nav.title}-${index}`} asChild>
-                              <Link
-                                href={nav.url}
-                                target={targetFor(nav.openInNewWindow)}
-                                rel={relFor(nav.openInNewWindow)}
-                              >
-                                {nav.title}
-                              </Link>
-                            </DropdownMenuItem>
-                          )
+                              )
+                            )}
+                          </>
                         )}
                       </DropdownMenuContent>
                     </DropdownMenu>
