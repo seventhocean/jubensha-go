@@ -2,7 +2,7 @@
   "id": "FEAT-001",
   "type": "fix",
   "description": "Fix 4 functional completeness issues in the navigation restructure: (1) 'Me' tab route in mobile bottom nav should point to user center /user/{userId} instead of /user/profile, (2) Document backend limitation for 'Following' tab articles, (3) Restore admin-configured siteNavs in desktop header as a 'More' dropdown, (4) Verify/fix homepage active state for mobile bottom nav.",
-  "status": "in_progress",
+  "status": "completed",
   "steps": [
     "1. In web/components/layout/mobile-bottom-nav.tsx: Import useCurrentUser from @/components/app/app-provider. Change the 'Me' tab from a static { href: '/user/profile' } to dynamically use the current user's ID: href should be `/user/${currentUser.id}` when logged in, or '/user/signin' when not. Mark the tab as active when pathname starts with '/user/' AND user is on their own profile (pathname === `/user/${currentUser?.id}`). Keep existing icon and label.",
     "2. In web/app/routes/_index.tsx: Add a code comment above the 'following' tab's LoadMore component explaining that the backend API does not support filtering articles by followed users. The nodeId=-2 only returns followed topics. A future backend endpoint would be needed for followed articles. This documents the limitation clearly for future developers.",
@@ -25,5 +25,5 @@
     "Run `pnpm lint` in /projects/sandbox/jubensha-go/web/ and confirm no lint errors"
   ],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "All 4 changes implemented and verified. Typecheck and lint pass cleanly. The mobile Me tab isActive uses isMe flag to check pathname === /user/${currentUser?.id}. The More dropdown uses existing hasChildren/targetFor/relFor helpers already in site-header.tsx."
 }
