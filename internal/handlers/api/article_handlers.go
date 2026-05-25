@@ -295,7 +295,8 @@ func ArticleUserArticles(ctx *gin.Context) {
 
 func ArticleArticles(ctx *gin.Context) {
 	cursor := params.FormValueInt64Default(ctx, "cursor", 0)
-	articles, cursor, hasMore := services.ArticleService.GetArticles(cursor)
+	sort := ctx.DefaultQuery("sort", "latest")
+	articles, cursor, hasMore := services.ArticleService.GetArticlesSorted(cursor, sort)
 	ginx.WriteJSON(ctx, ginx.CursorData(render.BuildSimpleArticles(articles), strconv.FormatInt(cursor, 10), hasMore))
 
 }

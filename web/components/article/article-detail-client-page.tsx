@@ -24,6 +24,7 @@ import { apiFetch } from "@/lib/api/client"
 import type { Article, Comment, PageData } from "@/lib/api/types"
 import { prettyDate } from "@/lib/format"
 import { useI18n } from "@/lib/i18n/provider"
+import { estimateReadingTime } from "@/lib/reading-time"
 import { useRouteData, useRouteSegment } from "@/lib/spa-route"
 import { useDocumentTitle } from "@/lib/use-document-title"
 
@@ -156,6 +157,13 @@ export function ArticleDetailClientPage({
                 ) : null}
                 {article.createTime ? (
                   <span>{prettyDate(article.createTime, t)}</span>
+                ) : null}
+                {article.content ? (
+                  <span>
+                    {t("component.article.readTime", {
+                      min: String(estimateReadingTime(article.content)),
+                    })}
+                  </span>
                 ) : null}
               </div>
             </header>

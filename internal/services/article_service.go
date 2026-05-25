@@ -119,6 +119,56 @@ func (s *articleService) GetArticles(cursor int64) (articles []models.Article, n
 	return
 }
 
+// GetArticlesSorted returns articles sorted by the given mode.
+func (s *articleService) GetArticlesSorted(cursor int64, sort string) (articles []models.Article, nextCursor int64, hasMore bool) {
+	const limit = 20
+	db := sqls.DB().Where("status = ?", constants.StatusOk)
+
+	switch sort {
+	case "hot":
+		var list []models.Article
+		db.Order("view_count desc, id desc").Offset(int(cursor)).Limit(limit + 1).Find(&list)
+		hasMore = len(list) > limit
+		if hasMore {
+			list = list[:limit]
+		}
+		articles = list
+		if len(articles) > 0 {
+			nextCursor = cursor + int64(len(articles))
+		} else {
+			nextCursor = cursor
+		}
+		return
+	case "recommended":
+		var list []models.Article
+		db.Order("like_count desc, id desc").Offset(int(cursor)).Limit(limit + 1).Find(&list)
+		hasMore = len(list) > limit
+		if hasMore {
+			list = list[:limit]
+		}
+		articles = list
+		if len(articles) > 0 {
+			nextCursor = cursor + int64(len(articles))
+		} else {
+			nextCursor = cursor
+		}
+		return
+	default: // "latest"
+		cnd := sqls.NewCnd().Eq("status", constants.StatusOk).Desc("id").Limit(limit)
+		if cursor > 0 {
+			cnd.Lt("id", cursor)
+		}
+		articles = repositories.ArticleRepository.Find(sqls.DB(), cnd)
+		if len(articles) > 0 {
+			nextCursor = articles[len(articles)-1].Id
+			hasMore = len(articles) >= limit
+		} else {
+			nextCursor = cursor
+		}
+		return
+	}
+}
+
 // 标签文章列表
 func (s *articleService) GetTagArticles(tagId int64, cursor int64) (articles []models.Article, nextCursor int64, hasMore bool) {
 	limit := 20

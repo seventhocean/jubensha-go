@@ -886,6 +886,9 @@ const enUS = {
       copy: "Copy",
       copied: "Copied",
     },
+    article: {
+      readTime: "~{min} min read",
+    },
     searchInput: {
       placeholder: "Search topics, articles, users",
       searchBtn: "Search",
@@ -1384,6 +1387,15 @@ const enUS = {
     },
     articles: {
       title: "Articles",
+      tabs: {
+        latest: "Latest",
+        hot: "Hot",
+        recommended: "Recommended",
+      },
+      viewMode: {
+        card: "Card view",
+        list: "List view",
+      },
     },
     article: {
       detail: {

@@ -2,6 +2,7 @@ import Link from "@/components/common/link"
 import { UserAvatar } from "@/components/common/avatar"
 
 import { EmptyState } from "@/components/common/empty-state"
+import { getArticleGradient } from "@/lib/article-gradient"
 import type { Article } from "@/lib/api/types"
 import { prettyDate } from "@/lib/format"
 import type { TFunction } from "@/lib/i18n"
@@ -10,9 +11,11 @@ import { EyeIcon, HeartIcon, MessageCircleIcon } from "lucide-react"
 export function ArticleList({
   articles,
   t,
+  viewMode = "card",
 }: {
   articles: Article[]
   t: TFunction
+  viewMode?: "card" | "list"
 }) {
   if (!articles.length) {
     return <EmptyState title={t("common.noData")} />
@@ -20,10 +23,54 @@ export function ArticleList({
 
   return (
     <div className="overflow-hidden rounded-lg bg-background">
-      {articles.map((article) => (
-        <ArticleListItem key={article.id} article={article} t={t} />
-      ))}
+      {articles.map((article) =>
+        viewMode === "list" ? (
+          <ArticleListCompactItem key={article.id} article={article} t={t} />
+        ) : (
+          <ArticleListItem key={article.id} article={article} t={t} />
+        )
+      )}
     </div>
+  )
+}
+
+function ArticleListCompactItem({
+  article,
+  t,
+}: {
+  article: Article
+  t: TFunction
+}) {
+  const authorName =
+    article.user.nickname || article.user.username || `#${article.user.id}`
+  const articleUrl = `/article/${article.id}`
+
+  return (
+    <article className="group border-b border-border/70 bg-background px-3 py-2.5 transition-colors last:border-b-0 hover:bg-muted/35 sm:px-4">
+      <div className="flex items-center gap-3">
+        <Link
+          href={articleUrl}
+          target="_blank"
+          className="min-w-0 flex-1 truncate text-[15px] font-medium text-foreground transition-colors group-hover:text-primary"
+        >
+          {article.title}
+        </Link>
+        <div className="flex shrink-0 items-center gap-3 text-xs text-muted-foreground">
+          <span className="hidden sm:inline">{authorName}</span>
+          {article.createTime ? (
+            <time dateTime={new Date(article.createTime).toISOString()}>
+              {prettyDate(article.createTime, t)}
+            </time>
+          ) : null}
+          {article.viewCount ? (
+            <span className="inline-flex items-center gap-1">
+              <EyeIcon className="size-3" />
+              {formatCount(article.viewCount)}
+            </span>
+          ) : null}
+        </div>
+      </div>
+    </article>
   )
 }
 
@@ -92,7 +139,18 @@ function ArticleListItem({ article, t }: { article: Article; t: TFunction }) {
               className="aspect-[16/10] w-full object-cover transition-transform duration-300 group-hover:scale-[1.03] sm:aspect-[4/3]"
             />
           </Link>
-        ) : null}
+        ) : (
+          <div
+            className="hidden items-center justify-center overflow-hidden rounded-md sm:flex sm:w-40 md:w-44"
+            style={{ background: getArticleGradient(article.title) }}
+          >
+            <div className="flex aspect-[4/3] w-full items-center justify-center">
+              <span className="text-3xl font-bold text-white">
+                {article.title.charAt(0)}
+              </span>
+            </div>
+          </div>
+        )}
 
         <ArticleListMeta article={article} className="sm:hidden" />
       </div>

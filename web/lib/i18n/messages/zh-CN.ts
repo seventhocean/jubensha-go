@@ -868,6 +868,9 @@ const zhCN = {
       copy: "复制",
       copied: "已复制",
     },
+    article: {
+      readTime: "约 {min} 分钟阅读",
+    },
     searchInput: {
       placeholder: "搜索帖子、文章、用户",
       searchBtn: "搜索",
@@ -1357,6 +1360,15 @@ const zhCN = {
     },
     articles: {
       title: "文章",
+      tabs: {
+        latest: "最新",
+        hot: "最热",
+        recommended: "推荐",
+      },
+      viewMode: {
+        card: "卡片视图",
+        list: "列表视图",
+      },
     },
     article: {
       detail: {
