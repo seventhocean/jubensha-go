@@ -1,0 +1,29 @@
+{
+  "id": "FEAT-001",
+  "type": "fix",
+  "description": "Fix TypeScript compilation errors and functional bugs across frontend and backend",
+  "status": "completed",
+  "steps": [
+    "Step 1 - Fix P0 TS error in dashboard.topics.tsx: In the TopicRecord type definition (around line 68), change `node?: { name?: string }` to `node?: { name?: string; type?: string }`. This fixes TS2339 errors at lines 504, 664, 677 where `topic.node?.type` is accessed.",
+    "Step 2 - Fix backend TopicNodeNavs returning stale built-in nodes: In internal/handlers/api/topic_handlers.go, modify the TopicNodeNavs function (line 68-75) to NOT prepend topicGetBuiltInNodes(). Change it to just: `nodes := render.BuildNodes(services.TopicNodeService.GetTopLevelNodes())` followed by `ginx.WriteJSON(ctx, nodes)`. The frontend sidebar now uses the Channel model for All/Following concepts.",
+    "Step 3 - Fix /topics route not passing type param to API: In web/app/routes/topics.tsx, the TopicListRoute is rendered but search params like ?type= are not forwarded. Modify the TopicListRoute component in _index.tsx to read the 'type' search param and pass it to createMixedFeedLoadPage. Specifically, in the allFeedLoadPage useMemo (around line 255), read `type` from searchParams and if present, pass it as `{ type: typeParam }` to createMixedFeedLoadPage's second argument. Update the useMemo deps array to include the type param.",
+    "Step 4 - Fix GroupsTabContent key prop: In _index.tsx around line 135, replace `key={activeGroupId}` on LoadMore with proper use. Since key is a React reserved prop and LoadMore already supports resetKey, remove the key prop (it's actually fine as-is since React handles key natively and the typecheck confirms no error here). Actually, the typecheck shows NO error for this. Skip this step - issue 4 is not a real TS error.",
+    "Step 5 - Optimize HomeAside to not refetch all data on user change: In web/components/layout/home-aside.tsx, split the single useEffect into two: (1) A useEffect with empty deps [] that fetches user-independent data (score rank, friend links, articles, groups), and (2) A useEffect depending on [user] that only fetches check-in data when user changes.",
+    "Step 6 - Add simple caching for channel list in topics-nav-content.tsx: Add a module-level cache variable (let cachedChannels: Channel[] | null = null) that stores the result of /api/channel/channels. On subsequent renders, use the cached value immediately and skip the API call if cache is populated.",
+    "Step 7 - Add comment to _index.tsx explaining the intentional dual-request pattern in createMixedFeedLoadPage: Add a brief comment above the function noting that the 2 parallel API calls (topics + articles) are intentional for the mixed feed design."
+  ],
+  "acceptance_criteria": [
+    "Running `pnpm typecheck` in web/ directory produces zero errors",
+    "The TopicNodeNavs Go handler no longer prepends built-in nodes",
+    "The TopicListRoute reads `type` from search params and passes it to the topics API",
+    "HomeAside splits user-dependent and user-independent API calls into separate useEffects",
+    "Channel list in topics-nav-content uses a module-level cache to avoid redundant fetches",
+    "Go code compiles without errors"
+  ],
+  "verification": [
+    "cd /projects/sandbox/jubensha-go/web && pnpm typecheck",
+    "cd /projects/sandbox/jubensha-go && go build ./..."
+  ],
+  "blocked_reason": null,
+  "findings": "Go build fails with pre-existing 'web/embed.go: pattern build/spa: no matching files found' when web/build/spa does not exist (needs frontend build first). Creating a placeholder file allows full compilation. The typecheck passes with 0 errors."
+}

@@ -1,0 +1,7 @@
+{
+  "task_id": "task-fix-bugs",
+  "task_description": "Fix all identified bugs: P0 TypeScript compilation error in dashboard.topics.tsx, P1 functional bugs (stale built-in nodes in backend, type param not forwarded in topics route), P2 performance issues (HomeAside refetching, channel list caching)",
+  "status": "in_progress",
+  "feature_order": ["FEAT-001"],
+  "blocked_reason": null
+}

@@ -1,0 +1,25 @@
+{
+  "project_type": "Full-stack community platform - Go (Gin) backend + React (React Router v7) frontend",
+  "language": "Go + TypeScript/React",
+  "build_system": "Makefile at root, pnpm for web, Go build for backend",
+  "test_framework": "Go test for backend, pnpm typecheck + pnpm lint for frontend",
+  "build_command": "cd web && pnpm typecheck",
+  "test_command": "cd web && pnpm typecheck && pnpm lint",
+  "verification_instructions": "Run `pnpm typecheck` in /projects/sandbox/jubensha-go/web to confirm no TypeScript errors. Run `go build ./...` in root to confirm Go compiles.",
+  "snapshot_or_generated_files": null,
+  "setup_instructions": "pnpm install in web/ directory (already done via pnpm-store)",
+  "environment_constraints": "Network may be limited. pnpm store already present. No docker daemon needed for validation.",
+  "contribution_requirements": "Keep PRs focused, support both en-US and zh-CN strings where applicable.",
+  "key_patterns": "Frontend uses apiFetch() for API calls, LoadMore<T> for paginated lists, useSearchParams for URL state. Backend uses Gin handlers with ginx.WriteJSON for responses. TopicNode type in web/lib/api/types.ts is the canonical type.",
+  "relevant_files": [
+    "web/app/routes/dashboard.topics.tsx",
+    "web/app/routes/_index.tsx",
+    "web/app/routes/topics.tsx",
+    "web/components/layout/home-aside.tsx",
+    "web/components/topic/topics-nav-content.tsx",
+    "web/components/common/load-more.tsx",
+    "web/lib/api/types.ts",
+    "internal/handlers/api/topic_handlers.go"
+  ],
+  "directory_structure": "Root: Go backend (internal/, cmd/, main.go). web/: React frontend (app/routes/ for pages, components/ for UI, lib/ for utilities)."
+}
