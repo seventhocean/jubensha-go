@@ -3,8 +3,6 @@
 import Link from "@/components/common/link"
 import * as React from "react"
 
-import { Clock, Flame, Rss } from "lucide-react"
-
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { apiFetch } from "@/lib/api/client"
 import { getGroupNavs } from "@/lib/api/groups"
@@ -12,38 +10,15 @@ import type { GroupItem, TopicNode } from "@/lib/api/types"
 import { useI18n } from "@/lib/i18n/provider"
 import { cn } from "@/lib/utils"
 
-function isBuiltInNode(node: TopicNode) {
-  return node.id <= 0
-}
-
 function nodeHref(node: TopicNode) {
-  if (node.id > 0) {
-    return `/topics/node/${node.id}`
-  }
-  if (node.id === 0) {
-    return "/topics/node/newest"
-  }
-  if (node.id === -1) {
-    return "/topics/node/recommend"
-  }
-  return "/topics/node/feed"
+  return `/topics/node/${node.id}`
 }
 
 function isActiveNode(
   node: TopicNode,
-  currentNodeId?: number,
   currentRootNodeId?: number
 ) {
-  if (isBuiltInNode(node)) {
-    return currentNodeId === node.id
-  }
   return currentRootNodeId === node.id
-}
-
-const builtInNodeIcons: Record<number, React.ReactNode> = {
-  0: <Clock className="size-4" />,
-  [-1]: <Flame className="size-4" />,
-  [-2]: <Rss className="size-4" />,
 }
 
 function NodeLogo({ node }: { node: TopicNode }) {
@@ -53,15 +28,6 @@ function NodeLogo({ node }: { node: TopicNode }) {
         className="node-logo"
         style={{ backgroundImage: `url(${node.logo})` }}
       />
-    )
-  }
-
-  const icon = builtInNodeIcons[node.id]
-  if (icon) {
-    return (
-      <span className="flex size-6 shrink-0 items-center justify-center mr-2 text-[var(--color-ink-muted)]">
-        {icon}
-      </span>
     )
   }
 
@@ -114,42 +80,35 @@ export function TopicsNavContent({
     }
   }, [])
 
+  const userNodes = nodes.filter((node) => node.id > 0)
+
   return (
     <div className="topics-nav">
       <nav className="dock-nav">
         <ScrollArea className="topics-scroll-area">
+          {/* Channels section */}
+          <div className="px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            {t("pages.home.sidebar.channels")}
+          </div>
           <ul>
-            {nodes.map((node, index) => {
-              const previousNode = nodes[index - 1]
-              const showDivider =
-                index > 0 &&
-                previousNode &&
-                isBuiltInNode(previousNode) &&
-                !isBuiltInNode(node)
-              const active = isActiveNode(
-                node,
-                currentNodeId,
-                currentRootNodeId
-              )
-
-              return (
-                <React.Fragment key={node.id}>
-                  {showDivider ? (
-                    <li className="nodes-divider" aria-hidden="true" />
-                  ) : null}
-                  <li className={cn(active && "active")} data-node-id={node.id}>
-                    <Link href={nodeHref(node)}>
-                      <NodeLogo node={node} />
-                      <div className="node-name">{node.name}</div>
-                    </Link>
-                  </li>
-                </React.Fragment>
-              )
-            })}
+            <li className={cn(currentNodeId === undefined && !currentRootNodeId && "active")}>
+              <Link href="/">
+                <div className="node-name">{t("pages.home.tabs.all")}</div>
+              </Link>
+            </li>
+            <li className={cn(currentNodeId === -2 && "active")}>
+              <Link href="/topics/node/feed">
+                <div className="node-name">{t("pages.home.tabs.following")}</div>
+              </Link>
+            </li>
           </ul>
-          {groups.length > 0 ? (
+
+          {/* My Groups section */}
+          {groups.length > 0 && (
             <React.Fragment>
-              <div className="nodes-divider" aria-hidden="true" />
+              <div className="px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                {t("pages.home.sidebar.myGroups")}
+              </div>
               <ul>
                 {groups.map((group) => (
                   <li key={group.id} data-node-id={-1000 - group.id}>
@@ -167,16 +126,42 @@ export function TopicsNavContent({
                   </li>
                 ))}
               </ul>
-              <li>
+              <div className="px-3">
                 <Link
                   href="/groups"
                   className="block py-1 text-xs text-muted-foreground hover:text-foreground"
                 >
                   {t("common.nav.viewAll")}
                 </Link>
-              </li>
+              </div>
             </React.Fragment>
-          ) : null}
+          )}
+
+          {/* Nodes section */}
+          {userNodes.length > 0 && (
+            <React.Fragment>
+              <div className="px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                {t("pages.home.sidebar.nodes")}
+              </div>
+              <ul>
+                {userNodes.map((node) => {
+                  const active = isActiveNode(node, currentRootNodeId)
+                  return (
+                    <li
+                      key={node.id}
+                      className={cn(active && "active")}
+                      data-node-id={node.id}
+                    >
+                      <Link href={nodeHref(node)}>
+                        <NodeLogo node={node} />
+                        <div className="node-name">{node.name}</div>
+                      </Link>
+                    </li>
+                  )
+                })}
+              </ul>
+            </React.Fragment>
+          )}
         </ScrollArea>
       </nav>
     </div>

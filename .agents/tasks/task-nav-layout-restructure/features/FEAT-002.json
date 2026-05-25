@@ -1,0 +1,26 @@
+{
+  "id": "FEAT-002",
+  "type": "feat",
+  "description": "Restructure the homepage (_index.tsx) with new content tabs (全部/关注/群组/文章) and a sort dropdown, plus update the left sidebar (topics-nav-content.tsx) to show channels/groups/nodes sections.",
+  "status": "in_progress",
+  "steps": [
+    "Add new i18n keys for homepage tabs in both zh-CN.ts and en-US.ts under a new section (e.g., pages.home.tabs): all ('全部'/'All'), following ('关注'/'Following'), groups ('群组'/'Groups'), articles ('文章'/'Articles'). Add sort keys: sortLatest ('最新'/'Latest'), sortHottest ('最热'/'Hottest'). Add sidebar section keys: channels ('频道'/'Channels'), myGroups ('我的群组'/'My Groups'), nodes ('节点'/'Nodes').",
+    "In web/app/routes/_index.tsx: Replace the current simple topic list with a tabbed interface. Add a Tabs component (from @/components/ui/tabs) at the top of the main content area with four tabs: 全部, 关注, 群组, 文章. Add a sort dropdown (DropdownMenu) on the right side of the tab bar with options: 最新, 最热. Default tab is '全部' which shows the existing topic list (reusing the LoadMore pattern). The '文章' tab fetches articles using loadArticles from route-helpers/loaders. The '关注' tab fetches topics with nodeId=-2 (feed). The '群组' tab fetches topics from user's joined groups using getGroupNavs() to get group IDs then fetching group topics.",
+    "Use React.useState for active tab and sort mode. Use the existing LoadMore component pattern (from articles.tsx) for each tab's content. Each tab switch resets the list. Use resetKey prop on LoadMore to force refetch.",
+    "In web/components/topic/topics-nav-content.tsx: Restructure the sidebar to have three labeled sections: (1) '频道' section with links for 全部(/) and 关注(/topics/node/feed), (2) '我的群组' section showing groups from getGroupNavs() (already fetched), (3) '节点' section showing the existing topic nodes (non-built-in ones). Add section headers with text styling. Remove the old built-in node entries (推荐/最新/关注 with Flame/Clock/Rss icons) as they are replaced by the tabs.",
+    "Ensure the tab state syncs with the left sidebar 'channels' section - clicking 全部 in sidebar activates the 全部 tab and vice versa. Use URL search params or local state for this coordination."
+  ],
+  "acceptance_criteria": [
+    "Homepage shows tabs: 全部, 关注, 群组, 文章 at the top of main content",
+    "A sort dropdown (最新/最热) appears on the right of the tab row",
+    "Switching tabs changes the displayed content (topics for 全部, feed for 关注, group topics for 群组, articles for 文章)",
+    "Left sidebar shows three sections: 频道, 我的群组, 节点",
+    "All new text uses i18n t() function with keys in both locale files",
+    "No TypeScript compilation errors"
+  ],
+  "verification": [
+    "Run `cd web && npx tsc --noEmit` to verify no type errors"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

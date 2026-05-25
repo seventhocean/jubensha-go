@@ -1240,6 +1240,22 @@ const enUS = {
       asideTitle: "BBS-GO",
       asideDescription:
         "Discover recent discussions, questions, and community updates.",
+      tabs: {
+        all: "All",
+        following: "Following",
+        groups: "Groups",
+        articles: "Articles",
+      },
+      sort: {
+        latest: "Latest",
+        hottest: "Hottest",
+        sortBy: "Sort",
+      },
+      sidebar: {
+        channels: "Channels",
+        myGroups: "My Groups",
+        nodes: "Nodes",
+      },
     },
     nav: {
       home: "Home",

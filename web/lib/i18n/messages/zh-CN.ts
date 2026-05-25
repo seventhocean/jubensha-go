@@ -1218,6 +1218,22 @@ const zhCN = {
     home: {
       asideTitle: "BBS-GO",
       asideDescription: "发现最新讨论、问答和社区动态。",
+      tabs: {
+        all: "全部",
+        following: "关注",
+        groups: "群组",
+        articles: "文章",
+      },
+      sort: {
+        latest: "最新",
+        hottest: "最热",
+        sortBy: "排序",
+      },
+      sidebar: {
+        channels: "频道",
+        myGroups: "我的群组",
+        nodes: "节点",
+      },
     },
     nav: {
       home: "首页",
