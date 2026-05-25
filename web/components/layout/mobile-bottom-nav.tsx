@@ -21,11 +21,11 @@ export function MobileBottomNav() {
   const items = moduleItems(config, t)
 
   const tabs = [
-    { href: "/topics", icon: MessageSquare, label: "Topics" },
-    { href: "/articles", icon: FileText, label: "Articles" },
-    { href: "/topic/create", icon: Plus, label: "Create", isCreate: true },
-    { href: "/groups", icon: Users, label: "Groups" },
-    { href: "/tasks", icon: ListChecks, label: "Tasks" },
+    { href: "/topics", icon: MessageSquare, label: "话题" },
+    { href: "/articles", icon: FileText, label: "文章" },
+    { href: "/topic/create", icon: Plus, label: "发布", isCreate: true },
+    { href: "/groups", icon: Users, label: "群组" },
+    { href: "/tasks", icon: ListChecks, label: "任务" },
   ]
 
   return (

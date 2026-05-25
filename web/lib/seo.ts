@@ -31,7 +31,7 @@ function trimText(value: string | null | undefined) {
 }
 
 function siteName(config: SiteConfig | null | undefined) {
-  return trimText(config?.siteTitle) || "BBS-GO"
+  return trimText(config?.siteTitle) || "圈子"
 }
 
 function siteDescription(config: SiteConfig | null | undefined) {
