@@ -2,7 +2,7 @@
   "id": "FEAT-002",
   "type": "feat",
   "description": "Frontend: Dashboard channels page, sidebar menu item, TypeScript types, frontend sidebar dynamic channels, i18n keys, and permissions.generated.ts update",
-  "status": "in_progress",
+  "status": "completed",
   "steps": [
     "1. Add Channel type to web/lib/api/types.ts: export interface Channel { id: number; name: string; nameEn?: string; icon: string; href: string; sortNo: number; visible: boolean; createTime?: number; updateTime?: number; }",
     "2. Add channel permission constants to web/lib/auth/permissions.generated.ts: DASHBOARD_CHANNEL_VIEW: 'dashboard.channel.view', DASHBOARD_CHANNEL_CREATE: 'dashboard.channel.create', DASHBOARD_CHANNEL_UPDATE: 'dashboard.channel.update', DASHBOARD_CHANNEL_DELETE: 'dashboard.channel.delete'. Add them to both the PERMISSIONS object and PERMISSION_LIST array.",
@@ -26,5 +26,5 @@
     "cd /projects/sandbox/jubensha-go/web && pnpm build"
   ],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "All 7 steps completed successfully. Added Channel interface to types.ts, 4 channel permission constants to permissions.generated.ts (both PERMISSIONS object and PERMISSION_LIST array), i18n keys for both en-US and zh-CN (nav and pages sections), dashboard.channels.tsx page following dashboard.links.tsx pattern, sidebar menu item after links, and dynamic channel fetching in topics-nav-content.tsx. Also added missing field labels (nameEn, href, visible) to both i18n files. pnpm typecheck and pnpm build both pass."
 }
