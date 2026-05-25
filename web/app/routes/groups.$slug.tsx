@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { toast } from "sonner"
 
-import { useCurrentUser } from "@/components/app/app-provider"
+import { useAppConfig, useCurrentUser } from "@/components/app/app-provider"
 import { EmptyState } from "@/components/common/empty-state"
 import { UserAvatar } from "@/components/common/avatar"
 import { LoadMore } from "@/components/common/load-more"
@@ -194,6 +194,7 @@ export default function GroupDetailRoute() {
   const { slug } = useParams<{ slug: string }>()
   const { t } = useI18n()
   const currentUser = useCurrentUser()
+  const config = useAppConfig()
   const navigate = useNavigate()
   const [group, setGroup] = useState<GroupItem | null>(null)
   const [topics, setTopics] = useState<Topic[]>([])
@@ -526,16 +527,27 @@ export default function GroupDetailRoute() {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
-              <DropdownMenuItem asChild>
-                <Link to={`/topic/create?groupId=${group.id}&type=0&groupSlug=${group.slug}`}>
-                  {t("common.createBtn.topic")}
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to={`/topic/create?groupId=${group.id}&type=2&groupSlug=${group.slug}`}>
-                  {t("common.createBtn.qa")}
-                </Link>
-              </DropdownMenuItem>
+              {config?.modules?.tweet ? (
+                <DropdownMenuItem asChild>
+                  <Link to={`/topic/create?groupId=${group.id}&type=1&groupSlug=${group.slug}`}>
+                    {t("common.createBtn.tweet")}
+                  </Link>
+                </DropdownMenuItem>
+              ) : null}
+              {config?.modules?.topic ? (
+                <DropdownMenuItem asChild>
+                  <Link to={`/topic/create?groupId=${group.id}&type=0&groupSlug=${group.slug}`}>
+                    {t("common.createBtn.topic")}
+                  </Link>
+                </DropdownMenuItem>
+              ) : null}
+              {config?.modules?.qa ? (
+                <DropdownMenuItem asChild>
+                  <Link to={`/topic/create?groupId=${group.id}&type=2&groupSlug=${group.slug}`}>
+                    {t("common.createBtn.qa")}
+                  </Link>
+                </DropdownMenuItem>
+              ) : null}
             </DropdownMenuContent>
           </DropdownMenu>
         )}
