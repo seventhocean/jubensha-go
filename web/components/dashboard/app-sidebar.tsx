@@ -81,6 +81,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             permission: PERMISSIONS.DASHBOARD_LINK_VIEW,
           },
           {
+            title: t("dashboard.nav.channels"),
+            url: "/dashboard/channels",
+            permission: PERMISSIONS.DASHBOARD_CHANNEL_VIEW,
+          },
+          {
             title: t("dashboard.nav.forbiddenWords"),
             url: "/dashboard/forbidden-words",
             permission: PERMISSIONS.DASHBOARD_FORBIDDEN_WORD_VIEW,

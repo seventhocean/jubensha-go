@@ -96,6 +96,7 @@ const enUS = {
       nodes: "Categories",
       groups: "Groups",
       links: "Links",
+      channels: "Channels",
       forbiddenWords: "Moderation Rules",
       community: "Community",
       users: "Users",
@@ -741,6 +742,9 @@ const enUS = {
       entityId: "Entity ID",
       auditStatus: "Audit Status",
       reason: "Reason",
+      nameEn: "English Name",
+      href: "Link",
+      visible: "Visible",
     },
     pages: {
       users: {
@@ -766,6 +770,10 @@ const enUS = {
       links: {
         title: "Community Links",
         description: "Manage external links shown on the site.",
+      },
+      channels: {
+        title: "Channel Management",
+        description: "Manage sidebar navigation channels.",
       },
       forbiddenWords: {
         title: "Moderation Rules",

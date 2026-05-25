@@ -95,6 +95,7 @@ const zhCN = {
       nodes: "节点",
       groups: "群组",
       links: "链接",
+      channels: "频道管理",
       forbiddenWords: "违禁词",
       community: "社区",
       users: "用户",
@@ -725,6 +726,9 @@ const zhCN = {
       entityId: "内容ID",
       auditStatus: "审核状态",
       reason: "原因",
+      nameEn: "英文名称",
+      href: "链接",
+      visible: "可见",
     },
     pages: {
       users: {
@@ -750,6 +754,10 @@ const zhCN = {
       links: {
         title: "友情链接",
         description: "管理站点展示的外部链接。",
+      },
+      channels: {
+        title: "频道管理",
+        description: "管理侧边栏导航频道",
       },
       forbiddenWords: {
         title: "违禁词",

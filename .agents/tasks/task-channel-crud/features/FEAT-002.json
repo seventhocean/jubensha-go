@@ -2,7 +2,7 @@
   "id": "FEAT-002",
   "type": "feat",
   "description": "Frontend: Dashboard channels page, sidebar menu item, TypeScript types, frontend sidebar dynamic channels, i18n keys, and permissions.generated.ts update",
-  "status": "pending",
+  "status": "in_progress",
   "steps": [
     "1. Add Channel type to web/lib/api/types.ts: export interface Channel { id: number; name: string; nameEn?: string; icon: string; href: string; sortNo: number; visible: boolean; createTime?: number; updateTime?: number; }",
     "2. Add channel permission constants to web/lib/auth/permissions.generated.ts: DASHBOARD_CHANNEL_VIEW: 'dashboard.channel.view', DASHBOARD_CHANNEL_CREATE: 'dashboard.channel.create', DASHBOARD_CHANNEL_UPDATE: 'dashboard.channel.update', DASHBOARD_CHANNEL_DELETE: 'dashboard.channel.delete'. Add them to both the PERMISSIONS object and PERMISSION_LIST array.",

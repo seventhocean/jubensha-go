@@ -421,6 +421,18 @@ export interface Badge {
   obtainTime?: number
 }
 
+export interface Channel {
+  id: number
+  name: string
+  nameEn?: string
+  icon: string
+  href: string
+  sortNo: number
+  visible: boolean
+  createTime?: number
+  updateTime?: number
+}
+
 export interface BindInfo {
   bind?: boolean
   nickname?: string

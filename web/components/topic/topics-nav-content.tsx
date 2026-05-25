@@ -7,9 +7,22 @@ import { Compass, Heart } from "lucide-react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { apiFetch } from "@/lib/api/client"
 import { getGroupNavs } from "@/lib/api/groups"
-import type { GroupItem, TopicNode } from "@/lib/api/types"
+import type { Channel, GroupItem, TopicNode } from "@/lib/api/types"
 import { useI18n } from "@/lib/i18n/provider"
 import { cn } from "@/lib/utils"
+
+const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  compass: Compass,
+  heart: Heart,
+}
+
+function ChannelIcon({ icon }: { icon: string }) {
+  const IconComponent = iconMap[icon.toLowerCase()]
+  if (IconComponent) {
+    return <IconComponent className="h-4 w-4 shrink-0" />
+  }
+  return <Compass className="h-4 w-4 shrink-0" />
+}
 
 function nodeHref(node: TopicNode) {
   return `/topics/node/${node.id}`
@@ -46,6 +59,7 @@ export function TopicsNavContent({
 }) {
   const [nodes, setNodes] = React.useState(initialNodes)
   const [groups, setGroups] = React.useState<GroupItem[]>([])
+  const [channels, setChannels] = React.useState<Channel[]>([])
   const { t } = useI18n()
 
   React.useEffect(() => {
@@ -81,6 +95,21 @@ export function TopicsNavContent({
     }
   }, [])
 
+  React.useEffect(() => {
+    let mounted = true
+    apiFetch<Channel[]>("/api/channel/channels")
+      .then((data) => {
+        if (mounted && data) {
+          setChannels(data)
+        }
+      })
+      .catch(() => undefined)
+
+    return () => {
+      mounted = false
+    }
+  }, [])
+
   const userNodes = nodes.filter((node) => node.id > 0)
 
   return (
@@ -104,6 +133,21 @@ export function TopicsNavContent({
                 <div className="node-name">{t("pages.home.tabs.following")}</div>
               </Link>
             </li>
+            {channels.filter((ch) => ch.visible).map((channel) => (
+              <li
+                key={channel.id}
+                className={cn(
+                  typeof window !== "undefined" &&
+                    window.location.href.includes(channel.href) &&
+                    "active"
+                )}
+              >
+                <Link href={channel.href}>
+                  <ChannelIcon icon={channel.icon} />
+                  <div className="node-name">{channel.nameEn || channel.name}</div>
+                </Link>
+              </li>
+            ))}
           </ul>
 
           {/* My Groups section */}
