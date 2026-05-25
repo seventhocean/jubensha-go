@@ -1267,7 +1267,7 @@ const enUS = {
       },
       sidebar: {
         channels: "Channels",
-        myGroups: "My Groups",
+        myGroups: "Groups",
         nodes: "Nodes",
       },
     },

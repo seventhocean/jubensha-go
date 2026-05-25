@@ -527,53 +527,58 @@ export function SiteHeader() {
                 >
                   {t("common.nav.groups")}
                 </Link>
-                {navs.length > 0 && (
-                  <DropdownMenu modal={false}>
-                    <DropdownMenuTrigger asChild>
-                      <button
-                        type="button"
-                        className={cn(
-                          buttonVariants({ variant: "ghost", size: "default" }),
-                          "bg-transparent"
+                {(() => {
+                  const fixedPaths = ["/", "/articles", "/groups"]
+                  const filteredNavs = navs.filter(nav => !fixedPaths.includes(nav.url))
+                  if (filteredNavs.length === 0) return null
+                  return (
+                    <DropdownMenu modal={false}>
+                      <DropdownMenuTrigger asChild>
+                        <button
+                          type="button"
+                          className={cn(
+                            buttonVariants({ variant: "ghost", size: "default" }),
+                            "bg-transparent"
+                          )}
+                        >
+                          {t("common.nav.more")}
+                          <ChevronDown className="ml-1 h-4 w-4" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="start">
+                        {filteredNavs.map((nav, index) =>
+                          hasChildren(nav) ? (
+                            <React.Fragment key={`${nav.title}-${index}`}>
+                              <DropdownMenuLabel>{nav.title}</DropdownMenuLabel>
+                              {nav.children?.map((child, childIndex) => (
+                                <DropdownMenuItem key={`${index}-${childIndex}`} asChild>
+                                  <Link
+                                    href={child.url}
+                                    target={targetFor(child.openInNewWindow)}
+                                    rel={relFor(child.openInNewWindow)}
+                                  >
+                                    {child.title}
+                                  </Link>
+                                </DropdownMenuItem>
+                              ))}
+                              {index < filteredNavs.length - 1 && <DropdownMenuSeparator />}
+                            </React.Fragment>
+                          ) : (
+                            <DropdownMenuItem key={`${nav.title}-${index}`} asChild>
+                              <Link
+                                href={nav.url}
+                                target={targetFor(nav.openInNewWindow)}
+                                rel={relFor(nav.openInNewWindow)}
+                              >
+                                {nav.title}
+                              </Link>
+                            </DropdownMenuItem>
+                          )
                         )}
-                      >
-                        {t("common.nav.more")}
-                        <ChevronDown className="ml-1 h-4 w-4" />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start">
-                      {navs.map((nav, index) =>
-                        hasChildren(nav) ? (
-                          <React.Fragment key={`${nav.title}-${index}`}>
-                            <DropdownMenuLabel>{nav.title}</DropdownMenuLabel>
-                            {nav.children?.map((child, childIndex) => (
-                              <DropdownMenuItem key={`${index}-${childIndex}`} asChild>
-                                <Link
-                                  href={child.url}
-                                  target={targetFor(child.openInNewWindow)}
-                                  rel={relFor(child.openInNewWindow)}
-                                >
-                                  {child.title}
-                                </Link>
-                              </DropdownMenuItem>
-                            ))}
-                            {index < navs.length - 1 && <DropdownMenuSeparator />}
-                          </React.Fragment>
-                        ) : (
-                          <DropdownMenuItem key={`${nav.title}-${index}`} asChild>
-                            <Link
-                              href={nav.url}
-                              target={targetFor(nav.openInNewWindow)}
-                              rel={relFor(nav.openInNewWindow)}
-                            >
-                              {nav.title}
-                            </Link>
-                          </DropdownMenuItem>
-                        )
-                      )}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                )}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )
+                })()}
               </div>
             </nav>
           </div>

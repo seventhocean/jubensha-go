@@ -1245,7 +1245,7 @@ const zhCN = {
       },
       sidebar: {
         channels: "频道",
-        myGroups: "我的群组",
+        myGroups: "群组",
         nodes: "节点",
       },
     },

@@ -221,7 +221,7 @@ function MixedFeedItems({ items, t }: { items: FeedItem[]; t: ReturnType<typeof 
 }
 
 export function TopicListRoute({ title }: { title?: string }) {
-  const { topics, nodes } = useLoaderData() as TopicListRouteData
+  const { nodes } = useLoaderData() as TopicListRouteData
   const { t } = useI18n()
   const { currentUser } = useAppState()
   useDocumentTitle(title)
@@ -229,21 +229,6 @@ export function TopicListRoute({ title }: { title?: string }) {
   const [searchParams, setSearchParams] = useSearchParams()
   const activeTab = (searchParams.get("tab") || "all") as TabValue
   const sortMode = (searchParams.get("sort") || "latest") as SortMode
-
-  // Use loader's topics as initial feed items for the "All" tab with sort=latest
-  // This eliminates the first-load loading spinner for the default case.
-  const initialFeedItems = React.useMemo<FeedItem[]>(() => {
-    if (sortMode !== "latest") return []
-    return (topics.results || []).map((t) => ({ ...t, feedType: "topic" as const }))
-  }, [sortMode, topics.results])
-
-  const initialFeedCursor = React.useMemo(() => {
-    if (sortMode !== "latest") return ""
-    return JSON.stringify({ tc: topics.cursor || "", ac: "" })
-  }, [sortMode, topics.cursor])
-
-  const initialFeedHasMore = sortMode === "latest" ? (topics.hasMore !== false) : true
-  const initialFeedLoad = sortMode !== "latest"
 
   const handleTabChange = React.useCallback(
     (value: string) => {
@@ -328,10 +313,10 @@ export function TopicListRoute({ title }: { title?: string }) {
 
             {activeTab === "all" && (
               <LoadMore<FeedItem>
-                initialItems={initialFeedItems}
-                initialCursor={initialFeedCursor}
-                initialHasMore={initialFeedHasMore}
-                initialLoad={initialFeedLoad}
+                initialItems={[]}
+                initialCursor=""
+                initialHasMore={true}
+                initialLoad={true}
                 resetKey={`mixed-feed-all?sort=${sortMode}`}
                 labels={{
                   loadMore: t("common.loadMore.loadMore"),

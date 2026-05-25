@@ -2,6 +2,7 @@
 
 import Link from "@/components/common/link"
 import * as React from "react"
+import { Compass, Heart } from "lucide-react"
 
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { apiFetch } from "@/lib/api/client"
@@ -93,11 +94,13 @@ export function TopicsNavContent({
           <ul>
             <li className={cn(currentNodeId === undefined && !currentRootNodeId && "active")}>
               <Link href="/?tab=all">
+                <Compass className="h-4 w-4 shrink-0" />
                 <div className="node-name">{t("pages.home.tabs.all")}</div>
               </Link>
             </li>
             <li className={cn(currentNodeId === -2 && "active")}>
               <Link href="/?tab=following">
+                <Heart className="h-4 w-4 shrink-0" />
                 <div className="node-name">{t("pages.home.tabs.following")}</div>
               </Link>
             </li>
