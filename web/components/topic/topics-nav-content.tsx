@@ -2,6 +2,7 @@
 
 import Link from "@/components/common/link"
 import * as React from "react"
+import { useNavigate } from "react-router"
 import {
   Bookmark,
   Camera,
@@ -57,63 +58,18 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 
 let cachedChannels: Channel[] | null = null
 
-function nodeHref(node: TopicNode) {
-  return `/topics/node/${node.id}`
-}
-
-function isActiveNode(
-  node: TopicNode,
-  currentRootNodeId?: number
-) {
-  return currentRootNodeId === node.id
-}
-
-function NodeLogo({ node }: { node: TopicNode }) {
-  if (node.logo) {
-    return (
-      <i
-        className="node-logo"
-        style={{ backgroundImage: `url(${node.logo})` }}
-      />
-    )
-  }
-
-  return <i className="node-logo" />
-}
-
 export function TopicsNavContent({
-  initialNodes,
   currentNodeId,
   currentRootNodeId,
 }: {
-  initialNodes: TopicNode[]
+  initialNodes?: TopicNode[]
   currentNodeId?: number
   currentRootNodeId?: number
 }) {
-  const [nodes, setNodes] = React.useState(initialNodes)
   const [groups, setGroups] = React.useState<GroupItem[]>([])
   const [channels, setChannels] = React.useState<Channel[]>([])
   const { t } = useI18n()
-
-  React.useEffect(() => {
-    if (initialNodes.length > 0) return
-
-    let mounted = true
-    const timer = window.setTimeout(() => {
-      void apiFetch<TopicNode[]>("/api/topic/node_navs")
-        .then((data) => {
-          if (mounted) {
-            setNodes(data)
-          }
-        })
-        .catch(() => undefined)
-    }, 0)
-
-    return () => {
-      mounted = false
-      window.clearTimeout(timer)
-    }
-  }, [initialNodes.length])
+  const navigate = useNavigate()
 
   React.useEffect(() => {
     let mounted = true
@@ -148,7 +104,23 @@ export function TopicsNavContent({
     }
   }, [])
 
-  const userNodes = nodes.filter((node) => node.id > 0)
+  const handleChannelClick = React.useCallback(
+    (e: React.MouseEvent, href: string) => {
+      if (href.startsWith("/?tab=")) {
+        e.preventDefault()
+        navigate(href)
+      }
+    },
+    [navigate]
+  )
+
+  const renderChannelIcon = (icon: string) => {
+    if (icon.startsWith("http") || icon.startsWith("/")) {
+      return <i className="node-logo" style={{ backgroundImage: `url(${icon})` }} />
+    }
+    const Ic = iconMap[icon.toLowerCase()] ?? Compass
+    return <i className="node-logo"><Ic className="h-3.5 w-3.5" /></i>
+  }
 
   return (
     <div className="topics-nav">
@@ -175,18 +147,15 @@ export function TopicsNavContent({
                       : ""
                     isActive = currentUrl === channel.href
                   }
-                  const iconEl = channel.icon.startsWith("http") || channel.icon.startsWith("/")
-                    ? <i className="node-logo" style={{ backgroundImage: `url(${channel.icon})` }} />
-                    : (() => {
-                        const Ic = iconMap[channel.icon.toLowerCase()] ?? Compass
-                        return <i className="node-logo"><Ic className="h-3.5 w-3.5" /></i>
-                      })()
                   return (
                     <li key={channel.id} className={cn(isActive && "active")}>
-                      <Link href={channel.href}>
-                        {iconEl}
+                      <a
+                        href={channel.href}
+                        onClick={(e) => handleChannelClick(e, channel.href)}
+                      >
+                        {renderChannelIcon(channel.icon)}
                         <div className="node-name">{channel.nameEn || channel.name}</div>
-                      </Link>
+                      </a>
                     </li>
                   )
                 })}
@@ -199,16 +168,22 @@ export function TopicsNavContent({
               </div>
               <ul>
                 <li className={cn(currentNodeId === undefined && !currentRootNodeId && "active")}>
-                  <Link href="/?tab=all">
+                  <a
+                    href="/?tab=all"
+                    onClick={(e) => handleChannelClick(e, "/?tab=all")}
+                  >
                     <i className="node-logo"><Compass className="h-3.5 w-3.5" /></i>
                     <div className="node-name">{t("pages.home.tabs.all")}</div>
-                  </Link>
+                  </a>
                 </li>
                 <li className={cn(currentNodeId === -2 && "active")}>
-                  <Link href="/?tab=following">
+                  <a
+                    href="/?tab=following"
+                    onClick={(e) => handleChannelClick(e, "/?tab=following")}
+                  >
                     <i className="node-logo"><Heart className="h-3.5 w-3.5" /></i>
                     <div className="node-name">{t("pages.home.tabs.following")}</div>
-                  </Link>
+                  </a>
                 </li>
               </ul>
             </>
@@ -245,32 +220,6 @@ export function TopicsNavContent({
                   {t("common.nav.viewAll")}
                 </Link>
               </div>
-            </>
-          )}
-
-          {/* Nodes section */}
-          {userNodes.length > 0 && (
-            <>
-              <div className="section-label">
-                {t("pages.home.sidebar.nodes")}
-              </div>
-              <ul>
-                {userNodes.map((node) => {
-                  const active = isActiveNode(node, currentRootNodeId)
-                  return (
-                    <li
-                      key={node.id}
-                      className={cn(active && "active")}
-                      data-node-id={node.id}
-                    >
-                      <Link href={nodeHref(node)}>
-                        <NodeLogo node={node} />
-                        <div className="node-name">{node.name}</div>
-                      </Link>
-                    </li>
-                  )
-                })}
-              </ul>
             </>
           )}
         </ScrollArea>

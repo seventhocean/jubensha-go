@@ -974,16 +974,58 @@ export function RichTextEditor({
         if (!items?.length) {
           return false
         }
+        // Direct image files (screenshots, copied images)
         const files = Array.from(items)
           .filter((item) => item.type.includes("image"))
           .map((item) => item.getAsFile())
           .filter(Boolean) as File[]
-        if (!files.length) {
-          return false
+        if (files.length) {
+          event.preventDefault()
+          void uploadImages(files)
+          return true
         }
-        event.preventDefault()
-        void uploadImages(files)
-        return true
+        // HTML content with embedded images (data: or blob: URLs)
+        const htmlItem = Array.from(items).find(
+          (item) => item.type === "text/html"
+        )
+        if (htmlItem) {
+          const html = event.clipboardData?.getData("text/html")
+          if (html) {
+            const parser = new DOMParser()
+            const doc = parser.parseFromString(html, "text/html")
+            const imgs = doc.querySelectorAll("img[src]")
+            const dataImages = Array.from(imgs).filter((img) => {
+              const src = img.getAttribute("src") || ""
+              return src.startsWith("data:") || src.startsWith("blob:")
+            })
+            if (dataImages.length > 0) {
+              event.preventDefault()
+              void (async () => {
+                const imageFiles: File[] = []
+                for (const img of dataImages) {
+                  const src = img.getAttribute("src") || ""
+                  try {
+                    const response = await fetch(src)
+                    const blob = await response.blob()
+                    const ext = blob.type.split("/")[1] || "png"
+                    imageFiles.push(
+                      new File([blob], `pasted-image.${ext}`, {
+                        type: blob.type,
+                      })
+                    )
+                  } catch {
+                    // Skip failed conversions
+                  }
+                }
+                if (imageFiles.length) {
+                  await uploadImages(imageFiles)
+                }
+              })()
+              return true
+            }
+          }
+        }
+        return false
       },
       handleDrop(view, event) {
         const files = Array.from(event.dataTransfer?.files || []).filter((file) => file.type.includes("image"))
