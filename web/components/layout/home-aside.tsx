@@ -5,10 +5,9 @@ import Link from "@/components/common/link"
 import { Trophy } from "lucide-react"
 
 import { UserAvatar } from "@/components/common/avatar"
-import { CheckInCard, TasksUserCard } from "@/components/tasks/task-widgets"
 import { useAppState } from "@/components/app/app-provider"
 import { apiFetch } from "@/lib/api/client"
-import type { Badge, CheckInInfo, UserSummary } from "@/lib/api/types"
+import type { Article, CheckInInfo, GroupItem, PageData, UserSummary } from "@/lib/api/types"
 import type { FriendLink } from "@/lib/api/misc"
 import type { TFunction } from "@/lib/i18n"
 import { useI18n } from "@/lib/i18n/provider"
@@ -47,6 +46,157 @@ function SiteNotice({ title, content }: { title: string; content?: string }) {
         className="prose prose-sm max-w-none text-sm text-muted-foreground"
         dangerouslySetInnerHTML={{ __html: content }}
       />
+    </WidgetCard>
+  )
+}
+
+function HotArticlesWidget({
+  articles,
+  t,
+}: {
+  articles: Article[]
+  t: TFunction
+}) {
+  if (!articles.length) {
+    return null
+  }
+
+  return (
+    <WidgetCard title={t("component.homeAside.hotArticles")}>
+      <ul className="space-y-2">
+        {articles.slice(0, 5).map((article, index) => (
+          <li key={article.id} className="flex items-start gap-2 text-sm">
+            <span className="shrink-0 w-5 h-5 flex items-center justify-center rounded bg-[var(--color-primary-muted)] text-xs font-medium text-[var(--color-primary)]">
+              {index + 1}
+            </span>
+            <Link
+              href={`/article/${article.id}`}
+              className="flex-1 text-foreground hover:text-[var(--color-primary)] transition-colors duration-[var(--motion-duration-fast)] line-clamp-1"
+            >
+              {article.title.length > 40
+                ? article.title.slice(0, 40) + "..."
+                : article.title}
+            </Link>
+            <span className="shrink-0 text-xs text-muted-foreground">
+              {article.viewCount ?? 0} {t("component.homeAside.views")}
+            </span>
+          </li>
+        ))}
+      </ul>
+      <div className="mt-2 flex justify-end text-sm">
+        <Link
+          href="/articles"
+          className="text-muted-foreground hover:text-primary"
+        >
+          {t("component.homeAside.viewMore")}
+        </Link>
+      </div>
+    </WidgetCard>
+  )
+}
+
+function ActiveGroupsWidget({
+  groups,
+  t,
+}: {
+  groups: GroupItem[]
+  t: TFunction
+}) {
+  if (!groups.length) {
+    return null
+  }
+
+  return (
+    <WidgetCard title={t("component.homeAside.activeGroups")}>
+      <ul className="space-y-3">
+        {groups.slice(0, 3).map((group) => (
+          <li key={group.id} className="flex items-center gap-2">
+            {group.icon ? (
+              <img
+                src={group.icon}
+                alt={group.name}
+                className="w-8 h-8 rounded object-cover shrink-0"
+              />
+            ) : (
+              <div className="w-8 h-8 rounded bg-[var(--color-primary-muted)] flex items-center justify-center text-xs font-medium text-[var(--color-primary)] shrink-0">
+                {group.name.charAt(0)}
+              </div>
+            )}
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-medium text-foreground truncate">
+                {group.name}
+              </div>
+              <div className="text-xs text-muted-foreground">
+                {group.memberCount} {t("component.homeAside.members")}
+              </div>
+            </div>
+            <Link
+              href={`/groups/${group.slug}`}
+              className="shrink-0 text-xs px-2 py-1 rounded bg-[var(--color-primary-muted)] text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white transition-colors"
+            >
+              {group.joined
+                ? t("component.homeAside.enterGroup")
+                : t("component.homeAside.joinGroup")}
+            </Link>
+          </li>
+        ))}
+      </ul>
+      <div className="mt-2 flex justify-end text-sm">
+        <Link
+          href="/groups"
+          className="text-muted-foreground hover:text-primary"
+        >
+          {t("component.homeAside.viewMore")}
+        </Link>
+      </div>
+    </WidgetCard>
+  )
+}
+
+function MyStatusWidget({
+  user,
+  checkIn,
+  t,
+}: {
+  user: UserSummary
+  checkIn: CheckInInfo | null
+  t: TFunction
+}) {
+  const checkedInToday = checkIn?.checkIn ?? false
+
+  return (
+    <WidgetCard title={t("component.homeAside.myStatus")}>
+      <div className="space-y-2 text-sm">
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground">
+            {t("component.homeAside.levelExp")}
+          </span>
+          <span className="font-medium">
+            Lv.{user.level ?? 0}
+          </span>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground">
+            {t("component.homeAside.dailyCheckin")}
+          </span>
+          <span className={checkedInToday ? "text-green-600" : "text-orange-500"}>
+            {checkedInToday
+              ? t("component.checkIn.statusCheckedIn")
+              : t("component.checkIn.statusNotCheckedIn")}
+          </span>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground">
+            {t("component.homeAside.taskProgress")}
+          </span>
+          <Link
+            href="/tasks"
+            className="text-[var(--color-primary)] hover:underline"
+          >
+            {t("common.header.tasks")} &gt;
+          </Link>
+        </div>
+      </div>
     </WidgetCard>
   )
 }
@@ -149,23 +299,25 @@ export function HomeAside() {
   const { t } = useI18n()
   const [scoreRank, setScoreRank] = React.useState<UserSummary[]>([])
   const [checkIn, setCheckIn] = React.useState<CheckInInfo | null>(null)
-  const [checkInRank, setCheckInRank] = React.useState<CheckInInfo[]>([])
   const [friendLinks, setFriendLinks] = React.useState<FriendLink[]>([])
-  const [badges, setBadges] = React.useState<Badge[]>([])
+  const [hotArticles, setHotArticles] = React.useState<Article[]>([])
+  const [activeGroups, setActiveGroups] = React.useState<GroupItem[]>([])
 
   React.useEffect(() => {
     let mounted = true
     void Promise.all([
       apiFetch<UserSummary[]>("/api/user/score/rank").catch(() => []),
       apiFetch<CheckInInfo | null>("/api/checkin/checkin").catch(() => null),
-      apiFetch<CheckInInfo[]>("/api/checkin/rank").catch(() => []),
       apiFetch<FriendLink[]>("/api/link/top_links").catch(() => []),
-    ]).then(([nextScoreRank, nextCheckIn, nextCheckInRank, nextLinks]) => {
+      apiFetch<PageData<Article>>("/api/article/articles", { params: { sort: "hot" } }).catch(() => ({ results: [], hasMore: false, cursor: "" })),
+      apiFetch<GroupItem[]>("/api/group/list").catch(() => []),
+    ]).then(([nextScoreRank, nextCheckIn, nextLinks, nextArticles, nextGroups]) => {
       if (!mounted) return
       setScoreRank(Array.isArray(nextScoreRank) ? nextScoreRank : [])
       setCheckIn(nextCheckIn)
-      setCheckInRank(Array.isArray(nextCheckInRank) ? nextCheckInRank : [])
       setFriendLinks(Array.isArray(nextLinks) ? nextLinks : [])
+      setHotArticles(Array.isArray(nextArticles.results) ? nextArticles.results : [])
+      setActiveGroups(Array.isArray(nextGroups) ? nextGroups : [])
     })
 
     return () => {
@@ -173,35 +325,15 @@ export function HomeAside() {
     }
   }, [])
 
-  React.useEffect(() => {
-    if (!user) {
-      setBadges([])
-      return
-    }
-    let mounted = true
-    void apiFetch<Badge[]>("/api/badge/badges", {
-      params: { userId: user.id },
-    })
-      .then((nextBadges) => {
-        if (mounted) setBadges(nextBadges || [])
-      })
-      .catch(() => {
-        if (mounted) setBadges([])
-      })
-
-    return () => {
-      mounted = false
-    }
-  }, [user])
-
   return (
     <>
       <SiteNotice
         title={t("component.siteNotice.title")}
         content={config?.siteNotification}
       />
-      <TasksUserCard user={user} badges={badges} />
-      <CheckInCard initialCheckIn={checkIn} initialRank={checkInRank} />
+      <HotArticlesWidget articles={hotArticles} t={t} />
+      <ActiveGroupsWidget groups={activeGroups} t={t} />
+      {user ? <MyStatusWidget user={user} checkIn={checkIn} t={t} /> : null}
       <ScoreRank
         title={t("component.scoreRank.title")}
         users={scoreRank}
