@@ -200,7 +200,7 @@ func (t TopicNodeType) Supports(topicType TopicType) bool {
 	}
 	switch nodeType {
 	case TopicNodeTypeQA:
-		return topicType == TopicTypeQA
+		return topicType == TopicTypeQA || topicType == TopicTypeTopic
 	default:
 		return topicType == TopicTypeTopic || topicType == TopicTypeTweet
 	}

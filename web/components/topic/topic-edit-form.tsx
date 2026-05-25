@@ -18,6 +18,7 @@ import type {
 import type { TopicEditData } from "@/lib/api/topics"
 import { useI18n } from "@/lib/i18n/provider"
 import {
+  findNodeById,
   filterTopicNodeTree,
   getFirstTopicNodeId,
   hasTopicNode,
@@ -36,8 +37,11 @@ type TopicEditFormState = {
 }
 
 function nodeTypeMatches(topicType: number) {
-  return (node: TopicNode) =>
-    topicType === 2 ? node.type === "qa" : node.type !== "qa"
+  return (node: TopicNode) => {
+    // type=0 (unified posts) can go on any node
+    if (topicType === 0) return true
+    return topicType === 2 ? node.type === "qa" : node.type !== "qa"
+  }
 }
 
 function normalizeEditData(topic: TopicEditData): TopicEditFormState {
@@ -232,6 +236,8 @@ export function TopicEditForm({
   const effectiveNodeId = hasTopicNode(availableNodes, form.nodeId)
     ? form.nodeId
     : getFirstTopicNodeId(availableNodes)
+  const selectedNode = findNodeById(nodes, effectiveNodeId)
+  const isQaNode = selectedNode?.type === "qa"
 
   function updateForm(next: Partial<TopicEditFormState>) {
     setForm((current) => ({ ...current, ...next }))
@@ -259,8 +265,7 @@ export function TopicEditForm({
           content: form.content,
           hideContent: form.hideContent,
           tags: form.tags,
-          attachmentIds:
-            form.type === 0 ? attachmentList.map((item) => item.id) : [],
+          attachmentIds: !isQaNode ? attachmentList.map((item) => item.id) : [],
         },
       })
       msg({
@@ -307,7 +312,7 @@ export function TopicEditForm({
         />
       </div>
 
-      {form.type !== 2 && (config?.enableHideContent || form.hideContent) ? (
+      {!isQaNode && (config?.enableHideContent || form.hideContent) ? (
         <div className="field">
           <ContentEditor
             contentType="html"
@@ -327,7 +332,7 @@ export function TopicEditForm({
         />
       </div>
 
-      {form.type === 0 && config?.attachmentConfig?.enabled ? (
+      {!isQaNode && config?.attachmentConfig?.enabled ? (
         <div className="field">
           <TopicAttachmentField
             value={attachmentList}

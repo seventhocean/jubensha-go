@@ -41,12 +41,10 @@ import { formatDate } from "@/lib/format"
 import {
   getFirstTopicNodeId,
   hasTopicNode,
-  filterTopicNodeTree,
 } from "@/lib/topic-nodes"
 import { useToastActions } from "@/lib/toast"
 
 type TopicCreateFormState = {
-  type: number
   nodeId: number
   groupId: number
   title: string
@@ -71,36 +69,16 @@ type TopicVoteForm = {
 const DEFAULT_ATTACHMENT_ACCEPT =
   ".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.md,.csv,.zip,.rar,.7z,.tar,.gz"
 
-function titleForType(type: number, t: ReturnType<typeof useI18n>["t"]) {
-  if (type === 1) return t("pages.topic.create.tweet")
-  if (type === 2) return t("pages.topic.create.qa")
-  return t("pages.topic.create.post")
-}
-
-function publishLabelForType(type: number, t: ReturnType<typeof useI18n>["t"]) {
-  if (type === 1) return t("pages.topic.create.tweetBtn")
-  if (type === 2) return t("pages.topic.create.qaBtn")
-  return t("pages.topic.create.postBtn")
-}
-
-function nodeTypeMatches(topicType: number) {
-  return (node: TopicNode) =>
-    topicType === 2 ? node.type === "qa" : node.type !== "qa"
-}
-
 function createInitialForm({
-  type,
   nodeId,
   groupId,
   contentType,
 }: {
-  type: number
   nodeId: number
   groupId?: number
   contentType: TopicCreateFormState["contentType"]
 }): TopicCreateFormState {
   return {
-    type,
     nodeId,
     groupId: groupId || 0,
     title: "",
@@ -267,202 +245,22 @@ function TopicAttachmentField({
   )
 }
 
-async function uploadTopicImage(file: File) {
-  const body = new FormData()
-  body.append("image", file, file.name)
-  return apiFetch<{ url: string }>("/api/upload", { method: "POST", body })
-}
-
 function imageSrc(image: ImageInfo) {
   return image.url || image.preview || ""
 }
 
-function SimpleTopicEditor({
-  content,
-  imageList,
-  height = 200,
-  maxWordCount = 5000,
-  placeholder,
-  disabled,
-  onUploadingChange,
-  onContentChange,
-  onImageListChange,
-}: {
-  content: string
-  imageList: ImageInfo[]
-  height?: number
-  maxWordCount?: number
-  placeholder: string
-  disabled?: boolean
-  onUploadingChange: (value: boolean) => void
-  onContentChange: (content: string) => void
-  onImageListChange: (imageList: ImageInfo[]) => void
-}) {
-  const { t } = useI18n()
-  const { catchError } = useToastActions()
-  const fileInputRef = React.useRef<HTMLInputElement>(null)
-  const [showImageUpload, setShowImageUpload] = React.useState(false)
-  const [imageUploading, setImageUploading] = React.useState(false)
-  const currentImages = imageList || []
-  const showImageList = showImageUpload || currentImages.length > 0 || imageUploading
-
-  const uploadFiles = React.useCallback(
-    async (files: File[]) => {
-      const images = files.filter((file) => file.type.startsWith("image/"))
-      if (!images.length || imageUploading) {
-        return
-      }
-
-      setShowImageUpload(true)
-      setImageUploading(true)
-      onUploadingChange(true)
-      try {
-        const uploaded: ImageInfo[] = []
-        for (const file of images) {
-          const result = await uploadTopicImage(file)
-          uploaded.push({ url: result.url })
-        }
-        onImageListChange([...(imageList || []), ...uploaded])
-      } catch (error) {
-        catchError(error)
-      } finally {
-        setImageUploading(false)
-        onUploadingChange(false)
-      }
-    },
-    [
-      catchError,
-      imageList,
-      imageUploading,
-      onImageListChange,
-      onUploadingChange,
-    ]
-  )
-
-  function onPaste(event: React.ClipboardEvent<HTMLTextAreaElement>) {
-    const files = Array.from(event.clipboardData.items)
-      .filter((item) => item.type.startsWith("image/"))
-      .map((item) => item.getAsFile())
-      .filter((file): file is File => Boolean(file))
-
-    if (!files.length) {
-      return
+function findNodeById(
+  nodes: TopicNode[],
+  id: number
+): TopicNode | null {
+  for (const node of nodes) {
+    if (node.id === id) return node
+    if (node.children) {
+      const found = findNodeById(node.children, id)
+      if (found) return found
     }
-
-    event.preventDefault()
-    void uploadFiles(files)
   }
-
-  function onDrop(event: React.DragEvent<HTMLTextAreaElement>) {
-    const files = Array.from(event.dataTransfer.files).filter((file) =>
-      file.type.startsWith("image/")
-    )
-    if (!files.length) {
-      return
-    }
-
-    event.preventDefault()
-    event.stopPropagation()
-    void uploadFiles(files)
-  }
-
-  function openImagePicker() {
-    setShowImageUpload(true)
-    fileInputRef.current?.click()
-  }
-
-  return (
-    <div className="simple-editor">
-      <label className="simple-editor-input">
-        <textarea
-          value={content}
-          placeholder={placeholder}
-          style={{ minHeight: height, height }}
-          disabled={disabled}
-          onInput={(event) => onContentChange(event.currentTarget.value)}
-          onPaste={onPaste}
-          onDrop={onDrop}
-        />
-      </label>
-      {showImageList ? (
-        <div className="simple-editor-image-upload">
-          <div className="flex flex-wrap gap-2">
-            {currentImages.map((image, index) => (
-              <div
-                key={`${image.url || image.preview || index}`}
-                className="group relative h-[60px] w-[60px] overflow-hidden rounded bg-background"
-              >
-                <PreviewableImage
-                  src={imageSrc(image)}
-                  previewSrcList={currentImages.map(imageSrc)}
-                  initialIndex={index}
-                  alt=""
-                  className="h-full w-full object-cover"
-                />
-                <button
-                  type="button"
-                  className="absolute top-1 right-1 hidden rounded bg-black/50 p-0.5 text-white group-hover:block"
-                  onClick={() =>
-                    onImageListChange(
-                      imageList.filter((_, imageIndex) => imageIndex !== index)
-                    )
-                  }
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </div>
-            ))}
-            {!imageUploading ? (
-              <button
-                type="button"
-                className="flex h-[60px] w-[60px] items-center justify-center rounded border border-dashed border-border bg-background text-muted-foreground hover:border-primary hover:text-primary"
-                disabled={disabled}
-                onClick={openImagePicker}
-              >
-                <Plus className="h-5 w-5" />
-              </button>
-            ) : null}
-            {imageUploading ? (
-              <div className="flex h-[60px] min-w-[60px] items-center justify-center rounded bg-background px-2 text-xs text-muted-foreground">
-                {t("component.imageUpload.uploading")}
-              </div>
-            ) : null}
-          </div>
-        </div>
-      ) : null}
-      <div className="simple-editor-toolbar">
-        <div className="act-btn">
-          <button
-            type="button"
-            className="act-icon"
-            disabled={disabled}
-            aria-label={t("component.imageUpload.upload")}
-            onClick={openImagePicker}
-          >
-            <ImageIcon className="h-[18px] w-[18px]" />
-            <span>{t("component.imageUpload.upload")}</span>
-          </button>
-        </div>
-        <div className="publish-container">
-          <span className="tip">
-            {content ? content.length : 0} / {maxWordCount}
-          </span>
-        </div>
-      </div>
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        multiple
-        className="hidden"
-        onChange={(event) => {
-          const files = Array.from(event.currentTarget.files || [])
-          void uploadFiles(files)
-          event.currentTarget.value = ""
-        }}
-      />
-    </div>
-  )
+  return null
 }
 
 function defaultVote(): TopicVoteForm {
@@ -706,7 +504,6 @@ export function TopicCreateForm({
   groupId,
   groupSlug,
   nodes,
-  type,
 }: {
   contentType: TopicCreateFormState["contentType"]
   currentUser: UserSummary
@@ -715,7 +512,6 @@ export function TopicCreateForm({
   groupId?: number
   groupSlug?: string
   nodes: TopicNode[]
-  type: number
 }) {
   const router = useRouter()
   const { t } = useI18n()
@@ -728,8 +524,6 @@ export function TopicCreateForm({
     []
   )
   const [attachmentUploading, setAttachmentUploading] = React.useState(false)
-  const [simpleEditorUploading, setSimpleEditorUploading] =
-    React.useState(false)
   const [voteModalOpen, setVoteModalOpen] = React.useState(false)
   const [voteEditing, setVoteEditing] = React.useState(false)
   const [voteDraft, setVoteDraft] = React.useState<TopicVoteForm>(defaultVote())
@@ -737,7 +531,6 @@ export function TopicCreateForm({
     React.useState<ConfirmDialogState>(null)
   const [form, setForm] = React.useState<TopicCreateFormState>(() =>
     createInitialForm({
-      type,
       nodeId: nodeId || config?.defaultNodeId || 0,
       groupId,
       contentType,
@@ -753,26 +546,19 @@ export function TopicCreateForm({
     }
   }, [groupId, groupSlug])
 
-  const availableNodes = React.useMemo(
-    () => filterTopicNodeTree(nodes, nodeTypeMatches(form.type)),
-    [form.type, nodes]
-  )
-  const effectiveNodeId = hasTopicNode(availableNodes, form.nodeId)
+  const effectiveNodeId = hasTopicNode(nodes, form.nodeId)
     ? form.nodeId
-    : getFirstTopicNodeId(availableNodes)
-  const noQaNodesAvailable = form.type === 2 && availableNodes.length === 0
+    : getFirstTopicNodeId(nodes)
+
+  const selectedNode = findNodeById(nodes, effectiveNodeId)
+  const isQaNode = selectedNode?.type === "qa"
+
   const isNeedEmailVerify = Boolean(
     config?.createTopicEmailVerified && !currentUser.emailVerified
   )
-  const featureDisabledMessage = config
-    ? form.type === 1 && !config.modules?.tweet
-      ? t("pages.topic.create.tweetFeatureDisabled")
-      : form.type === 2 && !config.modules?.qa
-        ? t("pages.topic.create.qaFeatureDisabled")
-        : form.type === 0 && !config.modules?.topic
-          ? t("pages.topic.create.topicFeatureDisabled")
-          : null
-    : null
+  const featureDisabled = config
+    ? !(config.modules?.topic || config.modules?.qa)
+    : false
 
   function updateForm(next: Partial<TopicCreateFormState>) {
     setForm((current) => ({ ...current, ...next }))
@@ -812,14 +598,6 @@ export function TopicCreateForm({
       return
     }
     lastSubmitAtRef.current = now
-    if (form.type === 2 && !hasTopicNode(availableNodes, effectiveNodeId)) {
-      msgWarning(t("pages.topic.create.noQaNodeSubmit"))
-      return
-    }
-    if (form.type === 1 && simpleEditorUploading) {
-      msgWarning(t("component.textEditor.pleaseWait"))
-      return
-    }
     if (attachmentUploading) {
       msgWarning(t("pages.topic.create.attachmentUploading"))
       return
@@ -833,20 +611,24 @@ export function TopicCreateForm({
       const data = await apiFetch<Topic>("/api/topic/create", {
         method: "POST",
         body: {
+          type: 0,
           ...form,
           nodeId: effectiveNodeId,
           bountyScore: Number(form.bountyScore) || 0,
           attachmentIds:
-            form.type === 0 ? attachmentList.map((item) => item.id) : [],
-          vote: form.vote
-            ? {
-                ...form.vote,
-                voteNum: form.vote.type === 1 ? 1 : form.vote.voteNum,
-                options: form.vote.options.map((option) => ({
-                  content: option.content.trim(),
-                })),
-              }
-            : null,
+            !isQaNode && config?.attachmentConfig?.enabled
+              ? attachmentList.map((item) => item.id)
+              : [],
+          vote:
+            !isQaNode && form.vote
+              ? {
+                  ...form.vote,
+                  voteNum: form.vote.type === 1 ? 1 : form.vote.voteNum,
+                  options: form.vote.options.map((option) => ({
+                    content: option.content.trim(),
+                  })),
+                }
+              : null,
           captchaId: captcha?.captchaId || "",
           captchaCode: captcha?.captchaCode || "",
           captchaProtocol: captcha?.captchaProtocol || 2,
@@ -891,11 +673,11 @@ export function TopicCreateForm({
     setVoteModalOpen(false)
   }
 
-  if (featureDisabledMessage) {
+  if (featureDisabled) {
     return (
       <Alert>
         <AlertCircle className="h-4 w-4 shrink-0" />
-        <AlertTitle>{featureDisabledMessage}</AlertTitle>
+        <AlertTitle>{t("pages.topic.create.topicFeatureDisabled")}</AlertTitle>
       </Alert>
     )
   }
@@ -915,49 +697,37 @@ export function TopicCreateForm({
     )
   }
 
-  if (noQaNodesAvailable) {
-    return (
-      <Alert>
-        <AlertCircle className="h-4 w-4 shrink-0" />
-        <AlertTitle>{t("pages.topic.create.noQaNodeTitle")}</AlertTitle>
-        <AlertDescription>
-          {t("pages.topic.create.noQaNodeDescription")}
-        </AlertDescription>
-      </Alert>
-    )
-  }
-
   return (
     <>
       <div className="publish-form">
         <div className="form-title">
-          <div className="form-title-name">{titleForType(form.type, t)}</div>
-          {form.type !== 1 && form.type !== 2 ? (
-            <div
-              className="editor-mode-switch flex"
-              aria-label={t("component.editorMode.switchLabel")}
+          <div className="form-title-name">
+            {t("pages.topic.create.post")}
+          </div>
+          <div
+            className="editor-mode-switch flex"
+            aria-label={t("component.editorMode.switchLabel")}
+          >
+            <span className="editor-mode-switch-label">
+              {t("component.editorMode.label")}
+            </span>
+            <Tabs
+              value={form.contentType === "markdown" ? "markdown" : "html"}
+              onValueChange={(value) => switchEditor(value as EditorMode)}
             >
-              <span className="editor-mode-switch-label">
-                {t("component.editorMode.label")}
-              </span>
-              <Tabs
-                value={form.contentType === "markdown" ? "markdown" : "html"}
-                onValueChange={(value) => switchEditor(value as EditorMode)}
-              >
-                <TabsList className="h-7 p-0.5 group-data-horizontal/tabs:h-7">
-                  {editorModeOptions.map((option) => (
-                    <TabsTrigger
-                      key={option.value}
-                      value={option.value}
-                      className="h-6 px-2 py-0 text-xs"
-                    >
-                      {option.label}
-                    </TabsTrigger>
-                  ))}
-                </TabsList>
-              </Tabs>
-            </div>
-          ) : null}
+              <TabsList className="h-7 p-0.5 group-data-horizontal/tabs:h-7">
+                {editorModeOptions.map((option) => (
+                  <TabsTrigger
+                    key={option.value}
+                    value={option.value}
+                    className="h-6 px-2 py-0 text-xs"
+                  >
+                    {option.label}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
+          </div>
         </div>
 
         {groupInfo ? (
@@ -978,51 +748,34 @@ export function TopicCreateForm({
         <div className="field">
           <TopicNodeQuickSelector
             value={effectiveNodeId}
-            nodes={availableNodes}
+            nodes={nodes}
             onChange={(nodeId) => updateForm({ nodeId })}
           />
         </div>
 
-        {form.type !== 1 ? (
-          <div className="field">
-            <Input
-              value={form.title}
-              placeholder={t("pages.topic.create.titlePlaceholder")}
-              onChange={(event) =>
-                updateForm({ title: event.currentTarget.value })
-              }
-            />
-          </div>
-        ) : null}
+        <div className="field">
+          <Input
+            value={form.title}
+            placeholder={t("pages.topic.create.titlePlaceholder")}
+            onChange={(event) =>
+              updateForm({ title: event.currentTarget.value })
+            }
+          />
+        </div>
 
-        {form.type === 1 ? (
-          <div className="field">
-            <SimpleTopicEditor
-              content={form.content}
-              imageList={form.imageList}
-              height={200}
-              placeholder={t("pages.topic.create.contentPlaceholder")}
-              disabled={publishing}
-              onUploadingChange={setSimpleEditorUploading}
-              onContentChange={(content) => updateForm({ content })}
-              onImageListChange={(imageList) => updateForm({ imageList })}
-            />
-          </div>
-        ) : (
-          <div className="field">
-            <ContentEditor
-              contentType={
-                form.contentType === "markdown" ? "markdown" : "html"
-              }
-              value={form.content}
-              placeholder={t("pages.topic.create.contentPlaceholder")}
-              height="400px"
-              onChange={(content) => updateForm({ content })}
-            />
-          </div>
-        )}
+        <div className="field">
+          <ContentEditor
+            contentType={
+              form.contentType === "markdown" ? "markdown" : "html"
+            }
+            value={form.content}
+            placeholder={t("pages.topic.create.contentPlaceholder")}
+            height="400px"
+            onChange={(content) => updateForm({ content })}
+          />
+        </div>
 
-        {form.type !== 1 && form.type !== 2 && config?.enableHideContent ? (
+        {!isQaNode && config?.enableHideContent ? (
           <div className="field">
             <ContentEditor
               contentType="html"
@@ -1043,7 +796,7 @@ export function TopicCreateForm({
           />
         </div>
 
-        {form.type === 2 && config?.enableQaBounty ? (
+        {isQaNode && config?.enableQaBounty ? (
           <div className="field rounded-md border border-dashed bg-muted/20 p-3">
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-sm text-muted-foreground">
@@ -1066,7 +819,7 @@ export function TopicCreateForm({
           </div>
         ) : null}
 
-        {form.type === 0 && config?.attachmentConfig?.enabled ? (
+        {!isQaNode && config?.attachmentConfig?.enabled ? (
           <div className="field">
             <TopicAttachmentField
               value={attachmentList}
@@ -1078,7 +831,7 @@ export function TopicCreateForm({
           </div>
         ) : null}
 
-        {form.type !== 2 ? (
+        {!isQaNode ? (
           <div className="field rounded-md border border-dashed bg-muted/20 p-3">
             <div className="flex flex-wrap items-center gap-2">
               {!form.vote ? (
@@ -1139,12 +892,10 @@ export function TopicCreateForm({
         <div className="form-footer">
           <Button
             type="button"
-            disabled={
-              publishing || attachmentUploading || simpleEditorUploading
-            }
+            disabled={publishing || attachmentUploading}
             onClick={submit}
           >
-            {publishLabelForType(form.type, t)}
+            {t("pages.topic.create.postBtn")}
           </Button>
         </div>
       </div>

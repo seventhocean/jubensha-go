@@ -41,7 +41,7 @@ export function TopicManageMenu({
   const [confirmState, setConfirmState] =
     React.useState<ConfirmDialogState>(null)
   const isTopicOwner = Boolean(currentUser && currentUser.id === topic.user.id)
-  const canEdit = isTopicOwner && topic.type === 0
+  const canEdit = isTopicOwner && topic.type !== 1
   const canDelete =
     isTopicOwner ||
     userHasPermission(currentUser, PERMISSIONS.DASHBOARD_TOPIC_DELETE)

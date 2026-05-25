@@ -16,9 +16,7 @@ export function TopicContent({ topic }: { topic: Topic }) {
       {content ? (
         <HtmlImagePreview
           html={content}
-          className={`bbs-content line-numbers wrap-break-word text-base leading-6 antialiased [&_h2]:scroll-mt-20 [&_h3]:scroll-mt-20 [&_h4]:scroll-mt-20 [&_img]:cursor-zoom-in ${
-            topic.type === 1 ? "whitespace-pre-line" : ""
-          }`}
+          className={`bbs-content line-numbers wrap-break-word text-base leading-6 antialiased [&_h2]:scroll-mt-20 [&_h3]:scroll-mt-20 [&_h4]:scroll-mt-20 [&_img]:cursor-zoom-in`}
         />
       ) : null}
       {topic.imageList?.length ? (

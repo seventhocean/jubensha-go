@@ -44,7 +44,7 @@ export function TopicMeta({
                 </time>
               </span>
             ) : null}
-            {topic.type === 2 ? (
+            {topic.node?.type === "qa" ? (
               <span
                 className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] leading-none font-medium ring-1 ${
                   topic.qaStatus === "solved"
@@ -62,7 +62,7 @@ export function TopicMeta({
                   : t("pages.topic.detail.qaUnsolved")}
               </span>
             ) : null}
-            {topic.type === 2 && topic.bountyScore ? (
+            {topic.node?.type === "qa" && topic.bountyScore ? (
               <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-[11px] leading-none font-medium text-amber-800 ring-1 ring-amber-200">
                 {t("pages.topic.detail.bountyLabel", {
                   score: topic.bountyScore,

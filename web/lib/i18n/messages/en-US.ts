@@ -27,8 +27,6 @@ const enUS = {
     createBtn: {
       create: "Create",
       topic: "Topic",
-      qa: "Q&A",
-      tweet: "Update",
       article: "Article",
     },
     header: {
@@ -1358,28 +1356,17 @@ const enUS = {
         needEmailBody: "Before posting, please set and verify your email. ",
         goVerify: "Verify email",
         post: "Post",
-        tweet: "Update",
-        qa: "Ask Question",
         titlePlaceholder: "Enter a post title",
         contentPlaceholder: "Write your post...",
         bountyLabel: "Bounty points",
         bountyPlaceholder: "0 for no bounty",
         postBtn: "Publish",
-        tweetBtn: "Publish",
-        qaBtn: "Publish Question",
         switchEditorConfirm:
           "Switching the editor will clear the current content, continue?",
         imageUploading: "Image uploading, please try again later...",
         attachmentUploading:
           "Attachment uploading, please wait before submitting",
-        noQaNodeTitle: "No Q&A category available",
-        noQaNodeDescription:
-          "Please ask an admin to add a Q&A category, or choose another topic type.",
-        noQaNodeSubmit:
-          "No Q&A category available or none selected. Cannot publish.",
-        tweetFeatureDisabled: "Updates are not enabled",
         topicFeatureDisabled: "Discussions are not enabled",
-        qaFeatureDisabled: "Q&A module is not enabled",
         publishingTo: "Publishing to: {group}",
         attachment: {
           label: "Attachments (optional)",

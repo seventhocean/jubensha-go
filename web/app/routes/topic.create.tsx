@@ -46,13 +46,7 @@ export default function TopicCreateRoute() {
   const nodeId = Number(searchParams.get("nodeId") || 0)
   const groupId = Number(searchParams.get("groupId") || 0)
   const groupSlug = searchParams.get("groupSlug") || ""
-  const type = Number(searchParams.get("type") || 0)
-  const title =
-    type === 1
-      ? t("pages.topic.create.tweet")
-      : type === 2
-        ? t("pages.topic.create.qa")
-        : t("pages.topic.create.post")
+  const title = t("pages.topic.create.post")
   useDocumentTitle(title)
 
   if (!authChecked) {
@@ -73,7 +67,7 @@ export default function TopicCreateRoute() {
     <main className="main">
       <div className="container">
         <TopicCreateForm
-          key={`${type}:${contentType}:${nodeId}:${groupId}`}
+          key={`${contentType}:${nodeId}:${groupId}`}
           contentType={contentType as "html" | "markdown" | "text"}
           currentUser={currentUser}
           config={config}
@@ -81,7 +75,6 @@ export default function TopicCreateRoute() {
           groupId={groupId || undefined}
           groupSlug={groupSlug}
           nodes={nodes || []}
-          type={type}
         />
       </div>
     </main>

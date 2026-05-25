@@ -103,7 +103,7 @@ type TopicAction =
 
 function topicTypeLabel(t: ReturnType<typeof useI18n>["t"], type?: number) {
   if (type === 1) return t("dashboard.topicFeed.typeTweet")
-  if (type === 2) return t("dashboard.topicFeed.typeQa")
+  if (type === 0) return t("dashboard.topicFeed.typeTopic")
   return t("dashboard.topicFeed.typeTopic")
 }
 
@@ -415,7 +415,7 @@ function TopicFeedItem({
   onAction: (action: TopicAction) => void
 }) {
   const { t } = useI18n()
-  const body = compactText(topic.type === 1 ? topic.content : topic.summary)
+  const body = compactText(topic.summary)
   const userName =
     topic.user?.nickname ||
     topic.user?.username ||
@@ -501,7 +501,7 @@ function TopicFeedItem({
               {t("dashboard.fields.recommend")}
             </TopicTag>
           ) : null}
-          {topic.type === 2 && topic.qaStatus ? (
+          {topic.node?.type === "qa" && topic.qaStatus ? (
             <TopicTag>
               {topic.qaStatus === "solved"
                 ? t("dashboard.topicFeed.qaSolved")
@@ -661,7 +661,7 @@ function TopicFeedItem({
           ) : null}
           {topic.status === 0 &&
           permissions.solve &&
-          topic.type === 2 &&
+          topic.node?.type === "qa" &&
           topic.qaStatus !== "solved" ? (
             <Button
               size="sm"
@@ -674,7 +674,7 @@ function TopicFeedItem({
           ) : null}
           {topic.status === 0 &&
           permissions.solve &&
-          topic.type === 2 &&
+          topic.node?.type === "qa" &&
           topic.qaStatus === "solved" ? (
             <Button
               size="sm"

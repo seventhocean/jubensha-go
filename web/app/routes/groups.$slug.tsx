@@ -527,24 +527,17 @@ export default function GroupDetailRoute() {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
-              {config?.modules?.tweet ? (
+              {(config?.modules?.topic || config?.modules?.qa) ? (
                 <DropdownMenuItem asChild>
-                  <Link to={`/topic/create?groupId=${group.id}&type=1&groupSlug=${group.slug}`}>
-                    {t("common.createBtn.tweet")}
-                  </Link>
-                </DropdownMenuItem>
-              ) : null}
-              {config?.modules?.topic ? (
-                <DropdownMenuItem asChild>
-                  <Link to={`/topic/create?groupId=${group.id}&type=0&groupSlug=${group.slug}`}>
+                  <Link to={`/topic/create?groupId=${group.id}&groupSlug=${group.slug}`}>
                     {t("common.createBtn.topic")}
                   </Link>
                 </DropdownMenuItem>
               ) : null}
-              {config?.modules?.qa ? (
+              {config?.modules?.article ? (
                 <DropdownMenuItem asChild>
-                  <Link to={`/topic/create?groupId=${group.id}&type=2&groupSlug=${group.slug}`}>
-                    {t("common.createBtn.qa")}
+                  <Link to={`/article/create?groupId=${group.id}`}>
+                    {t("common.createBtn.article")}
                   </Link>
                 </DropdownMenuItem>
               ) : null}

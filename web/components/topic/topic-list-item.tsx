@@ -8,16 +8,6 @@ import type { Topic } from "@/lib/api/types"
 import { prettyDate } from "@/lib/format"
 import type { TFunction } from "@/lib/i18n"
 
-function getTopicImageSizeClass(count: number) {
-  if (count <= 1) {
-    return "h-[160px] w-[160px] sm:h-[210px] sm:w-[210px]"
-  }
-  if (count === 2) {
-    return "h-[128px] w-[128px] sm:h-[180px] sm:w-[180px]"
-  }
-  return "h-[94px] w-[94px] sm:h-[120px] sm:w-[120px]"
-}
-
 export function TopicListItem({
   topic,
   showSticky,
@@ -59,90 +49,51 @@ export function TopicListItem({
       </div>
 
       <div className="mt-2 space-y-2">
-        {topic.type !== 1 ? (
-          <>
-            <Link
-              href={topicHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-[15px] leading-6 font-semibold break-all text-foreground sm:text-base"
-            >
-              {topic.type === 2 ? (
-                <span
-                  className={`forum-qa-badge ${
-                    topic.qaStatus === "solved"
-                      ? "forum-qa-badge--solved"
-                      : "forum-qa-badge--unsolved"
-                  }`}
-                >
-                  {topic.qaStatus === "solved" ? (
-                    <CheckCircle2 className="mr-1 h-3 w-3" />
-                  ) : (
-                    <CircleHelp className="mr-1 h-3 w-3" />
-                  )}
-                  {topic.qaStatus === "solved"
-                    ? t("component.topicList.qaSolved")
-                    : t("component.topicList.qaUnsolved")}
-                </span>
-              ) : null}
-              {topic.type === 2 && topic.bountyScore ? (
+        <Link
+          href={topicHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 text-[15px] leading-6 font-semibold break-all text-foreground sm:text-base"
+        >
+          {topic.node?.type === "qa" ? (
+            <>
+              <span
+                className={`forum-qa-badge ${
+                  topic.qaStatus === "solved"
+                    ? "forum-qa-badge--solved"
+                    : "forum-qa-badge--unsolved"
+                }`}
+              >
+                {topic.qaStatus === "solved" ? (
+                  <CheckCircle2 className="mr-1 h-3 w-3" />
+                ) : (
+                  <CircleHelp className="mr-1 h-3 w-3" />
+                )}
+                {topic.qaStatus === "solved"
+                  ? t("component.topicList.qaSolved")
+                  : t("component.topicList.qaUnsolved")}
+              </span>
+              {topic.bountyScore ? (
                 <span className="forum-qa-badge forum-qa-badge--bounty">
                   {t("pages.topic.detail.bountyLabel", {
                     score: topic.bountyScore,
                   })}
                 </span>
               ) : null}
-              {topic.title}
-            </Link>
-            {topic.summary ? (
-              <Link
-                href={topicHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="line-clamp-3 block text-[15px] leading-6 break-all text-muted-foreground hover:text-foreground/80 sm:text-sm sm:leading-normal"
-              >
-                {topic.summary}
-              </Link>
-            ) : null}
-          </>
-        ) : (
-          <>
-            {topic.content ? (
-              <Link
-                href={topicHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="line-clamp-3 block text-[15px] leading-6 break-all whitespace-pre-line text-foreground sm:text-sm sm:leading-normal"
-              >
-                {topic.content}
-              </Link>
-            ) : null}
-            {topic.imageList?.length ? (
-              <ul className="mt-1 flex flex-wrap gap-2">
-                {topic.imageList.slice(0, 9).map((image, index) => (
-                  <li
-                    key={`${image.preview || image.url || "image"}-${index}`}
-                    className={imageSizeClass}
-                  >
-                    <Link
-                      href={topicHref}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block h-full w-full overflow-hidden rounded-sm bg-muted"
-                    >                      <img
-                        src={image.preview || image.url}
-                        alt=""
-                        loading="lazy"
-                        decoding="async"
-                        className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
-                      />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            ) : null}
-          </>
-        )}
+            </>
+          ) : null}
+          {topic.title}
+        </Link>
+        {topic.summary ? (
+          <Link
+            href={topicHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="line-clamp-3 block text-[15px] leading-6 break-all text-muted-foreground hover:text-foreground/80 sm:text-sm sm:leading-normal"
+          >
+            {topic.summary}
+          </Link>
+        ) : null}
       </div>
 
       {topic.vote ? (

@@ -43,3 +43,11 @@ export function getFirstTopicNodeId(nodes: TopicNode[] = []) {
   const first = flattenTopicNodes(nodes)[0]
   return first ? Number(first.id) : 0
 }
+
+export function findNodeById(
+  nodes: TopicNode[] = [],
+  nodeId: number
+): TopicNode | undefined {
+  const targetId = Number(nodeId)
+  return flattenTopicNodes(nodes).find((node) => Number(node.id) === targetId)
+}

@@ -1,5 +1,5 @@
 import type * as React from "react"
-import { CircleHelp, FileText, MessageCircle, MessageSquare } from "lucide-react"
+import { FileText, MessageSquare } from "lucide-react"
 
 import type { SiteConfig } from "@/lib/api/types"
 import type { TFunction } from "@/lib/i18n"
@@ -18,28 +18,12 @@ export function moduleItems(
   const enabledModules = config?.modules
   const items: ModuleItem[] = []
 
-  if (enabledModules?.tweet) {
-    items.push({
-      command: "tweet",
-      name: t("common.createBtn.tweet"),
-      href: "/topic/create?type=1",
-      icon: MessageCircle,
-    })
-  }
-  if (enabledModules?.topic) {
+  if (enabledModules?.topic || enabledModules?.qa) {
     items.push({
       command: "topic",
       name: t("common.createBtn.topic"),
       href: "/topic/create",
       icon: MessageSquare,
-    })
-  }
-  if (enabledModules?.qa) {
-    items.push({
-      command: "qa",
-      name: t("common.createBtn.qa"),
-      href: "/topic/create?type=2",
-      icon: CircleHelp,
     })
   }
   if (enabledModules?.article) {

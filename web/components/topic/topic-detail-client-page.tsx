@@ -134,7 +134,7 @@ export function TopicDetailClientPage({
   const { topic, comments, likeUsers, hideContent } = data
   const currentUserRoles = currentUser?.roles || []
   const canAcceptAnswer =
-    topic.type === 2 &&
+    topic.node?.type === "qa" &&
     Boolean(currentUser) &&
     (topic.user?.id === currentUser?.id ||
       currentUserRoles.includes("admin") ||
@@ -226,7 +226,7 @@ export function TopicDetailClientPage({
         <TopicComments
           entityId={topic.id}
           commentCount={topic.commentCount}
-          title={topic.type === 2 ? t("pages.topic.detail.answers") : ""}
+          title={topic.node?.type === "qa" ? t("pages.topic.detail.answers") : ""}
           acceptedCommentId={topic.acceptedCommentId || 0}
           allowAcceptAnswer={canAcceptAnswer}
           initialData={comments}
