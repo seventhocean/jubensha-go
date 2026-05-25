@@ -2,7 +2,7 @@
   "id": "FEAT-001",
   "type": "feat",
   "description": "Mixed feed for 'All' and 'Following' tabs - merge articles into topic feeds, URL-synced tab/sort state, sidebar coordination, right sidebar optimization, and groups tab skeleton",
-  "status": "in_progress",
+  "status": "completed",
   "steps": [
     "STEP 1 - Mixed feed type and rendering in web/app/routes/_index.tsx: Define a FeedItem union type: `type FeedItem = (Topic & { feedType: 'topic' }) | (Article & { feedType: 'article' })`. Create a MixedFeedList component that renders either TopicListItem or ArticleListCompactItem based on feedType. The ArticleListCompactItem component is already exported from web/components/article/article-list.tsx but is not exported - it needs to be exported OR create an inline compact article card in _index.tsx that follows the same pattern.",
     "STEP 2 - All tab mixed feed: Replace the current LoadMore<Topic> in the 'all' tab with a custom loadPage function that fetches both /api/topic/topics and /api/article/articles in parallel, merges results by createTime descending, and adds the feedType discriminator. Use the existing cursor for topics and a separate internal cursor for articles. A simpler approach: since LoadMore uses cursor-based pagination and the two APIs have independent cursors, implement a client-side merge approach where we fetch both and interleave them. The loadPage function should return PageData<FeedItem>.",
@@ -31,5 +31,5 @@
     "Run `cd /projects/sandbox/jubensha-go/web && pnpm build:spa` to confirm production build succeeds"
   ],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "All changes pass typecheck and SPA build. The mixed feed for the All tab uses parallel fetches with a combined JSON cursor. The Following tab keeps topics-only since there is no confirmed API for followed-users articles. ArticleListCompactItem was exported from article-list.tsx for reuse."
 }
