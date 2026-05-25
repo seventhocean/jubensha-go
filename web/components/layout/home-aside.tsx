@@ -12,6 +12,27 @@ import type { FriendLink } from "@/lib/api/misc"
 import type { TFunction } from "@/lib/i18n"
 import { useI18n } from "@/lib/i18n/provider"
 
+class WidgetErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props)
+    this.state = { hasError: false }
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true }
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return null
+    }
+    return this.props.children
+  }
+}
+
 function displayName(user: UserSummary) {
   return user.nickname || user.username || "User"
 }
@@ -305,7 +326,7 @@ export function HomeAside() {
     let mounted = true
     void Promise.all([
       apiFetch<UserSummary[]>("/api/user/score/rank").catch(() => []),
-      apiFetch<CheckInInfo | null>("/api/checkin/checkin").catch(() => null),
+      user ? apiFetch<CheckInInfo | null>("/api/checkin/checkin").catch(() => null) : Promise.resolve(null),
       apiFetch<FriendLink[]>("/api/link/top_links").catch(() => []),
       apiFetch<PageData<Article>>("/api/article/articles", { params: { sort: "hot" } }).catch(() => ({ results: [], hasMore: false, cursor: "" })),
       apiFetch<GroupItem[]>("/api/group/list").catch(() => []),
@@ -325,23 +346,35 @@ export function HomeAside() {
 
   return (
     <>
-      <SiteNotice
-        title={t("component.siteNotice.title")}
-        content={config?.siteNotification}
-      />
-      <HotArticlesWidget articles={hotArticles} t={t} />
-      <ActiveGroupsWidget groups={activeGroups} t={t} />
-      {user ? <MyStatusWidget user={user} checkIn={checkIn} t={t} /> : null}
-      <ScoreRank
-        title={t("component.scoreRank.title")}
-        users={scoreRank}
-        t={t}
-      />
-      <FriendLinks
-        title={t("component.friendLinks.title")}
-        more={t("component.friendLinks.more")}
-        links={friendLinks}
-      />
+      <WidgetErrorBoundary>
+        <SiteNotice
+          title={t("component.siteNotice.title")}
+          content={config?.siteNotification}
+        />
+      </WidgetErrorBoundary>
+      <WidgetErrorBoundary>
+        <HotArticlesWidget articles={hotArticles} t={t} />
+      </WidgetErrorBoundary>
+      <WidgetErrorBoundary>
+        <ActiveGroupsWidget groups={activeGroups} t={t} />
+      </WidgetErrorBoundary>
+      <WidgetErrorBoundary>
+        {user ? <MyStatusWidget user={user} checkIn={checkIn} t={t} /> : null}
+      </WidgetErrorBoundary>
+      <WidgetErrorBoundary>
+        <ScoreRank
+          title={t("component.scoreRank.title")}
+          users={scoreRank}
+          t={t}
+        />
+      </WidgetErrorBoundary>
+      <WidgetErrorBoundary>
+        <FriendLinks
+          title={t("component.friendLinks.title")}
+          more={t("component.friendLinks.more")}
+          links={friendLinks}
+        />
+      </WidgetErrorBoundary>
     </>
   )
 }

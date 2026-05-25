@@ -1,11 +1,12 @@
 import * as React from "react"
-import { useLoaderData } from "react-router"
+import { useLoaderData, useSearchParams } from "react-router"
 import type { ShouldRevalidateFunctionArgs } from "react-router"
 import { ChevronDown } from "lucide-react"
 
-import { ArticleList } from "@/components/article/article-list"
+import { ArticleListCompactItem } from "@/components/article/article-list"
 import { EmptyState } from "@/components/common/empty-state"
 import { LoadMore } from "@/components/common/load-more"
+import { TopicListSkeleton } from "@/components/common/skeleton-list"
 import { HomeAside } from "@/components/layout/home-aside"
 import { MainShell } from "@/components/layout/main-shell"
 import { TopicListItem } from "@/components/topic/topic-list-item"
@@ -28,6 +29,7 @@ import {
   loadTopicListRouteData,
   type TopicListRouteData,
 } from "../route-helpers/loaders"
+import { ArticleList } from "@/components/article/article-list"
 
 export { loader } from "../route-helpers/loaders"
 
@@ -52,6 +54,23 @@ export function meta({
 
 type TabValue = "all" | "following" | "groups" | "articles"
 type SortMode = "latest" | "hottest"
+
+// Mixed feed types
+type FeedItem = (Topic & { feedType: "topic" }) | (Article & { feedType: "article" })
+
+interface MixedCursor {
+  tc: string
+  ac: string
+}
+
+function parseMixedCursor(cursor: string): MixedCursor {
+  if (!cursor) return { tc: "", ac: "" }
+  try {
+    return JSON.parse(cursor) as MixedCursor
+  } catch {
+    return { tc: "", ac: "" }
+  }
+}
 
 function GroupsTabContent({
   sortMode,
@@ -85,7 +104,7 @@ function GroupsTabContent({
   }, [])
 
   if (!loaded) {
-    return null
+    return <TopicListSkeleton />
   }
 
   if (groups.length === 0) {
@@ -141,15 +160,104 @@ function GroupsTabContent({
   )
 }
 
+function createMixedFeedLoadPage(sortMode: SortMode, topicParams?: Record<string, unknown>) {
+  return async ({ cursor }: { cursor: string }): Promise<PageData<FeedItem>> => {
+    const { tc, ac } = parseMixedCursor(cursor)
+
+    const [topicData, articleData] = await Promise.all([
+      apiFetch<PageData<Topic>>("/api/topic/topics", {
+        params: { cursor: tc, sort: sortMode, ...topicParams },
+      }).catch((): PageData<Topic> => ({ results: [], hasMore: false, cursor: "" })),
+      apiFetch<PageData<Article>>("/api/article/articles", {
+        params: { cursor: ac, sort: sortMode },
+      }).catch((): PageData<Article> => ({ results: [], hasMore: false, cursor: "" })),
+    ])
+
+    const taggedTopics: FeedItem[] = (topicData.results || []).map((t) => ({
+      ...t,
+      feedType: "topic" as const,
+    }))
+    const taggedArticles: FeedItem[] = (articleData.results || []).map((a) => ({
+      ...a,
+      feedType: "article" as const,
+    }))
+
+    const merged = [...taggedTopics, ...taggedArticles].sort((a, b) => {
+      const timeA = a.createTime ?? 0
+      const timeB = b.createTime ?? 0
+      return timeB - timeA
+    })
+
+    const newCursor = JSON.stringify({
+      tc: topicData.cursor || "",
+      ac: articleData.cursor || "",
+    })
+
+    return {
+      results: merged,
+      hasMore: Boolean(topicData.hasMore) || Boolean(articleData.hasMore),
+      cursor: newCursor,
+    }
+  }
+}
+
+function MixedFeedItems({ items, t }: { items: FeedItem[]; t: ReturnType<typeof useI18n>["t"] }) {
+  return (
+    <ul className="divide-y divide-border">
+      {items.map((item) => {
+        if (item.feedType === "topic") {
+          return <TopicListItem key={`topic-${item.id}`} topic={item} showSticky t={t} />
+        }
+        return (
+          <li key={`article-${item.id}`}>
+            <ArticleListCompactItem article={item} t={t} />
+          </li>
+        )
+      })}
+    </ul>
+  )
+}
+
 export function TopicListRoute({ title }: { title?: string }) {
   const { topics, nodes } = useLoaderData() as TopicListRouteData
   const { t } = useI18n()
   useDocumentTitle(title)
 
-  const [activeTab, setActiveTab] = React.useState<TabValue>("all")
-  const [sortMode, setSortMode] = React.useState<SortMode>("latest")
+  const [searchParams, setSearchParams] = useSearchParams()
+  const activeTab = (searchParams.get("tab") || "all") as TabValue
+  const sortMode = (searchParams.get("sort") || "latest") as SortMode
+
+  const handleTabChange = React.useCallback(
+    (value: string) => {
+      setSearchParams((prev) => {
+        const next = new URLSearchParams(prev)
+        next.set("tab", value)
+        if (value === "groups") {
+          next.delete("sort")
+        }
+        return next
+      })
+    },
+    [setSearchParams]
+  )
+
+  const handleSortChange = React.useCallback(
+    (value: SortMode) => {
+      setSearchParams((prev) => {
+        const next = new URLSearchParams(prev)
+        next.set("sort", value)
+        return next
+      })
+    },
+    [setSearchParams]
+  )
 
   const showSort = activeTab === "all" || activeTab === "articles"
+
+  const allFeedLoadPage = React.useMemo(
+    () => createMixedFeedLoadPage(sortMode),
+    [sortMode]
+  )
 
   return (
     <MainShell aside={<HomeAside />}>
@@ -160,7 +268,7 @@ export function TopicListRoute({ title }: { title?: string }) {
             <div className="flex items-center justify-between border-b border-border/70 px-3 py-2 sm:px-4">
               <Tabs
                 value={activeTab}
-                onValueChange={(v) => setActiveTab(v as TabValue)}
+                onValueChange={handleTabChange}
               >
                 <TabsList variant="line">
                   <TabsTrigger value="all">
@@ -189,10 +297,10 @@ export function TopicListRoute({ title }: { title?: string }) {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => setSortMode("latest")}>
+                    <DropdownMenuItem onClick={() => handleSortChange("latest")}>
                       {t("pages.home.sort.latest")}
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setSortMode("hottest")}>
+                    <DropdownMenuItem onClick={() => handleSortChange("hottest")}>
                       {t("pages.home.sort.hottest")}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -201,37 +309,18 @@ export function TopicListRoute({ title }: { title?: string }) {
             </div>
 
             {activeTab === "all" && (
-              <LoadMore<Topic>
-                initialItems={sortMode === "latest" ? topics.results : []}
-                initialCursor={
-                  sortMode === "latest" ? topics.cursor || "" : ""
-                }
-                initialHasMore={
-                  sortMode === "latest" ? topics.hasMore : true
-                }
-                initialLoad={sortMode !== "latest"}
-                resetKey={`/api/topic/topics?sort=${sortMode}`}
+              <LoadMore<FeedItem>
+                initialItems={[]}
+                initialCursor=""
+                initialHasMore={true}
+                initialLoad={true}
+                resetKey={`mixed-feed-all?sort=${sortMode}`}
                 labels={{
                   loadMore: t("common.loadMore.loadMore"),
                   noMore: t("common.loadMore.noMore"),
                 }}
-                loadPage={({ cursor }) =>
-                  apiFetch<PageData<Topic>>("/api/topic/topics", {
-                    params: { cursor, sort: sortMode },
-                  })
-                }
-                renderItems={(items) => (
-                  <ul className="divide-y divide-border">
-                    {items.map((topic) => (
-                      <TopicListItem
-                        key={topic.id}
-                        topic={topic}
-                        showSticky
-                        t={t}
-                      />
-                    ))}
-                  </ul>
-                )}
+                loadPage={allFeedLoadPage}
+                renderItems={(items) => <MixedFeedItems items={items} t={t} />}
                 renderEmpty={() => <EmptyState title={t("common.noData")} />}
               />
             )}

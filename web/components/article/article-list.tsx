@@ -34,7 +34,7 @@ export function ArticleList({
   )
 }
 
-function ArticleListCompactItem({
+export function ArticleListCompactItem({
   article,
   t,
 }: {

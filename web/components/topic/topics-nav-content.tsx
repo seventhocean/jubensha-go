@@ -92,12 +92,12 @@ export function TopicsNavContent({
           </div>
           <ul>
             <li className={cn(currentNodeId === undefined && !currentRootNodeId && "active")}>
-              <Link href="/">
+              <Link href="/?tab=all">
                 <div className="node-name">{t("pages.home.tabs.all")}</div>
               </Link>
             </li>
             <li className={cn(currentNodeId === -2 && "active")}>
-              <Link href="/topics/node/feed">
+              <Link href="/?tab=following">
                 <div className="node-name">{t("pages.home.tabs.following")}</div>
               </Link>
             </li>

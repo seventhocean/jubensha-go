@@ -1,0 +1,35 @@
+{
+  "id": "FEAT-001",
+  "type": "feat",
+  "description": "Mixed feed for 'All' and 'Following' tabs - merge articles into topic feeds, URL-synced tab/sort state, sidebar coordination, right sidebar optimization, and groups tab skeleton",
+  "status": "in_progress",
+  "steps": [
+    "STEP 1 - Mixed feed type and rendering in web/app/routes/_index.tsx: Define a FeedItem union type: `type FeedItem = (Topic & { feedType: 'topic' }) | (Article & { feedType: 'article' })`. Create a MixedFeedList component that renders either TopicListItem or ArticleListCompactItem based on feedType. The ArticleListCompactItem component is already exported from web/components/article/article-list.tsx but is not exported - it needs to be exported OR create an inline compact article card in _index.tsx that follows the same pattern.",
+    "STEP 2 - All tab mixed feed: Replace the current LoadMore<Topic> in the 'all' tab with a custom loadPage function that fetches both /api/topic/topics and /api/article/articles in parallel, merges results by createTime descending, and adds the feedType discriminator. Use the existing cursor for topics and a separate internal cursor for articles. A simpler approach: since LoadMore uses cursor-based pagination and the two APIs have independent cursors, implement a client-side merge approach where we fetch both and interleave them. The loadPage function should return PageData<FeedItem>.",
+    "STEP 3 - Following tab mixed feed: Same approach as Step 2 but for the 'following' tab. Fetch /api/topic/topics with nodeId=-2 for followed topics, and /api/article/articles (with a followed flag if API supports it, otherwise just include articles). If the API doesn't support a 'followed' filter for articles, only include topics in following (keep current behavior) but document this limitation.",
+    "STEP 4 - URL-synced tab and sort state in web/app/routes/_index.tsx: Replace useState for activeTab and sortMode with useSearchParams from react-router. Read ?tab= and ?sort= from URL params. Default to tab='all' and sort='latest' when params are absent. When user changes tab/sort, call setSearchParams to update URL without page reload.",
+    "STEP 5 - Left sidebar coordination in web/components/topic/topics-nav-content.tsx: Change the 'All' link from href='/' to href='/?tab=all' and 'Following' link from href='/topics/node/feed' to href='/?tab=following'. This ensures clicking sidebar items stays on the homepage and coordinates with the tab state.",
+    "STEP 6 - Right sidebar optimization in web/components/layout/home-aside.tsx: Only fetch /api/checkin/checkin (for MyStatusWidget) when user is logged in. Wrap each widget in a try-catch error boundary pattern (a simple WidgetErrorBoundary React class component that catches errors and renders null). Add the existing TopicListSkeleton or a minimal skeleton placeholder while loading.",
+    "STEP 7 - Groups tab skeleton in web/app/routes/_index.tsx: In GroupsTabContent, replace `return null` when `!loaded` with `return <TopicListSkeleton />` to show a skeleton while groups are loading, preventing layout shift.",
+    "STEP 8 - Export ArticleListCompactItem from web/components/article/article-list.tsx (add export keyword) so it can be used in the mixed feed list, or create a lightweight inline FeedArticleItem component in _index.tsx for rendering articles in the mixed feed."
+  ],
+  "acceptance_criteria": [
+    "The 'All' tab shows both topics and articles merged by createTime in a single feed",
+    "The 'Following' tab shows topics from followed users (articles included if API supports, otherwise only topics)",
+    "Switching tabs updates the URL to ?tab=<value> without page reload",
+    "Switching sort mode updates the URL to include &sort=<value>",
+    "Refreshing the page preserves the selected tab and sort mode from URL params",
+    "Left sidebar 'All' and 'Following' links navigate to /?tab=all and /?tab=following respectively",
+    "Right sidebar only fetches check-in data when user is logged in",
+    "Right sidebar widgets don't crash the whole sidebar if one API call fails",
+    "Groups tab shows a skeleton placeholder while loading instead of blank space",
+    "All user-facing text uses i18n t() function",
+    "pnpm typecheck passes with no errors"
+  ],
+  "verification": [
+    "Run `cd /projects/sandbox/jubensha-go/web && pnpm typecheck` to confirm no TypeScript errors",
+    "Run `cd /projects/sandbox/jubensha-go/web && pnpm build:spa` to confirm production build succeeds"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}
