@@ -532,10 +532,9 @@ export function SiteHeader() {
                   const filteredNavs = navs.filter(nav => !fixedPaths.includes(nav.url))
 
                   const moreMenuItems = [
-                    { label: t("common.createBtn.tweet"), href: "/topics?type=1" },
-                    { label: t("common.createBtn.topic"), href: "/topics" },
-                    { label: t("common.createBtn.qa"), href: "/topics?type=2" },
-                    { label: t("common.header.tasks"), href: "/tasks" },
+                    { label: t("common.nav.tweets"), href: "/?tab=all" },
+                    { label: t("common.nav.topics"), href: "/topics" },
+                    { label: t("common.nav.qa"), href: "/topics?tab=all" },
                   ]
 
                   return (
