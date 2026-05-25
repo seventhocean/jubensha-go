@@ -22,7 +22,7 @@ export function ArticleList({
   }
 
   return (
-    <div className="overflow-hidden rounded-lg bg-background">
+    <div className="divide-y divide-border overflow-hidden rounded-lg bg-background">
       {articles.map((article) =>
         viewMode === "list" ? (
           <ArticleListCompactItem key={article.id} article={article} t={t} />
@@ -46,7 +46,7 @@ export function ArticleListCompactItem({
   const articleUrl = `/article/${article.id}`
 
   return (
-    <article className="group border-b border-border/70 bg-background px-3 py-2.5 transition-colors last:border-b-0 hover:bg-muted/35 sm:px-4">
+    <article className="group px-3 py-2.5 transition-colors hover:bg-muted/35 sm:px-4">
       <div className="flex items-center gap-3">
         <Link
           href={articleUrl}
@@ -80,7 +80,7 @@ export function ArticleListItem({ article, t }: { article: Article; t: TFunction
   const articleUrl = `/article/${article.id}`
 
   return (
-    <article className="group border-b border-border/70 bg-background px-3 py-4 transition-colors last:border-b-0 hover:bg-muted/35 sm:px-4 sm:py-5">
+    <article className="group px-3 py-4 transition-colors hover:bg-muted/35 sm:px-4 sm:py-5">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2.5 text-sm text-muted-foreground">

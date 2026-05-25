@@ -2,7 +2,28 @@
 
 import Link from "@/components/common/link"
 import * as React from "react"
-import { Compass, Heart, Sparkles } from "lucide-react"
+import {
+  Bookmark,
+  Camera,
+  CircleHelp,
+  Code,
+  Coffee,
+  Compass,
+  Flame,
+  Gamepad2,
+  Globe,
+  Heart,
+  Layout,
+  Megaphone,
+  MessageSquare,
+  Music,
+  FileText,
+  Sparkles,
+  Star,
+  Trophy,
+  Users,
+  Zap,
+} from "lucide-react"
 
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { apiFetch } from "@/lib/api/client"
@@ -15,11 +36,33 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   compass: Compass,
   heart: Heart,
   sparkles: Sparkles,
+  flame: Flame,
+  star: Star,
+  zap: Zap,
+  bookmark: Bookmark,
+  globe: Globe,
+  megaphone: Megaphone,
+  trophy: Trophy,
+  layout: Layout,
+  users: Users,
+  "file-text": FileText,
+  "message-square": MessageSquare,
+  "circle-help": CircleHelp,
+  coffee: Coffee,
+  gamepad2: Gamepad2,
+  camera: Camera,
+  music: Music,
+  code: Code,
 }
 
 let cachedChannels: Channel[] | null = null
 
 function ChannelIcon({ icon }: { icon: string }) {
+  // If it's a URL (http or starts with /), render as image
+  if (icon.startsWith("http") || icon.startsWith("/")) {
+    return <img src={icon} alt="" className="h-4 w-4 shrink-0 rounded-sm object-cover" />
+  }
+  // Otherwise look up lucide icon
   const IconComponent = iconMap[icon.toLowerCase()]
   if (IconComponent) {
     return <IconComponent className="h-4 w-4 shrink-0" />

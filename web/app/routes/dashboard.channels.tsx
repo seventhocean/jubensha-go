@@ -46,7 +46,7 @@ export default function DashboardChannelsRoute() {
       { name: "id", label: dashboardData.label(t, "id"), type: "number" },
       { name: "name", label: dashboardData.label(t, "name"), required: true },
       { name: "nameEn", label: dashboardData.label(t, "nameEn") },
-      { name: "icon", label: dashboardData.label(t, "icon"), required: true },
+      { name: "icon", label: dashboardData.label(t, "icon"), required: true, type: "icon" },
       { name: "href", label: dashboardData.label(t, "href"), required: true },
       { name: "sortNo", label: dashboardData.label(t, "sortNo"), type: "number" },
       {
