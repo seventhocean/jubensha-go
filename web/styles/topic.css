@@ -230,7 +230,9 @@
   }
 
   .dock-nav ul + .section-label {
-    padding-top: 4px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+    margin-top: 4px;
   }
 
   .dock-nav ul {
@@ -264,10 +266,11 @@
     z-index: 1;
     display: flex;
     align-items: center;
-    padding: 8px 24px;
+    padding: 10px 24px;
+    gap: 8px;
     color: var(--foreground);
-    font-size: 12px;
-    line-height: 12px;
+    font-size: 13px;
+    line-height: 1.2;
   }
 
   .nodes-divider {
@@ -286,8 +289,19 @@
     border-radius: 4px;
     background-color: var(--color-surface-1);
     background-position: center;
-    background-size: 100% 100%;
+    background-size: 75% 75%;
     background-repeat: no-repeat;
+  }
+
+  .dock-nav li > a > svg {
+    position: relative;
+    z-index: 2;
+    margin-right: 8px;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    border-radius: 4px;
+    padding: 3px;
   }
 
   .node-name {
