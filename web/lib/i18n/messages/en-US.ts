@@ -1385,6 +1385,10 @@ const enUS = {
       detail: {
         pending: "This article is pending review.",
         publishedAt: "Published",
+        view: "Views",
+        like: "Like",
+        comment: "Comments",
+        favorite: "Favorite",
       },
       create: {
         needEmailTitle: "Please verify your email first",

@@ -18,6 +18,7 @@ import (
 	"bbs-go/internal/pkg/ginx"
 	"bbs-go/internal/pkg/params"
 
+	"github.com/mlogclub/simple/sqls"
 	"github.com/mlogclub/simple/common/jsons"
 
 	"bbs-go/internal/handlers/render"
@@ -305,4 +306,28 @@ func ArticleTagArticles(ctx *gin.Context) {
 	articles, cursor, hasMore := services.ArticleService.GetTagArticles(tagId, cursor)
 	ginx.WriteJSON(ctx, ginx.CursorData(render.BuildSimpleArticles(articles), strconv.FormatInt(cursor, 10), hasMore))
 
+}
+
+func ArticlePrevNext(ctx *gin.Context) {
+	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
+	if err != nil {
+		ginx.WriteJSON(ctx, err)
+		return
+	}
+
+	prev := services.ArticleService.FindOne(sqls.NewCnd().
+		Where("id < ?", id).
+		Where("status = ?", constants.StatusOk).
+		Desc("id").
+		Limit(1))
+	next := services.ArticleService.FindOne(sqls.NewCnd().
+		Where("id > ?", id).
+		Where("status = ?", constants.StatusOk).
+		Asc("id").
+		Limit(1))
+
+	ginx.WriteJSON(ctx, map[string]any{
+		"prev": render.BuildSimpleArticle(prev),
+		"next": render.BuildSimpleArticle(next),
+	})
 }

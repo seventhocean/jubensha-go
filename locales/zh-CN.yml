@@ -116,6 +116,12 @@ article:
   disabled: "未开启文章功能"
   title_required: "标题不能为空"
   content_required: "内容不能为空"
+  detail:
+    pending: "文章审核中"
+    view: "浏览"
+    like: "点赞"
+    comment: "评论"
+    favorite: "收藏"
 
 vote:
   title_required: "投票标题不能为空"

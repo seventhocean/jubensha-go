@@ -116,6 +116,12 @@ article:
   disabled: "Articles are not enabled"
   title_required: "Title is required"
   content_required: "Content is required"
+  detail:
+    pending: "Article under review"
+    view: "Views"
+    like: "Like"
+    comment: "Comments"
+    favorite: "Favorite"
 
 vote:
   title_required: "Vote title is required"

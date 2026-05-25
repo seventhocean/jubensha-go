@@ -1,10 +1,15 @@
 "use client"
 
 import * as React from "react"
+
 import Link from "@/components/common/link"
 
+import { ArticleActionProvider } from "@/components/article/article-action-context"
 import { ArticleComments } from "@/components/article/article-comments"
+import { ArticleDetailActions } from "@/components/article/article-detail-actions"
 import { ArticleManageMenu } from "@/components/article/article-manage-menu"
+import { ArticlePrevNext } from "@/components/article/article-prev-next"
+import { ArticleTags } from "@/components/article/article-tags"
 import { HtmlImagePreview } from "@/components/common/image-preview"
 import { MainShell } from "@/components/layout/main-shell"
 import { PageError, PageLoading } from "@/components/common/page-state"
@@ -27,6 +32,12 @@ const emptyComments: PageData<Comment> = {
 type ArticleDetailData = {
   article: Article
   comments: PageData<Comment>
+  prevNext: { prev: ArticleBrief | null; next: ArticleBrief | null }
+}
+
+interface ArticleBrief {
+  id: number
+  title: string
 }
 
 export function ArticleDetailClientPage({
@@ -44,6 +55,7 @@ export function ArticleDetailClientPage({
         ? {
             article: initialArticle,
             comments: emptyComments,
+            prevNext: { prev: null, next: null },
           }
         : null,
     [initialArticle]
@@ -53,16 +65,22 @@ export function ArticleDetailClientPage({
       params: { entityType: "article", entityId: id },
     }).catch(() => emptyComments)
 
+    const prevNext = apiFetch<{ prev: ArticleBrief | null; next: ArticleBrief | null }>(
+      `/api/article/prev_next/${id}`
+    ).catch(() => ({ prev: null, next: null }))
+
     if (initialArticle) {
-      return { article: initialArticle, comments: await comments }
+      const [nextComments, nextPrevNext] = await Promise.all([comments, prevNext])
+      return { article: initialArticle, comments: nextComments, prevNext: nextPrevNext }
     }
 
-    const [article, nextComments] = await Promise.all([
+    const [article, nextComments, nextPrevNext] = await Promise.all([
       apiFetch<Article>(`/api/article/${id}`),
       comments,
+      prevNext,
     ])
 
-    return { article, comments: nextComments }
+    return { article, comments: nextComments, prevNext: nextPrevNext }
   }, [id, initialArticle])
   const { data, loading, error } = useRouteData(
     `article:${id}`,
@@ -84,7 +102,7 @@ export function ArticleDetailClientPage({
       </MainShell>
     )
 
-  const { article, comments } = data
+  const { article, comments, prevNext } = data
 
   return (
     <MainShell
@@ -132,14 +150,33 @@ export function ArticleDetailClientPage({
             html={article.content || ""}
             className="bbs-content max-w-none py-4 break-words [&_h2]:scroll-mt-20 [&_h3]:scroll-mt-20 [&_h4]:scroll-mt-20 [&_img]:cursor-zoom-in"
           />
+          <ArticleActionProvider
+            articleId={article.id}
+            initialLikeCount={article.likeCount}
+            initialFavorited={article.favorited}
+          >
+            <ArticleTags article={article} />
+            <ArticlePrevNext prev={prevNext.prev} next={prevNext.next} t={t} />
+            <ArticleDetailActions
+              article={article}
+              labels={{
+                view: t("pages.article.detail.view"),
+                like: t("pages.article.detail.like"),
+                comment: t("pages.article.detail.comment"),
+                favorite: t("pages.article.detail.favorite"),
+              }}
+            />
+          </ArticleActionProvider>
         </article>
-        <ArticleComments
-          entityId={article.id}
-          commentCount={article.commentCount}
-          initialComments={comments}
-          currentUser={currentUser}
-          config={config}
-        />
+        <div id="comments">
+          <ArticleComments
+            entityId={article.id}
+            commentCount={article.commentCount}
+            initialComments={comments}
+            currentUser={currentUser}
+            config={config}
+          />
+        </div>
       </div>
     </MainShell>
   )

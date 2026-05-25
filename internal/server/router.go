@@ -119,6 +119,7 @@ func registerAPIRoutes(group *gin.RouterGroup) {
 	articleGroup.GET("/user_articles", apiHandlers.ArticleUserArticles)
 	articleGroup.GET("/articles", apiHandlers.ArticleArticles)
 	articleGroup.GET("/tag/articles", apiHandlers.ArticleTagArticles)
+	articleGroup.GET("/prev_next/:id", apiHandlers.ArticlePrevNext)
 	articleGroup.GET("/:id", apiHandlers.ArticleDetail)
 
 	loginGroup := group.Group("/login")

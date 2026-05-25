@@ -1358,6 +1358,10 @@ const zhCN = {
       detail: {
         pending: "文章待审核中。",
         publishedAt: "发布于",
+        view: "浏览",
+        like: "点赞",
+        comment: "评论",
+        favorite: "收藏",
       },
       create: {
         needEmailTitle: "请先验证邮箱",
