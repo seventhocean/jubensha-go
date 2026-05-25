@@ -20,7 +20,6 @@ export function TopicListItem({
   const displayName =
     topic.user.nickname || topic.user.username || topic.user.id
   const topicHref = `/topic/${topic.id}`
-  const imageSizeClass = getTopicImageSizeClass(topic.imageList?.length || 0)
 
   return (
     <li className={`forum-topic-item${showSticky && topic.sticky ? " forum-topic-item--sticky" : ""}`}>

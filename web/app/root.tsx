@@ -93,7 +93,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {favicon ? <link rel="icon" type="image/png" href={favicon} /> : null}
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#6366f1" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="圈子" />
         <link rel="apple-touch-icon" href="/icon-192.png" />
