@@ -507,16 +507,6 @@ export function SiteHeader() {
                   {t("common.nav.home")}
                 </Link>
                 <Link
-                  href="/topics"
-                  className={cn(
-                    buttonVariants({ variant: "ghost", size: "default" }),
-                    "bg-transparent",
-                    pathname.startsWith("/topics") && "text-foreground font-semibold"
-                  )}
-                >
-                  {t("common.nav.topics")}
-                </Link>
-                <Link
                   href="/articles"
                   className={cn(
                     buttonVariants({ variant: "ghost", size: "default" }),
@@ -546,7 +536,7 @@ export function SiteHeader() {
                 >
                   {t("common.header.tasks")}
                 </Link>
-                {navs.filter(nav => !["/", "/topics", "/articles", "/groups", "/tasks"].includes(nav.url)).map((nav, index) => (
+                {navs.filter((nav) => !["/", "/articles", "/groups", "/tasks"].includes(nav.url)).map((nav, index) => (
                   hasChildren(nav) ? (
                     <DropdownMenu modal={false} key={`${nav.title}-${index}`}>
                       <DropdownMenuTrigger asChild>
