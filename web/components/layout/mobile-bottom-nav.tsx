@@ -4,9 +4,21 @@ import { FileText, ListChecks, MessageSquare, Plus, Users } from "lucide-react"
 import Link from "@/components/common/link"
 import { usePathname } from "@/lib/router/navigation"
 import { cn } from "@/lib/utils"
+import { useAppConfig } from "@/components/app/app-provider"
+import { useI18n } from "@/lib/i18n/provider"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { moduleItems } from "./module-items"
 
 export function MobileBottomNav() {
   const pathname = usePathname()
+  const config = useAppConfig()
+  const { t } = useI18n()
+  const items = moduleItems(config, t)
 
   const tabs = [
     { href: "/topics", icon: MessageSquare, label: "Topics" },
@@ -28,15 +40,44 @@ export function MobileBottomNav() {
           (tab.href !== "/" && pathname.startsWith(tab.href))
 
         if (tab.isCreate) {
+          if (items.length === 0) {
+            return (
+              <Link
+                key={tab.href}
+                href={tab.href}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-primary)] text-[var(--color-on-primary)] shadow-[var(--shadow-sm)]"
+                aria-label={tab.label}
+              >
+                <Icon className="h-5 w-5" />
+              </Link>
+            )
+          }
+
           return (
-            <Link
-              key={tab.href}
-              href={tab.href}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-primary)] text-[var(--color-on-primary)] shadow-[var(--shadow-sm)]"
-              aria-label={tab.label}
-            >
-              <Icon className="h-5 w-5" />
-            </Link>
+            <DropdownMenu key={tab.href} modal={false}>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type="button"
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-primary)] text-[var(--color-on-primary)] shadow-[var(--shadow-sm)]"
+                  aria-label={tab.label}
+                >
+                  <Icon className="h-5 w-5" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent side="top" align="center" sideOffset={12}>
+                {items.map((item) => {
+                  const ItemIcon = item.icon
+                  return (
+                    <DropdownMenuItem key={item.command} asChild>
+                      <Link href={item.href}>
+                        <ItemIcon className="h-4 w-4" />
+                        <span>{item.name}</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  )
+                })}
+              </DropdownMenuContent>
+            </DropdownMenu>
           )
         }
 
