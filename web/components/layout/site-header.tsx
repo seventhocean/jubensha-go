@@ -536,6 +536,7 @@ export function SiteHeader() {
   const unreadMessageCount = useUnreadMessageCount()
   const { t } = useI18n()
   const fullPath = useCurrentFullPath()
+  const pathname = usePathname()
   const navs = config?.siteNavs ?? []
   const title = config?.siteTitle || "BBS-GO"
   const logo = config?.siteLogo
@@ -554,7 +555,40 @@ export function SiteHeader() {
               )}
             </Link>
 
-            <DesktopNav navs={navs} />
+            <nav className="hidden items-center md:flex" aria-label="Main">
+              <div className="group flex flex-1 list-none items-center justify-center gap-1">
+                <Link
+                  href="/"
+                  className={cn(
+                    buttonVariants({ variant: "ghost", size: "default" }),
+                    "bg-transparent",
+                    pathname === "/" && "text-foreground font-semibold"
+                  )}
+                >
+                  {t("common.nav.home")}
+                </Link>
+                <Link
+                  href="/articles"
+                  className={cn(
+                    buttonVariants({ variant: "ghost", size: "default" }),
+                    "bg-transparent",
+                    pathname.startsWith("/articles") && "text-foreground font-semibold"
+                  )}
+                >
+                  {t("common.nav.articles")}
+                </Link>
+                <Link
+                  href="/groups"
+                  className={cn(
+                    buttonVariants({ variant: "ghost", size: "default" }),
+                    "bg-transparent",
+                    pathname.startsWith("/groups") && "text-foreground font-semibold"
+                  )}
+                >
+                  {t("common.nav.groups")}
+                </Link>
+              </div>
+            </nav>
           </div>
 
           <div className="hidden items-center space-x-4 md:flex">

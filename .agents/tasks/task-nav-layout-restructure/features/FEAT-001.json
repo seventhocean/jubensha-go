@@ -1,0 +1,25 @@
+{
+  "id": "FEAT-001",
+  "type": "feat",
+  "description": "Restructure mobile bottom nav and desktop header navigation to match new information architecture (Home/Articles/Groups pillars), and add i18n keys for the new labels.",
+  "status": "in_progress",
+  "steps": [
+    "Add new i18n keys to web/lib/i18n/messages/zh-CN.ts under common.nav: home ('首页'), articles ('文章'), groups ('群组'), me ('我的'). Also add pages.nav keys if not already present.",
+    "Add corresponding English i18n keys to web/lib/i18n/messages/en-US.ts: home ('Home'), articles ('Articles'), groups ('Groups'), me ('Me').",
+    "In web/components/layout/mobile-bottom-nav.tsx: Change the tabs array - replace '话题' (Topics, /topics, MessageSquare) with '首页' (Home, /, Home icon from lucide-react). Keep '文章' (Articles, /articles, FileText) and '+' (create, with existing DropdownMenu logic) and '群组' (Groups, /groups, Users). Replace '任务' (Tasks, /tasks, ListChecks) with '我的' (Me, /user/profile, User icon from lucide-react). Use t() for all labels instead of hardcoded Chinese strings. Fix the isActive logic for the Home tab (exact match on '/').",
+    "In web/components/layout/site-header.tsx: Replace the <DesktopNav navs={navs} /> component with three fixed navigation links: 首页 (/) , 文章 (/articles), 群组 (/groups). Use t() for labels. Keep the same styling pattern (buttonVariants ghost). The DesktopNav component can remain in the file but won't be rendered in the header. Add active state styling using pathname comparison.",
+    "Verify that the existing mobile DropdownMenu on the '+' create button still works correctly (it already uses moduleItems and DropdownMenu - no changes needed there)."
+  ],
+  "acceptance_criteria": [
+    "Mobile bottom nav shows 5 tabs: 首页, 文章, +, 群组, 我的 with correct icons and routes",
+    "Desktop header shows three fixed nav links (首页, 文章, 群组) instead of dynamic siteNavs",
+    "All visible text uses t() with proper i18n keys in both zh-CN and en-US",
+    "The '+' create button dropdown still functions on mobile",
+    "No TypeScript compilation errors"
+  ],
+  "verification": [
+    "Run `cd web && npx tsc --noEmit` to verify no type errors"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

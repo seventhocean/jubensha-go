@@ -8,7 +8,10 @@ const enUS = {
     message: "Messages",
     moreActions: "More actions",
     nav: {
+      home: "Home",
+      articles: "Articles",
       groups: "Groups",
+      me: "Me",
       viewAll: "View All",
     },
     loadMore: {

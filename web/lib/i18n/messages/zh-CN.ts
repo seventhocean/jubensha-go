@@ -8,7 +8,10 @@ const zhCN = {
     message: "消息",
     moreActions: "更多操作",
     nav: {
+      home: "首页",
+      articles: "文章",
       groups: "群组",
+      me: "我的",
       viewAll: "查看全部",
     },
     loadMore: {

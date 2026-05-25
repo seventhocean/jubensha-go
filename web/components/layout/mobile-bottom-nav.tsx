@@ -1,6 +1,6 @@
 "use client"
 
-import { FileText, ListChecks, MessageSquare, Plus, Users } from "lucide-react"
+import { FileText, Home, Plus, User, Users } from "lucide-react"
 import Link from "@/components/common/link"
 import { usePathname } from "@/lib/router/navigation"
 import { cn } from "@/lib/utils"
@@ -21,11 +21,11 @@ export function MobileBottomNav() {
   const items = moduleItems(config, t)
 
   const tabs = [
-    { href: "/topics", icon: MessageSquare, label: "话题" },
-    { href: "/articles", icon: FileText, label: "文章" },
-    { href: "/topic/create", icon: Plus, label: "发布", isCreate: true },
-    { href: "/groups", icon: Users, label: "群组" },
-    { href: "/tasks", icon: ListChecks, label: "任务" },
+    { href: "/", icon: Home, label: t("common.nav.home") },
+    { href: "/articles", icon: FileText, label: t("common.nav.articles") },
+    { href: "/topic/create", icon: Plus, label: t("common.createBtn.create"), isCreate: true },
+    { href: "/groups", icon: Users, label: t("common.nav.groups") },
+    { href: "/user/profile", icon: User, label: t("common.nav.me") },
   ]
 
   return (
@@ -36,8 +36,9 @@ export function MobileBottomNav() {
       {tabs.map((tab) => {
         const Icon = tab.icon
         const isActive =
-          pathname === tab.href ||
-          (tab.href !== "/" && pathname.startsWith(tab.href))
+          tab.href === "/"
+            ? pathname === "/"
+            : pathname === tab.href || pathname.startsWith(tab.href)
 
         if (tab.isCreate) {
           if (items.length === 0) {
