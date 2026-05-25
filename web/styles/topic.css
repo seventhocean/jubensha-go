@@ -291,16 +291,15 @@
     background-position: center;
     background-size: 75% 75%;
     background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .dock-nav li > a > svg {
-    position: relative;
-    z-index: 2;
-    margin-right: 8px;
-    width: 24px;
-    height: 24px;
+  .node-logo > svg {
+    width: 14px;
+    height: 14px;
     flex-shrink: 0;
-    border-radius: 4px;
     padding: 3px;
   }
 

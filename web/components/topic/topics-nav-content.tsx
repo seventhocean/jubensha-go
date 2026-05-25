@@ -57,19 +57,6 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 
 let cachedChannels: Channel[] | null = null
 
-function ChannelIcon({ icon }: { icon: string }) {
-  // If it's a URL (http or starts with /), render as image
-  if (icon.startsWith("http") || icon.startsWith("/")) {
-    return <img src={icon} alt="" className="h-4 w-4 shrink-0 rounded-sm object-cover" />
-  }
-  // Otherwise look up lucide icon
-  const IconComponent = iconMap[icon.toLowerCase()]
-  if (IconComponent) {
-    return <IconComponent className="h-4 w-4 shrink-0" />
-  }
-  return <Compass className="h-4 w-4 shrink-0" />
-}
-
 function nodeHref(node: TopicNode) {
   return `/topics/node/${node.id}`
 }
@@ -188,10 +175,16 @@ export function TopicsNavContent({
                       : ""
                     isActive = currentUrl === channel.href
                   }
+                  const iconEl = channel.icon.startsWith("http") || channel.icon.startsWith("/")
+                    ? <i className="node-logo" style={{ backgroundImage: `url(${channel.icon})` }} />
+                    : (() => {
+                        const Ic = iconMap[channel.icon.toLowerCase()] ?? Compass
+                        return <i className="node-logo"><Ic className="h-3.5 w-3.5" /></i>
+                      })()
                   return (
                     <li key={channel.id} className={cn(isActive && "active")}>
                       <Link href={channel.href}>
-                        <ChannelIcon icon={channel.icon} />
+                        {iconEl}
                         <div className="node-name">{channel.nameEn || channel.name}</div>
                       </Link>
                     </li>
@@ -207,13 +200,13 @@ export function TopicsNavContent({
               <ul>
                 <li className={cn(currentNodeId === undefined && !currentRootNodeId && "active")}>
                   <Link href="/?tab=all">
-                    <Compass className="h-4 w-4 shrink-0" />
+                    <i className="node-logo"><Compass className="h-3.5 w-3.5" /></i>
                     <div className="node-name">{t("pages.home.tabs.all")}</div>
                   </Link>
                 </li>
                 <li className={cn(currentNodeId === -2 && "active")}>
                   <Link href="/?tab=following">
-                    <Heart className="h-4 w-4 shrink-0" />
+                    <i className="node-logo"><Heart className="h-3.5 w-3.5" /></i>
                     <div className="node-name">{t("pages.home.tabs.following")}</div>
                   </Link>
                 </li>
