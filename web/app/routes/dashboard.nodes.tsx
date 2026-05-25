@@ -24,7 +24,7 @@ export default function DashboardNodesRoute() {
     updatePermission: PERMISSIONS.DASHBOARD_NODE_UPDATE,
     deleteEndpoint: "/api/admin/topic-node/delete",
     deletePermission: PERMISSIONS.DASHBOARD_NODE_DELETE,
-    deleteMode: "jsonIds",
+    deleteMode: "formIds",
     sortEndpoint: "/api/admin/topic-node/update_sort",
     sortPermission: PERMISSIONS.DASHBOARD_NODE_SORT,
     tree: true,

@@ -32,44 +32,20 @@ export function UserAvatar({
   const src = user?.smallAvatar || user?.avatar
   const name = getDisplayName(user) || "User"
   const imageRef = React.useRef<HTMLImageElement>(null)
-  const [imageLoaded, setImageLoaded] = React.useState(false)
   const [imageFailed, setImageFailed] = React.useState(false)
-
-  React.useEffect(() => {
-    setImageLoaded(false)
-    setImageFailed(false)
-  }, [src])
-
-  React.useEffect(() => {
-    const image = imageRef.current
-    if (!image?.complete) {
-      return
-    }
-    if (image.naturalWidth > 0) {
-      setImageLoaded(true)
-    } else {
-      setImageFailed(true)
-    }
-  }, [src, imageLoaded, imageFailed])
 
   const content =
     src && !imageFailed ? (
-      <>
-        {!imageLoaded ? (
-          <span aria-hidden="true">{getInitial(user)}</span>
-        ) : null}
-        <img
-          ref={imageRef}
-          src={src}
-          alt={name}
-          loading={loading}
-          decoding="async"
-          className={cn("h-full w-full object-cover", !imageLoaded && "hidden")}
-          referrerPolicy="no-referrer"
-          onLoad={() => setImageLoaded(true)}
-          onError={() => setImageFailed(true)}
-        />
-      </>
+      <img
+        ref={imageRef}
+        src={src}
+        alt={name}
+        loading={loading}
+        decoding="async"
+        className="h-full w-full object-cover"
+        referrerPolicy="no-referrer"
+        onError={() => setImageFailed(true)}
+      />
     ) : (
       <span aria-hidden="true">{getInitial(user)}</span>
     )

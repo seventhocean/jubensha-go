@@ -22,7 +22,7 @@ export default function DashboardGroupsRoute() {
     updatePermission: PERMISSIONS.DASHBOARD_GROUP_UPDATE,
     deleteEndpoint: "/api/admin/group/delete",
     deletePermission: PERMISSIONS.DASHBOARD_GROUP_DELETE,
-    deleteMode: "jsonIds",
+    deleteMode: "formIds",
     filters: [
       { name: "name", label: dashboardData.label(t, "name") },
       {
