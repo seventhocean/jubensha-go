@@ -2,7 +2,7 @@
 
 import Link from "@/components/common/link"
 import * as React from "react"
-import { Compass, Heart } from "lucide-react"
+import { Compass, Heart, Sparkles } from "lucide-react"
 
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { apiFetch } from "@/lib/api/client"
@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils"
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   compass: Compass,
   heart: Heart,
+  sparkles: Sparkles,
 }
 
 function ChannelIcon({ icon }: { icon: string }) {
@@ -117,36 +118,43 @@ export function TopicsNavContent({
       <nav className="dock-nav">
         <ScrollArea className="topics-scroll-area">
           {/* Channels section */}
-          <div className="px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-            {t("pages.home.sidebar.channels")}
-          </div>
-          <ul>
-            {channels.length > 0 ? (
-              channels.map((channel) => {
-                const isAll = channel.href === "/?tab=all"
-                const isFollowing = channel.href === "/?tab=following"
-                let isActive: boolean
-                if (isAll) {
-                  isActive = currentNodeId === undefined && !currentRootNodeId
-                } else if (isFollowing) {
-                  isActive = currentNodeId === -2
-                } else {
-                  const currentUrl = typeof window !== "undefined"
-                    ? window.location.pathname + window.location.search
-                    : ""
-                  isActive = currentUrl === channel.href
-                }
-                return (
-                  <li key={channel.id} className={cn(isActive && "active")}>
-                    <Link href={channel.href}>
-                      <ChannelIcon icon={channel.icon} />
-                      <div className="node-name">{channel.nameEn || channel.name}</div>
-                    </Link>
-                  </li>
-                )
-              })
-            ) : (
-              <React.Fragment>
+          {channels.length > 0 ? (
+            <>
+              <div className="section-label">
+                {t("pages.home.sidebar.channels")}
+              </div>
+              <ul>
+                {channels.map((channel) => {
+                  const isAll = channel.href === "/?tab=all"
+                  const isFollowing = channel.href === "/?tab=following"
+                  let isActive: boolean
+                  if (isAll) {
+                    isActive = currentNodeId === undefined && !currentRootNodeId
+                  } else if (isFollowing) {
+                    isActive = currentNodeId === -2
+                  } else {
+                    const currentUrl = typeof window !== "undefined"
+                      ? window.location.pathname + window.location.search
+                      : ""
+                    isActive = currentUrl === channel.href
+                  }
+                  return (
+                    <li key={channel.id} className={cn(isActive && "active")}>
+                      <Link href={channel.href}>
+                        <ChannelIcon icon={channel.icon} />
+                        <div className="node-name">{channel.nameEn || channel.name}</div>
+                      </Link>
+                    </li>
+                  )
+                })}
+              </ul>
+            </>
+          ) : (
+            <>
+              <div className="section-label">
+                {t("pages.home.sidebar.channels")}
+              </div>
+              <ul>
                 <li className={cn(currentNodeId === undefined && !currentRootNodeId && "active")}>
                   <Link href="/?tab=all">
                     <Compass className="h-4 w-4 shrink-0" />
@@ -159,14 +167,14 @@ export function TopicsNavContent({
                     <div className="node-name">{t("pages.home.tabs.following")}</div>
                   </Link>
                 </li>
-              </React.Fragment>
-            )}
-          </ul>
+              </ul>
+            </>
+          )}
 
           {/* My Groups section */}
           {groups.length > 0 && (
-            <React.Fragment>
-              <div className="px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            <>
+              <div className="section-label">
                 {t("pages.home.sidebar.myGroups")}
               </div>
               <ul>
@@ -194,13 +202,13 @@ export function TopicsNavContent({
                   {t("common.nav.viewAll")}
                 </Link>
               </div>
-            </React.Fragment>
+            </>
           )}
 
           {/* Nodes section */}
           {userNodes.length > 0 && (
-            <React.Fragment>
-              <div className="px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            <>
+              <div className="section-label">
                 {t("pages.home.sidebar.nodes")}
               </div>
               <ul>
@@ -220,7 +228,7 @@ export function TopicsNavContent({
                   )
                 })}
               </ul>
-            </React.Fragment>
+            </>
           )}
         </ScrollArea>
       </nav>

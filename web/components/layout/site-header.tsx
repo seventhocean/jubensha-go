@@ -476,7 +476,7 @@ export function SiteHeader() {
   const { t } = useI18n()
   const fullPath = useCurrentFullPath()
   const pathname = usePathname()
-  const navs = config?.siteNavs ?? []
+  const navs: SiteNav[] = config?.siteNavs ?? []
   const title = config?.siteTitle || "BBS-GO"
   const logo = config?.siteLogo
   const showColorModeToggle = true
@@ -536,7 +536,7 @@ export function SiteHeader() {
                 >
                   {t("common.header.tasks")}
                 </Link>
-                {navs.filter((nav) => !["/", "/articles", "/groups", "/tasks"].includes(nav.url)).map((nav, index) => (
+                {navs.filter((nav) => !["/", "/topics", "/articles", "/groups", "/tasks"].includes(nav.url)).map((nav, index) => (
                   hasChildren(nav) ? (
                     <DropdownMenu modal={false} key={`${nav.title}-${index}`}>
                       <DropdownMenuTrigger asChild>
