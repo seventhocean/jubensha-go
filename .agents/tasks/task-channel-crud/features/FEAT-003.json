@@ -2,7 +2,7 @@
   "id": "FEAT-003",
   "type": "fix",
   "description": "Fix 4 issues from semantic review: ChannelUpdateSort error handling, cache returning nil, sidebar active-state for custom channels, migration dedup key",
-  "status": "in_progress",
+  "status": "completed",
   "steps": [
     "1. Fix ChannelUpdateSort in internal/handlers/admin/channel_handlers.go to fail-fast on first error instead of swallowing errors",
     "2. Fix ChannelCache.Get() in internal/cache/channel_cache.go to return []models.Channel{} instead of nil",
@@ -24,5 +24,5 @@
     "cd /projects/sandbox/jubensha-go/web && pnpm typecheck"
   ],
   "blocked_reason": null,
-  "findings": null
+  "findings": "All 4 review issues fixed and verified. go build ./... passes, go vet ./... passes, pnpm typecheck passes. Note: go build requires a placeholder web/build/spa/index.html since embed.go references the SPA build output."
 }
