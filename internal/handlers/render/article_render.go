@@ -22,6 +22,8 @@ func BuildArticle(article *models.Article, currentUser *models.User) *resp.Artic
 	rsp.Summary = article.Summary
 	rsp.SourceUrl = article.SourceUrl
 	rsp.ViewCount = article.ViewCount
+	rsp.CommentCount = article.CommentCount
+	rsp.LikeCount = article.LikeCount
 	rsp.CreateTime = article.CreateTime
 	rsp.Status = article.Status
 

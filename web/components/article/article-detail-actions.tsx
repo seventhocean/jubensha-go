@@ -26,7 +26,6 @@ export function ArticleDetailActions({
     liked,
     favorited,
     likeCount,
-    commentCount,
     toggleLike,
     toggleFavorite,
   } = useArticleActions()
