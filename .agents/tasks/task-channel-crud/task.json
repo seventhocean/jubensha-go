@@ -1,0 +1,7 @@
+{
+  "task_id": "task-channel-crud",
+  "task_description": "Implement an independent Channel model with full CRUD management in the admin dashboard and integrate it into the frontend sidebar. Backend includes model, migration, repository, service, cache, permissions, admin handlers, API handler, and router. Frontend includes dashboard page, sidebar menu, types, i18n, and dynamic channel rendering.",
+  "status": "in_progress",
+  "feature_order": ["FEAT-001", "FEAT-002"],
+  "blocked_reason": null
+}

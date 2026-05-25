@@ -1,0 +1,30 @@
+{
+  "id": "FEAT-002",
+  "type": "feat",
+  "description": "Frontend: Dashboard channels page, sidebar menu item, TypeScript types, frontend sidebar dynamic channels, i18n keys, and permissions.generated.ts update",
+  "status": "pending",
+  "steps": [
+    "1. Add Channel type to web/lib/api/types.ts: export interface Channel { id: number; name: string; nameEn?: string; icon: string; href: string; sortNo: number; visible: boolean; createTime?: number; updateTime?: number; }",
+    "2. Add channel permission constants to web/lib/auth/permissions.generated.ts: DASHBOARD_CHANNEL_VIEW: 'dashboard.channel.view', DASHBOARD_CHANNEL_CREATE: 'dashboard.channel.create', DASHBOARD_CHANNEL_UPDATE: 'dashboard.channel.update', DASHBOARD_CHANNEL_DELETE: 'dashboard.channel.delete'. Add them to both the PERMISSIONS object and PERMISSION_LIST array.",
+    "3. Add i18n keys to web/lib/i18n/messages/en-US.ts: Under dashboard.nav add 'channels: \"Channels\"'. Under dashboard.pages add 'channels: { title: \"Channel Management\", description: \"Manage sidebar channels\" }'. Under dashboard.fields add channel-specific labels if needed (name, icon, href, visible, sortNo, nameEn are already covered by generic field labels).",
+    "4. Add i18n keys to web/lib/i18n/messages/zh-CN.ts: Under dashboard.nav add 'channels: \"频道管理\"'. Under dashboard.pages add 'channels: { title: \"频道管理\", description: \"管理侧边栏频道\" }'.",
+    "5. Create web/app/routes/dashboard.channels.tsx following the exact pattern of dashboard.links.tsx. Use DashboardDataPage with config: title from dashboardData.title(t, 'channels'), listEndpoint '/api/admin/channel/list', createEndpoint '/api/admin/channel/create', updateEndpoint '/api/admin/channel/update', deleteEndpoint '/api/admin/channel/delete' with deleteMode 'formId', sortEndpoint '/api/admin/channel/update_sort'. Columns: id, name, nameEn, icon, href, sortNo, visible (render as boolean). FormFields: id (number), name (text, required), nameEn (text), icon (text, required), href (text, required), sortNo (number), visible (select with yes/no boolean options). viewPermission DASHBOARD_CHANNEL_VIEW, createPermission DASHBOARD_CHANNEL_CREATE, updatePermission DASHBOARD_CHANNEL_UPDATE, deletePermission DASHBOARD_CHANNEL_DELETE.",
+    "6. Add 'Channels' / '频道管理' menu item to web/components/dashboard/app-sidebar.tsx in the content section items array (after links, before forbiddenWords). Use: { title: t('dashboard.nav.channels'), url: '/dashboard/channels', permission: PERMISSIONS.DASHBOARD_CHANNEL_VIEW }.",
+    "7. Modify web/components/topic/topics-nav-content.tsx to fetch channels dynamically from /api/channel/channels on mount. Replace the hardcoded channels section (the <ul> with Compass/Heart links) with a dynamic list rendered from fetched channels. For icon rendering: if icon value matches known lucide icon names (compass, heart, etc.), render the corresponding lucide-react component; otherwise render a default icon. Use nameEn with a fallback to name (or vice versa based on locale). Keep the active-state logic working for the 'all' and 'following' tabs."
+  ],
+  "acceptance_criteria": [
+    "pnpm typecheck passes with no errors in web/ directory",
+    "pnpm build succeeds in web/ directory",
+    "dashboard.channels.tsx exports a valid React component using DashboardDataPage",
+    "Channel type is exported from types.ts",
+    "Permissions for channels are in permissions.generated.ts",
+    "Dashboard sidebar includes Channels menu item",
+    "Frontend sidebar fetches from /api/channel/channels instead of using hardcoded items"
+  ],
+  "verification": [
+    "cd /projects/sandbox/jubensha-go/web && pnpm typecheck",
+    "cd /projects/sandbox/jubensha-go/web && pnpm build"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

@@ -72,6 +72,11 @@ var (
 	PermissionLinkCreate = PermissionDefinition{Type: TypeDashboard, Code: "dashboard.link.create", GroupName: GroupContent, SortNo: 510, NameEn: "Create Links", NameZh: "创建链接"}
 	PermissionLinkUpdate = PermissionDefinition{Type: TypeDashboard, Code: "dashboard.link.update", GroupName: GroupContent, SortNo: 520, NameEn: "Update Links", NameZh: "编辑链接"}
 
+	PermissionChannelView   = PermissionDefinition{Type: TypeDashboard, Code: "dashboard.channel.view", GroupName: GroupContent, SortNo: 540, NameEn: "View Channels", NameZh: "查看频道"}
+	PermissionChannelCreate = PermissionDefinition{Type: TypeDashboard, Code: "dashboard.channel.create", GroupName: GroupContent, SortNo: 550, NameEn: "Create Channels", NameZh: "创建频道"}
+	PermissionChannelUpdate = PermissionDefinition{Type: TypeDashboard, Code: "dashboard.channel.update", GroupName: GroupContent, SortNo: 560, NameEn: "Update Channels", NameZh: "编辑频道"}
+	PermissionChannelDelete = PermissionDefinition{Type: TypeDashboard, Code: "dashboard.channel.delete", GroupName: GroupContent, SortNo: 570, NameEn: "Delete Channels", NameZh: "删除频道"}
+
 	PermissionForbiddenWordView   = PermissionDefinition{Type: TypeDashboard, Code: "dashboard.forbiddenWord.view", GroupName: GroupContent, SortNo: 600, NameEn: "View Forbidden Words", NameZh: "查看敏感词"}
 	PermissionForbiddenWordCreate = PermissionDefinition{Type: TypeDashboard, Code: "dashboard.forbiddenWord.create", GroupName: GroupContent, SortNo: 610, NameEn: "Create Forbidden Words", NameZh: "创建敏感词"}
 	PermissionForbiddenWordUpdate = PermissionDefinition{Type: TypeDashboard, Code: "dashboard.forbiddenWord.update", GroupName: GroupContent, SortNo: 620, NameEn: "Update Forbidden Words", NameZh: "编辑敏感词"}
@@ -145,6 +150,10 @@ var Permissions = []PermissionDefinition{
 	PermissionLinkView,
 	PermissionLinkCreate,
 	PermissionLinkUpdate,
+	PermissionChannelView,
+	PermissionChannelCreate,
+	PermissionChannelUpdate,
+	PermissionChannelDelete,
 	PermissionForbiddenWordView,
 	PermissionForbiddenWordCreate,
 	PermissionForbiddenWordUpdate,

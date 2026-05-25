@@ -1,0 +1,32 @@
+{
+  "id": "FEAT-001",
+  "type": "feat",
+  "description": "Backend: Channel model, repository, service, cache, migration, permissions, admin handlers, API handler, and router registration",
+  "status": "in_progress",
+  "steps": [
+    "1. Add Channel model to internal/models/models.go after the Link struct. Fields: Model (embedded), Name (string, size:64, not null), NameEn (string, size:64), Icon (string, size:128), Href (string, size:256, not null), SortNo (int, not null, default:0), Visible (bool, not null, default:true), CreateTime (int64), UpdateTime (int64). Also add &Channel{} to the Models slice at the top of the file.",
+    "2. Create migrations/000026_migration_script_channels.go following the pattern of 000025. Function: migrate_channels() that AutoMigrates &models.Channel{} and seeds two records: {Name:'全部', NameEn:'All', Icon:'compass', Href:'/?tab=all', SortNo:0, Visible:true} and {Name:'关注', NameEn:'Following', Icon:'heart', Href:'/?tab=following', SortNo:1, Visible:true}. Set CreateTime/UpdateTime to dates.NowTimestamp(). Use db.FirstOrCreate with a condition on Name to avoid duplicates.",
+    "3. Register the migration in migrations/migration.go init() function: register(26, 'create channels table and seed data', migrate_channels)",
+    "4. Create internal/repositories/channel_repository.go following the exact pattern of link_repository.go. Replace Link with Channel everywhere. Add an additional method FindAllOrdered that returns all channels ordered by sort_no ASC.",
+    "5. Create internal/services/channel_service.go following the exact pattern of link_service.go. Replace Link with Channel everywhere. Add GetVisibleChannels() method that calls ChannelRepository.Find with cnd Eq('visible', true) ordered by sort_no ASC.",
+    "6. Create internal/cache/channel_cache.go following a simple pattern. Use github.com/goburrow/cache with LoadingCache. The cache loads all visible channels ordered by SortNo. Provide Get() returning []models.Channel and Invalidate() to clear the cache. ExpireAfterAccess 30 minutes.",
+    "7. Add channel permissions to internal/permissions/permissions.go: PermissionChannelView (SortNo: 540, code: dashboard.channel.view, GroupName: GroupContent, NameEn: 'View Channels', NameZh: '查看频道'), PermissionChannelCreate (SortNo: 550, code: dashboard.channel.create, NameEn: 'Create Channels', NameZh: '创建频道'), PermissionChannelUpdate (SortNo: 560, code: dashboard.channel.update, NameEn: 'Update Channels', NameZh: '编辑频道'), PermissionChannelDelete (SortNo: 570, code: dashboard.channel.delete, NameEn: 'Delete Channels', NameZh: '删除频道'). Add them to the Permissions slice as well.",
+    "8. Create internal/handlers/admin/channel_handlers.go following the exact pattern of link_handlers.go. Functions: ChannelDetail (GET /:id), ChannelList (POST /list with filters on name, visible), ChannelCreate (POST /create - set CreateTime and UpdateTime, invalidate channel cache), ChannelUpdate (POST /update - set UpdateTime, invalidate channel cache), ChannelDelete (POST /delete - delete by id, invalidate channel cache), ChannelUpdateSort (POST /update_sort - accept JSON array of {id, sortNo}, update each, invalidate cache).",
+    "9. Create internal/handlers/api/channel_handlers.go with a single function ChannelList that returns the visible channels from the cache (or service). Use ginx.WriteJSON to return the list.",
+    "10. Register routes in internal/server/router.go: In registerAdminRoutes, add a channelGroup := group.Group('/channel') with endpoints: POST /list -> ChannelList, POST /create -> ChannelCreate, POST /update -> ChannelUpdate, POST /delete -> ChannelDelete, POST /update_sort -> ChannelUpdateSort, GET /:id -> ChannelDetail. In registerAPIRoutes, add channelGroup := group.Group('/channel') with GET /channels -> apiHandlers.ChannelList."
+  ],
+  "acceptance_criteria": [
+    "go build ./... succeeds with no errors",
+    "go vet ./... passes with no issues",
+    "Channel model is registered in Models slice",
+    "Migration 26 is registered in init()",
+    "Admin routes for /channel are registered",
+    "Public API route /api/channel/channels is registered"
+  ],
+  "verification": [
+    "cd /projects/sandbox/jubensha-go && go build ./...",
+    "cd /projects/sandbox/jubensha-go && go vet ./..."
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

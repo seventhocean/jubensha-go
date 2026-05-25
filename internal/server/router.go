@@ -207,6 +207,9 @@ func registerAPIRoutes(group *gin.RouterGroup) {
 	linkGroup.GET("/list", apiHandlers.LinkList)
 	linkGroup.GET("/top_links", apiHandlers.LinkTopLinks)
 
+	channelGroup := group.Group("/channel")
+	channelGroup.GET("/channels", apiHandlers.ChannelList)
+
 	captchaGroup := group.Group("/captcha")
 	captchaGroup.GET("/request", apiHandlers.CaptchaRequest)
 	captchaGroup.GET("/verify", apiHandlers.CaptchaVerify)
@@ -377,6 +380,14 @@ func registerAdminRoutes(group *gin.RouterGroup) {
 	linkGroup.POST("/create", adminHandlers.LinkCreate)
 	linkGroup.POST("/update", adminHandlers.LinkUpdate)
 	linkGroup.GET("/:id", adminHandlers.LinkDetail)
+
+	channelGroup := group.Group("/channel")
+	channelGroup.POST("/list", adminHandlers.ChannelList)
+	channelGroup.POST("/create", adminHandlers.ChannelCreate)
+	channelGroup.POST("/update", adminHandlers.ChannelUpdate)
+	channelGroup.POST("/delete", adminHandlers.ChannelDelete)
+	channelGroup.POST("/update_sort", adminHandlers.ChannelUpdateSort)
+	channelGroup.GET("/:id", adminHandlers.ChannelDetail)
 
 	userScoreLogGroup := group.Group("/user-score-log")
 	userScoreLogGroup.POST("/list", adminHandlers.UserScoreLogList)

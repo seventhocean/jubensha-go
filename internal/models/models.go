@@ -11,7 +11,7 @@ var Models = []interface{}{
 	&UserRole{}, &Role{}, &Permission{}, &RolePermission{}, &DictType{}, &Dict{},
 
 	&User{}, &UserToken{}, &ThirdUser{}, &Tag{}, &Article{}, &ArticleTag{}, &Comment{}, &Favorite{}, &Topic{}, &TopicNode{},
-	&TopicTag{}, &UserLike{}, &Message{}, &SysConfig{}, &Link{},
+	&TopicTag{}, &UserLike{}, &Message{}, &SysConfig{}, &Link{}, &Channel{},
 	&TaskConfig{}, &UserTaskEvent{}, &UserTaskLog{},
 	&Badge{}, &UserBadge{},
 	&LevelConfig{},
@@ -347,6 +347,19 @@ type Link struct {
 	Summary    string `gorm:"size:1024" json:"summary" form:"summary"`           // 站点描述
 	Status     int    `gorm:"type:int(11);not null" json:"status" form:"status"` // 状态
 	CreateTime int64  `gorm:"not null" json:"createTime" form:"createTime"`      // 创建时间
+}
+
+// 频道
+type Channel struct {
+	Model
+	Name       string `gorm:"size:64;not null" json:"name" form:"name"`          // 频道名称
+	NameEn     string `gorm:"size:64" json:"nameEn" form:"nameEn"`               // 频道英文名称
+	Icon       string `gorm:"size:128" json:"icon" form:"icon"`                  // 图标
+	Href       string `gorm:"size:256;not null" json:"href" form:"href"`         // 链接
+	SortNo     int    `gorm:"not null;default:0" json:"sortNo" form:"sortNo"`    // 排序
+	Visible    bool   `gorm:"not null;default:true" json:"visible" form:"visible"` // 是否可见
+	CreateTime int64  `json:"createTime" form:"createTime"`                      // 创建时间
+	UpdateTime int64  `json:"updateTime" form:"updateTime"`                      // 更新时间
 }
 
 // TaskConfig 任务配置
