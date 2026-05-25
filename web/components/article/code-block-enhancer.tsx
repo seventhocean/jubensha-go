@@ -11,7 +11,8 @@ import { useI18n } from "@/lib/i18n/provider"
  * - Line numbers (left gutter)
  */
 export function useCodeBlockEnhancer(
-  containerRef: React.RefObject<HTMLElement | null>
+  containerRef: React.RefObject<HTMLElement | null>,
+  html?: string
 ) {
   const { t } = useI18n()
 
@@ -91,5 +92,5 @@ export function useCodeBlockEnhancer(
     return () => {
       cleanups.forEach((cleanup) => cleanup())
     }
-  }, [containerRef, t])
+  }, [containerRef, t, html])
 }

@@ -120,6 +120,11 @@ func (s *articleService) GetArticles(cursor int64) (articles []models.Article, n
 }
 
 // GetArticlesSorted returns articles sorted by the given mode.
+// Note: "hot" and "recommended" sorts use offset-based pagination (not keyset/cursor),
+// which means items may be duplicated or skipped if the underlying data changes between
+// page loads (e.g., view_count or like_count updates shift row positions). This is an
+// acceptable trade-off for a forum application where strict consistency across pages
+// is not required for these non-chronological sort orders.
 func (s *articleService) GetArticlesSorted(cursor int64, sort string) (articles []models.Article, nextCursor int64, hasMore bool) {
 	const limit = 20
 	db := sqls.DB().Where("status = ?", constants.StatusOk)

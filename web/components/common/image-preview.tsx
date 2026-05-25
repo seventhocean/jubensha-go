@@ -206,7 +206,7 @@ export function HtmlImagePreview({
     index: number
   } | null>(null)
 
-  useCodeBlockEnhancer(rootRef)
+  useCodeBlockEnhancer(rootRef, html)
 
   return (
     <>
