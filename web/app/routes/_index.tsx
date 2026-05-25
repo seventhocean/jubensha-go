@@ -161,6 +161,9 @@ function GroupsTabContent({
   )
 }
 
+// Creates a load-page function for the mixed feed (All tab).
+// Fires two parallel requests (topics + articles) intentionally to merge both
+// content types into a single chronological feed.
 function createMixedFeedLoadPage(sortMode: SortMode, topicParams?: Record<string, unknown>) {
   return async ({ cursor }: { cursor: string }): Promise<PageData<FeedItem>> => {
     const { tc, ac } = parseMixedCursor(cursor)
@@ -224,6 +227,7 @@ export function TopicListRoute({ title }: { title?: string }) {
   const [searchParams, setSearchParams] = useSearchParams()
   const activeTab = (searchParams.get("tab") || "all") as TabValue
   const sortMode = (searchParams.get("sort") || "latest") as SortMode
+  const typeParam = searchParams.get("type")
 
   const handleTabChange = React.useCallback(
     (value: string) => {
@@ -253,8 +257,8 @@ export function TopicListRoute({ title }: { title?: string }) {
   const showSort = activeTab === "all" || activeTab === "articles"
 
   const allFeedLoadPage = React.useMemo(
-    () => createMixedFeedLoadPage(sortMode),
-    [sortMode]
+    () => createMixedFeedLoadPage(sortMode, typeParam ? { type: typeParam } : undefined),
+    [sortMode, typeParam]
   )
 
   return (

@@ -330,18 +330,35 @@ export function HomeAside() {
     let mounted = true
     void Promise.all([
       apiFetch<UserSummary[]>("/api/user/score/rank").catch(() => []),
-      user ? apiFetch<CheckInInfo | null>("/api/checkin/checkin").catch(() => null) : Promise.resolve(null),
       apiFetch<FriendLink[]>("/api/link/top_links").catch(() => []),
       apiFetch<PageData<Article>>("/api/article/articles", { params: { sort: "hot" } }).catch(() => ({ results: [], hasMore: false, cursor: "" })),
       apiFetch<GroupItem[]>("/api/group/list").catch(() => []),
-    ]).then(([nextScoreRank, nextCheckIn, nextLinks, nextArticles, nextGroups]) => {
+    ]).then(([nextScoreRank, nextLinks, nextArticles, nextGroups]) => {
       if (!mounted) return
       setScoreRank(Array.isArray(nextScoreRank) ? nextScoreRank : [])
-      setCheckIn(nextCheckIn)
       setFriendLinks(Array.isArray(nextLinks) ? nextLinks : [])
       setHotArticles(Array.isArray(nextArticles.results) ? nextArticles.results : [])
       setActiveGroups(Array.isArray(nextGroups) ? nextGroups : [])
     })
+
+    return () => {
+      mounted = false
+    }
+  }, [])
+
+  React.useEffect(() => {
+    if (!user) {
+      setCheckIn(null)
+      return
+    }
+    let mounted = true
+    apiFetch<CheckInInfo | null>("/api/checkin/checkin")
+      .then((data) => {
+        if (mounted) setCheckIn(data)
+      })
+      .catch(() => {
+        if (mounted) setCheckIn(null)
+      })
 
     return () => {
       mounted = false

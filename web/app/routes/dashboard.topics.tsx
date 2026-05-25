@@ -67,6 +67,7 @@ type TopicRecord = AdminRecord & {
   }
   node?: {
     name?: string
+    type?: string
   }
   tags?: Array<{
     id?: number

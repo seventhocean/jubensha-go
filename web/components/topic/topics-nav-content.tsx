@@ -17,6 +17,8 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   sparkles: Sparkles,
 }
 
+let cachedChannels: Channel[] | null = null
+
 function ChannelIcon({ icon }: { icon: string }) {
   const IconComponent = iconMap[icon.toLowerCase()]
   if (IconComponent) {
@@ -97,10 +99,15 @@ export function TopicsNavContent({
   }, [])
 
   React.useEffect(() => {
+    if (cachedChannels) {
+      setChannels(cachedChannels)
+      return
+    }
     let mounted = true
     apiFetch<Channel[]>("/api/channel/channels")
       .then((data) => {
         if (mounted && data) {
+          cachedChannels = data
           setChannels(data)
         }
       })

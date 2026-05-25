@@ -66,13 +66,8 @@ func topicGetBuiltInNodes() []resp.NodeResponse {
 // 收藏
 // 设置置顶
 func TopicNodeNavs(ctx *gin.Context) {
-
-	nodes := append(
-		topicGetBuiltInNodes(),
-		render.BuildNodes(services.TopicNodeService.GetTopLevelNodes())...,
-	)
+	nodes := render.BuildNodes(services.TopicNodeService.GetTopLevelNodes())
 	ginx.WriteJSON(ctx, nodes)
-
 }
 
 func TopicNodes(ctx *gin.Context) {
