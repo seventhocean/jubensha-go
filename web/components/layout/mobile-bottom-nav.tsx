@@ -39,7 +39,7 @@ export function MobileBottomNav() {
       {tabs.map((tab) => {
         const Icon = tab.icon
         const isActive = tab.isMe
-          ? pathname === `/user/${currentUser?.id}`
+          ? pathname === meHref || pathname.startsWith(meHref + "/")
           : tab.href === "/"
             ? pathname === "/"
             : pathname === tab.href || pathname.startsWith(tab.href)
