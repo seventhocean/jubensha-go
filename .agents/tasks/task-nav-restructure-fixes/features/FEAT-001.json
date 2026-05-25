@@ -25,5 +25,5 @@
     "Run `pnpm lint` in /projects/sandbox/jubensha-go/web/ and confirm no lint errors"
   ],
   "blocked_reason": null,
-  "findings": "All 4 changes implemented and verified. Typecheck and lint pass cleanly. The mobile Me tab isActive uses isMe flag to check pathname === /user/${currentUser?.id}. The More dropdown uses existing hasChildren/targetFor/relFor helpers already in site-header.tsx."
+  "findings": "All 4 changes implemented and verified. Typecheck and lint pass cleanly. The mobile Me tab isActive was updated to use `pathname === meHref || pathname.startsWith(meHref + \"/\")` so the Me tab stays highlighted on sub-pages like /user/{id}/articles, /user/{id}/fans. The More dropdown uses existing hasChildren/targetFor/relFor helpers already in site-header.tsx."
 }
