@@ -23,5 +23,5 @@
     "Run `cd web && npx tsc --noEmit` to verify no type errors"
   ],
   "blocked_reason": null,
-  "findings": "All changes compile cleanly with tsc --noEmit. Removed TasksUserCard, CheckInCard, and Badge import since they are consolidated into MyStatusWidget. The CheckInInfo type uses 'checkIn' boolean property (not 'checkedIn'). Kept ScoreRank and FriendLinks at lower priority below the new widgets."
+  "findings": "All changes compile cleanly with tsc --noEmit. Removed TasksUserCard, CheckInCard, and Badge import since they are consolidated into MyStatusWidget. The CheckInInfo type uses 'checkIn' boolean property (not 'checkedIn'). Kept ScoreRank and FriendLinks at lower priority below the new widgets. Post-review fix: removed redundant JS title truncation in HotArticlesWidget, letting CSS line-clamp-1 handle overflow."
 }

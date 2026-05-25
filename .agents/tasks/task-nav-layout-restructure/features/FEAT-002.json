@@ -2,7 +2,7 @@
   "id": "FEAT-002",
   "type": "feat",
   "description": "Restructure the homepage (_index.tsx) with new content tabs (全部/关注/群组/文章) and a sort dropdown, plus update the left sidebar (topics-nav-content.tsx) to show channels/groups/nodes sections.",
-  "status": "in_progress",
+  "status": "completed",
   "steps": [
     "Add new i18n keys for homepage tabs in both zh-CN.ts and en-US.ts under a new section (e.g., pages.home.tabs): all ('全部'/'All'), following ('关注'/'Following'), groups ('群组'/'Groups'), articles ('文章'/'Articles'). Add sort keys: sortLatest ('最新'/'Latest'), sortHottest ('最热'/'Hottest'). Add sidebar section keys: channels ('频道'/'Channels'), myGroups ('我的群组'/'My Groups'), nodes ('节点'/'Nodes').",
     "In web/app/routes/_index.tsx: Replace the current simple topic list with a tabbed interface. Add a Tabs component (from @/components/ui/tabs) at the top of the main content area with four tabs: 全部, 关注, 群组, 文章. Add a sort dropdown (DropdownMenu) on the right side of the tab bar with options: 最新, 最热. Default tab is '全部' which shows the existing topic list (reusing the LoadMore pattern). The '文章' tab fetches articles using loadArticles from route-helpers/loaders. The '关注' tab fetches topics with nodeId=-2 (feed). The '群组' tab fetches topics from user's joined groups using getGroupNavs() to get group IDs then fetching group topics.",
@@ -22,5 +22,5 @@
     "Run `cd web && npx tsc --noEmit` to verify no type errors"
   ],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "All changes compile cleanly with tsc --noEmit. Used existing TabsList variant='line' pattern from articles.tsx. getGroupNavs() is already used client-side in the original topics-nav-content.tsx despite being defined with serverApiFetch - kept this pattern. GroupsTabContent uses local state for group selection and LoadMore for topics within selected group. Post-review fix: added sort param to All, Following, and Groups tab loadPage calls to match resetKey."
 }
