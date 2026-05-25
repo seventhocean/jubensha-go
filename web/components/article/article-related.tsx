@@ -18,7 +18,8 @@ export function ArticleRelated({ article }: { article: Article }) {
     let cancelled = false
 
     async function fetchRelated() {
-      const promises = (article.tags || []).map((tag) =>
+      const tagsToFetch = (article.tags || []).slice(0, 3)
+      const promises = tagsToFetch.map((tag) =>
         apiFetch<PageData<Article>>("/api/article/tag/articles", {
           params: { tagId: tag.id },
         }).catch(() => ({ results: [], hasMore: false }) as PageData<Article>)

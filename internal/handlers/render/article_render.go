@@ -44,6 +44,7 @@ func BuildArticle(article *models.Article, currentUser *models.User) *resp.Artic
 
 	if currentUser != nil {
 		rsp.Favorited = services.FavoriteService.IsFavorited(currentUser.Id, constants.EntityArticle, article.Id)
+		rsp.Liked = services.UserLikeService.Exists(currentUser.Id, constants.EntityArticle, article.Id)
 	}
 
 	return rsp

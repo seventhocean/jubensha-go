@@ -344,6 +344,7 @@ export interface Article {
   createTime?: number
   status?: number
   favorited?: boolean
+  liked?: boolean
   toc?: TopicTocItem[]
 }
 

@@ -110,6 +110,7 @@ type ArticleSimpleResponse struct {
 	CreateTime   int64          `json:"createTime"`
 	Status       int            `json:"status"`
 	Favorited    bool           `json:"favorited"`
+	Liked        bool           `json:"liked"`
 }
 
 type ArticleResponse struct {

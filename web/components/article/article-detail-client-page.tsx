@@ -130,8 +130,8 @@ export function ArticleDetailClientPage({
         <ArticleActionProvider
           articleId={article.id}
           initialLikeCount={article.likeCount}
+          initialLiked={article.liked}
           initialFavorited={article.favorited}
-          initialCommentCount={article.commentCount}
         >
           <ArticleSideActionBar commentCount={article.commentCount} />
           <article className="rounded-lg bg-background p-3">
