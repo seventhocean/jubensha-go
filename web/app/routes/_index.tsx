@@ -3,8 +3,10 @@ import { useLoaderData, useSearchParams } from "react-router"
 import type { ShouldRevalidateFunctionArgs } from "react-router"
 import { ChevronDown } from "lucide-react"
 
+import { useAppState } from "@/components/app/app-provider"
 import { ArticleListCompactItem } from "@/components/article/article-list"
 import { EmptyState } from "@/components/common/empty-state"
+import Link from "@/components/common/link"
 import { LoadMore } from "@/components/common/load-more"
 import { TopicListSkeleton } from "@/components/common/skeleton-list"
 import { HomeAside } from "@/components/layout/home-aside"
@@ -221,11 +223,27 @@ function MixedFeedItems({ items, t }: { items: FeedItem[]; t: ReturnType<typeof 
 export function TopicListRoute({ title }: { title?: string }) {
   const { topics, nodes } = useLoaderData() as TopicListRouteData
   const { t } = useI18n()
+  const { currentUser } = useAppState()
   useDocumentTitle(title)
 
   const [searchParams, setSearchParams] = useSearchParams()
   const activeTab = (searchParams.get("tab") || "all") as TabValue
   const sortMode = (searchParams.get("sort") || "latest") as SortMode
+
+  // Use loader's topics as initial feed items for the "All" tab with sort=latest
+  // This eliminates the first-load loading spinner for the default case.
+  const initialFeedItems = React.useMemo<FeedItem[]>(() => {
+    if (sortMode !== "latest") return []
+    return (topics.results || []).map((t) => ({ ...t, feedType: "topic" as const }))
+  }, [sortMode, topics.results])
+
+  const initialFeedCursor = React.useMemo(() => {
+    if (sortMode !== "latest") return ""
+    return JSON.stringify({ tc: topics.cursor || "", ac: "" })
+  }, [sortMode, topics.cursor])
+
+  const initialFeedHasMore = sortMode === "latest" ? (topics.hasMore !== false) : true
+  const initialFeedLoad = sortMode !== "latest"
 
   const handleTabChange = React.useCallback(
     (value: string) => {
@@ -310,10 +328,10 @@ export function TopicListRoute({ title }: { title?: string }) {
 
             {activeTab === "all" && (
               <LoadMore<FeedItem>
-                initialItems={[]}
-                initialCursor=""
-                initialHasMore={true}
-                initialLoad={true}
+                initialItems={initialFeedItems}
+                initialCursor={initialFeedCursor}
+                initialHasMore={initialFeedHasMore}
+                initialLoad={initialFeedLoad}
                 resetKey={`mixed-feed-all?sort=${sortMode}`}
                 labels={{
                   loadMore: t("common.loadMore.loadMore"),
@@ -326,35 +344,47 @@ export function TopicListRoute({ title }: { title?: string }) {
             )}
 
             {activeTab === "following" && (
-              <LoadMore<Topic>
-                initialItems={[]}
-                initialCursor=""
-                initialHasMore={true}
-                initialLoad={true}
-                resetKey={`/api/topic/topics?nodeId=-2&sort=${sortMode}`}
-                labels={{
-                  loadMore: t("common.loadMore.loadMore"),
-                  noMore: t("common.loadMore.noMore"),
-                }}
-                loadPage={({ cursor }) =>
-                  apiFetch<PageData<Topic>>("/api/topic/topics", {
-                    params: { cursor, nodeId: -2, sort: sortMode },
-                  })
-                }
-                renderItems={(items) => (
-                  <ul className="divide-y divide-border">
-                    {items.map((topic) => (
-                      <TopicListItem
-                        key={topic.id}
-                        topic={topic}
-                        showSticky
-                        t={t}
-                      />
-                    ))}
-                  </ul>
-                )}
-                renderEmpty={() => <EmptyState title={t("common.noData")} />}
-              />
+              currentUser ? (
+                <LoadMore<Topic>
+                  initialItems={[]}
+                  initialCursor=""
+                  initialHasMore={true}
+                  initialLoad={true}
+                  resetKey={`/api/topic/topics?nodeId=-2&sort=${sortMode}`}
+                  labels={{
+                    loadMore: t("common.loadMore.loadMore"),
+                    noMore: t("common.loadMore.noMore"),
+                  }}
+                  loadPage={({ cursor }) =>
+                    apiFetch<PageData<Topic>>("/api/topic/topics", {
+                      params: { cursor, nodeId: -2, sort: sortMode },
+                    })
+                  }
+                  renderItems={(items) => (
+                    <ul className="divide-y divide-border">
+                      {items.map((topic) => (
+                        <TopicListItem
+                          key={topic.id}
+                          topic={topic}
+                          showSticky
+                          t={t}
+                        />
+                      ))}
+                    </ul>
+                  )}
+                  renderEmpty={() => <EmptyState title={t("common.noData")} />}
+                />
+              ) : (
+                <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
+                  <p className="text-muted-foreground">{t("common.pleaseSignIn")}</p>
+                  <Link
+                    href="/user/signin?redirect=%2F%3Ftab%3Dfollowing"
+                    className="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+                  >
+                    {t("common.header.login")}
+                  </Link>
+                </div>
+              )
             )}
 
             {activeTab === "groups" && (

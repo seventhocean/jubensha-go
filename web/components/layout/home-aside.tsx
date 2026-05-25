@@ -25,6 +25,10 @@ class WidgetErrorBoundary extends React.Component<
     return { hasError: true }
   }
 
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error("[WidgetErrorBoundary] Widget render error:", error, errorInfo)
+  }
+
   render() {
     if (this.state.hasError) {
       return null
@@ -342,7 +346,7 @@ export function HomeAside() {
     return () => {
       mounted = false
     }
-  }, [])
+  }, [user])
 
   return (
     <>
