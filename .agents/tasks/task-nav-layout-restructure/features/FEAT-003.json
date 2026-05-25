@@ -2,7 +2,7 @@
   "id": "FEAT-003",
   "type": "feat",
   "description": "Restructure the right sidebar (home-aside.tsx) to show: Hot Articles Top5, Active Groups Recommendation, My Status (checkin/tasks/level), and Site Announcement.",
-  "status": "in_progress",
+  "status": "completed",
   "steps": [
     "Add new i18n keys in both zh-CN.ts and en-US.ts: component.homeAside.hotArticles ('热门文章'/'Hot Articles'), component.homeAside.activeGroups ('活跃群组'/'Active Groups'), component.homeAside.myStatus ('我的状态'/'My Status'), component.homeAside.viewMore ('查看更多'/'View More'). Also add keys for status labels: component.homeAside.dailyCheckin ('今日签到'/'Daily Check-in'), component.homeAside.taskProgress ('任务进度'/'Task Progress'), component.homeAside.levelExp ('等级/经验'/'Level/XP').",
     "In web/components/layout/home-aside.tsx: Reorder and restructure the widgets. New order: (1) Site Announcement (existing SiteNotice, keep as-is), (2) Hot Articles Top5 widget - fetch articles using apiFetch<PageData<Article>>('/api/article/articles', { params: { sort: 'hot' } }) and display top 5 as a list with title, view count, and link. (3) Active Groups widget - fetch groups using apiFetch<GroupItem[]>('/api/group/list') and show 2-3 groups with name, member count, and join link. (4) My Status widget - combine the existing CheckInCard, TasksUserCard info into a compact status card showing checkin status, level/exp from user object, and a link to /tasks.",
@@ -23,5 +23,5 @@
     "Run `cd web && npx tsc --noEmit` to verify no type errors"
   ],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "All changes compile cleanly with tsc --noEmit. Removed TasksUserCard, CheckInCard, and Badge import since they are consolidated into MyStatusWidget. The CheckInInfo type uses 'checkIn' boolean property (not 'checkedIn'). Kept ScoreRank and FriendLinks at lower priority below the new widgets."
 }
