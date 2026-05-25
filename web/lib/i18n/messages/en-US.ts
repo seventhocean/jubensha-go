@@ -13,6 +13,7 @@ const enUS = {
       groups: "Groups",
       me: "Me",
       viewAll: "View All",
+      more: "More",
     },
     loadMore: {
       loadMore: "Load more",

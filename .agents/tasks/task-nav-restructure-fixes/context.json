@@ -1,0 +1,25 @@
+{
+  "project_type": "Full-stack: Go backend + React SPA/SSR frontend (React Router v7, Vite, TailwindCSS v4)",
+  "language": "TypeScript (frontend), Go (backend)",
+  "build_system": "pnpm for frontend, Go modules + Makefile for backend. Build command: make check (runs go test + pnpm typecheck + pnpm lint)",
+  "test_framework": "No frontend unit tests. Go tests via go test. Frontend validation via typecheck and lint.",
+  "build_command": "pnpm typecheck (in web/)",
+  "test_command": "pnpm lint (in web/)",
+  "verification_instructions": "Run pnpm typecheck and pnpm lint in web/ directory to validate TypeScript and lint correctness.",
+  "snapshot_or_generated_files": null,
+  "setup_instructions": "pnpm install in web/ directory",
+  "environment_constraints": "Network may be limited. pnpm store already exists at /projects/sandbox/.pnpm-store. node_modules already installed.",
+  "contribution_requirements": "Use t() for all user-visible text. Add i18n keys to both zh-CN.ts and en-US.ts. Follow existing patterns in the codebase.",
+  "key_patterns": "Components in web/components/layout/. i18n messages in web/lib/i18n/messages/{zh-CN,en-US}.ts. useCurrentUser() from @/components/app/app-provider. useAppConfig() for siteNavs. usePathname() from @/lib/router/navigation. cn() for classnames. buttonVariants() for nav link styling. DropdownMenu from @/components/ui/dropdown-menu. SiteNav type has: title, url, openInNewWindow?, children?. Module items pattern in web/components/layout/module-items.ts.",
+  "relevant_files": [
+    "web/components/layout/mobile-bottom-nav.tsx",
+    "web/components/layout/site-header.tsx",
+    "web/app/routes/_index.tsx",
+    "web/lib/i18n/messages/zh-CN.ts",
+    "web/lib/i18n/messages/en-US.ts",
+    "web/components/app/app-provider.tsx",
+    "web/lib/api/types.ts",
+    "web/components/layout/module-items.ts"
+  ],
+  "directory_structure": "web/ - frontend app. web/app/routes/ - route files. web/components/ - shared components. web/components/layout/ - layout components (header, nav, aside). web/lib/ - utilities, api, i18n. internal/ - Go backend."
+}

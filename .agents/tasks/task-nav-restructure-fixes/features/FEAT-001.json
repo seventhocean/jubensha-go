@@ -1,0 +1,29 @@
+{
+  "id": "FEAT-001",
+  "type": "fix",
+  "description": "Fix 4 functional completeness issues in the navigation restructure: (1) 'Me' tab route in mobile bottom nav should point to user center /user/{userId} instead of /user/profile, (2) Document backend limitation for 'Following' tab articles, (3) Restore admin-configured siteNavs in desktop header as a 'More' dropdown, (4) Verify/fix homepage active state for mobile bottom nav.",
+  "status": "in_progress",
+  "steps": [
+    "1. In web/components/layout/mobile-bottom-nav.tsx: Import useCurrentUser from @/components/app/app-provider. Change the 'Me' tab from a static { href: '/user/profile' } to dynamically use the current user's ID: href should be `/user/${currentUser.id}` when logged in, or '/user/signin' when not. Mark the tab as active when pathname starts with '/user/' AND user is on their own profile (pathname === `/user/${currentUser?.id}`). Keep existing icon and label.",
+    "2. In web/app/routes/_index.tsx: Add a code comment above the 'following' tab's LoadMore component explaining that the backend API does not support filtering articles by followed users. The nodeId=-2 only returns followed topics. A future backend endpoint would be needed for followed articles. This documents the limitation clearly for future developers.",
+    "3. In web/components/layout/site-header.tsx: After the three fixed nav links (Home, Articles, Groups) in the desktop <nav>, add a conditional 'More' dropdown menu that renders when config.siteNavs has items. Use the existing DropdownMenu component. The trigger should be a ghost button showing the i18n key 'common.nav.more'. The dropdown content should render each siteNav item as a DropdownMenuItem with a Link. For siteNavs with children, render the parent title as a label/separator and children as sub-items.",
+    "4. Add i18n key 'common.nav.more' to both zh-CN.ts ('更多') and en-US.ts ('More').",
+    "5. In web/components/layout/mobile-bottom-nav.tsx: Verify the homepage active state logic. Current code: `tab.href === '/' ? pathname === '/' : ...` - this correctly handles search params. No change needed if already correct. If there's a bug (e.g., the isActive check considers search params), fix it."
+  ],
+  "acceptance_criteria": [
+    "The 'Me' tab in mobile bottom nav navigates to /user/{currentUserId} when logged in, or to /user/signin when not logged in",
+    "The 'Me' tab shows active state when on the current user's profile page",
+    "The 'Following' tab section in _index.tsx has a clear code comment documenting the backend limitation for followed articles",
+    "The desktop header shows a 'More' dropdown after Home/Articles/Groups links when siteNavs are configured",
+    "The 'More' dropdown renders all admin-configured siteNavs with proper links and new-window support",
+    "The homepage (/) tab in mobile bottom nav is highlighted correctly regardless of ?tab=xxx&sort=xxx params",
+    "pnpm typecheck passes without errors in web/",
+    "pnpm lint passes without errors in web/"
+  ],
+  "verification": [
+    "Run `pnpm typecheck` in /projects/sandbox/jubensha-go/web/ and confirm no type errors",
+    "Run `pnpm lint` in /projects/sandbox/jubensha-go/web/ and confirm no lint errors"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

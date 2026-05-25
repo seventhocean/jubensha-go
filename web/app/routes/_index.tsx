@@ -343,6 +343,10 @@ export function TopicListRoute({ title }: { title?: string }) {
               />
             )}
 
+            {/* NOTE: The "Following" tab currently only shows followed topics (nodeId=-2).
+               The backend API does not support filtering articles by followed users.
+               To include followed users' articles here, a dedicated backend endpoint
+               (e.g., /api/article/articles?followed=true) would need to be implemented. */}
             {activeTab === "following" && (
               currentUser ? (
                 <LoadMore<Topic>

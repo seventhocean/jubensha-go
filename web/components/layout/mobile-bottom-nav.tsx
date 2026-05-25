@@ -4,7 +4,7 @@ import { FileText, Home, Plus, User, Users } from "lucide-react"
 import Link from "@/components/common/link"
 import { usePathname } from "@/lib/router/navigation"
 import { cn } from "@/lib/utils"
-import { useAppConfig } from "@/components/app/app-provider"
+import { useAppConfig, useCurrentUser } from "@/components/app/app-provider"
 import { useI18n } from "@/lib/i18n/provider"
 import {
   DropdownMenu,
@@ -17,15 +17,18 @@ import { moduleItems } from "./module-items"
 export function MobileBottomNav() {
   const pathname = usePathname()
   const config = useAppConfig()
+  const currentUser = useCurrentUser()
   const { t } = useI18n()
   const items = moduleItems(config, t)
+
+  const meHref = currentUser ? `/user/${currentUser.id}` : "/user/signin"
 
   const tabs = [
     { href: "/", icon: Home, label: t("common.nav.home") },
     { href: "/articles", icon: FileText, label: t("common.nav.articles") },
     { href: "/topic/create", icon: Plus, label: t("common.createBtn.create"), isCreate: true },
     { href: "/groups", icon: Users, label: t("common.nav.groups") },
-    { href: "/user/profile", icon: User, label: t("common.nav.me") },
+    { href: meHref, icon: User, label: t("common.nav.me"), isMe: true },
   ]
 
   return (
@@ -35,8 +38,9 @@ export function MobileBottomNav() {
     >
       {tabs.map((tab) => {
         const Icon = tab.icon
-        const isActive =
-          tab.href === "/"
+        const isActive = tab.isMe
+          ? pathname === `/user/${currentUser?.id}`
+          : tab.href === "/"
             ? pathname === "/"
             : pathname === tab.href || pathname.startsWith(tab.href)
 

@@ -41,6 +41,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -526,6 +527,53 @@ export function SiteHeader() {
                 >
                   {t("common.nav.groups")}
                 </Link>
+                {navs.length > 0 && (
+                  <DropdownMenu modal={false}>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        type="button"
+                        className={cn(
+                          buttonVariants({ variant: "ghost", size: "default" }),
+                          "bg-transparent"
+                        )}
+                      >
+                        {t("common.nav.more")}
+                        <ChevronDown className="ml-1 h-4 w-4" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start">
+                      {navs.map((nav, index) =>
+                        hasChildren(nav) ? (
+                          <React.Fragment key={`${nav.title}-${index}`}>
+                            <DropdownMenuLabel>{nav.title}</DropdownMenuLabel>
+                            {nav.children?.map((child, childIndex) => (
+                              <DropdownMenuItem key={`${index}-${childIndex}`} asChild>
+                                <Link
+                                  href={child.url}
+                                  target={targetFor(child.openInNewWindow)}
+                                  rel={relFor(child.openInNewWindow)}
+                                >
+                                  {child.title}
+                                </Link>
+                              </DropdownMenuItem>
+                            ))}
+                            {index < navs.length - 1 && <DropdownMenuSeparator />}
+                          </React.Fragment>
+                        ) : (
+                          <DropdownMenuItem key={`${nav.title}-${index}`} asChild>
+                            <Link
+                              href={nav.url}
+                              target={targetFor(nav.openInNewWindow)}
+                              rel={relFor(nav.openInNewWindow)}
+                            >
+                              {nav.title}
+                            </Link>
+                          </DropdownMenuItem>
+                        )
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
               </div>
             </nav>
           </div>
