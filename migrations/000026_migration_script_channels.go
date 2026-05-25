@@ -24,7 +24,7 @@ func migrate_channels() error {
 		CreateTime: now,
 		UpdateTime: now,
 	}
-	sqls.DB().Where("name = ?", channel1.Name).FirstOrCreate(channel1)
+	sqls.DB().Where("href = ?", channel1.Href).FirstOrCreate(channel1)
 
 	channel2 := &models.Channel{
 		Name:       "关注",
@@ -36,7 +36,7 @@ func migrate_channels() error {
 		CreateTime: now,
 		UpdateTime: now,
 	}
-	sqls.DB().Where("name = ?", channel2.Name).FirstOrCreate(channel2)
+	sqls.DB().Where("href = ?", channel2.Href).FirstOrCreate(channel2)
 
 	return nil
 }

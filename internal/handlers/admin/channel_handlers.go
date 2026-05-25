@@ -114,10 +114,13 @@ func ChannelUpdateSort(ctx *gin.Context) {
 		return
 	}
 	for _, item := range items {
-		_ = services.ChannelService.Updates(item.Id, map[string]interface{}{
+		if err := services.ChannelService.Updates(item.Id, map[string]interface{}{
 			"sort_no":     item.SortNo,
 			"update_time": dates.NowTimestamp(),
-		})
+		}); err != nil {
+			ginx.WriteJSON(ctx, err)
+			return
+		}
 	}
 	cache.ChannelCache.Invalidate()
 	ginx.WriteJSON(ctx, nil)

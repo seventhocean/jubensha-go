@@ -121,33 +121,46 @@ export function TopicsNavContent({
             {t("pages.home.sidebar.channels")}
           </div>
           <ul>
-            <li className={cn(currentNodeId === undefined && !currentRootNodeId && "active")}>
-              <Link href="/?tab=all">
-                <Compass className="h-4 w-4 shrink-0" />
-                <div className="node-name">{t("pages.home.tabs.all")}</div>
-              </Link>
-            </li>
-            <li className={cn(currentNodeId === -2 && "active")}>
-              <Link href="/?tab=following">
-                <Heart className="h-4 w-4 shrink-0" />
-                <div className="node-name">{t("pages.home.tabs.following")}</div>
-              </Link>
-            </li>
-            {channels.filter((ch) => ch.visible).map((channel) => (
-              <li
-                key={channel.id}
-                className={cn(
-                  typeof window !== "undefined" &&
-                    window.location.href.includes(channel.href) &&
-                    "active"
-                )}
-              >
-                <Link href={channel.href}>
-                  <ChannelIcon icon={channel.icon} />
-                  <div className="node-name">{channel.nameEn || channel.name}</div>
-                </Link>
-              </li>
-            ))}
+            {channels.length > 0 ? (
+              channels.map((channel) => {
+                const isAll = channel.href === "/?tab=all"
+                const isFollowing = channel.href === "/?tab=following"
+                let isActive: boolean
+                if (isAll) {
+                  isActive = currentNodeId === undefined && !currentRootNodeId
+                } else if (isFollowing) {
+                  isActive = currentNodeId === -2
+                } else {
+                  const currentUrl = typeof window !== "undefined"
+                    ? window.location.pathname + window.location.search
+                    : ""
+                  isActive = currentUrl === channel.href
+                }
+                return (
+                  <li key={channel.id} className={cn(isActive && "active")}>
+                    <Link href={channel.href}>
+                      <ChannelIcon icon={channel.icon} />
+                      <div className="node-name">{channel.nameEn || channel.name}</div>
+                    </Link>
+                  </li>
+                )
+              })
+            ) : (
+              <React.Fragment>
+                <li className={cn(currentNodeId === undefined && !currentRootNodeId && "active")}>
+                  <Link href="/?tab=all">
+                    <Compass className="h-4 w-4 shrink-0" />
+                    <div className="node-name">{t("pages.home.tabs.all")}</div>
+                  </Link>
+                </li>
+                <li className={cn(currentNodeId === -2 && "active")}>
+                  <Link href="/?tab=following">
+                    <Heart className="h-4 w-4 shrink-0" />
+                    <div className="node-name">{t("pages.home.tabs.following")}</div>
+                  </Link>
+                </li>
+              </React.Fragment>
+            )}
           </ul>
 
           {/* My Groups section */}

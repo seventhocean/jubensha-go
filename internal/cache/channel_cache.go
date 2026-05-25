@@ -36,12 +36,12 @@ func newChannelCache() *channelCache {
 func (c *channelCache) Get() []models.Channel {
 	val, err := c.cache.Get(channelCacheKey)
 	if err != nil {
-		return nil
+		return []models.Channel{}
 	}
 	if val != nil {
 		return val.([]models.Channel)
 	}
-	return nil
+	return []models.Channel{}
 }
 
 func (c *channelCache) Invalidate() {

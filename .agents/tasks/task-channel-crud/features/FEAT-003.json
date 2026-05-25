@@ -1,0 +1,28 @@
+{
+  "id": "FEAT-003",
+  "type": "fix",
+  "description": "Fix 4 issues from semantic review: ChannelUpdateSort error handling, cache returning nil, sidebar active-state for custom channels, migration dedup key",
+  "status": "in_progress",
+  "steps": [
+    "1. Fix ChannelUpdateSort in internal/handlers/admin/channel_handlers.go to fail-fast on first error instead of swallowing errors",
+    "2. Fix ChannelCache.Get() in internal/cache/channel_cache.go to return []models.Channel{} instead of nil",
+    "3. Fix active-state detection in web/components/topic/topics-nav-content.tsx to use URL matching for custom channels",
+    "4. Fix migration dedup in migrations/000026_migration_script_channels.go to use Href instead of Name"
+  ],
+  "acceptance_criteria": [
+    "go build ./... succeeds",
+    "go vet ./... passes",
+    "pnpm typecheck passes in web/ directory",
+    "ChannelUpdateSort returns error on first failure",
+    "ChannelCache.Get() returns empty slice instead of nil",
+    "Active-state logic works for channels with arbitrary hrefs",
+    "Migration uses Href as dedup key"
+  ],
+  "verification": [
+    "cd /projects/sandbox/jubensha-go && go build ./...",
+    "cd /projects/sandbox/jubensha-go && go vet ./...",
+    "cd /projects/sandbox/jubensha-go/web && pnpm typecheck"
+  ],
+  "blocked_reason": null,
+  "findings": null
+}
