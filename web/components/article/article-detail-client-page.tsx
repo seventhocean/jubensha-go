@@ -6,9 +6,13 @@ import Link from "@/components/common/link"
 
 import { ArticleActionProvider } from "@/components/article/article-action-context"
 import { ArticleComments } from "@/components/article/article-comments"
+import { ArticleCoverHero } from "@/components/article/article-cover-hero"
 import { ArticleDetailActions } from "@/components/article/article-detail-actions"
 import { ArticleManageMenu } from "@/components/article/article-manage-menu"
 import { ArticlePrevNext } from "@/components/article/article-prev-next"
+import { ArticleReadingProgress } from "@/components/article/article-reading-progress"
+import { ArticleRelated } from "@/components/article/article-related"
+import { ArticleSideActionBar } from "@/components/article/article-side-action-bar"
 import { ArticleTags } from "@/components/article/article-tags"
 import { HtmlImagePreview } from "@/components/common/image-preview"
 import { MainShell } from "@/components/layout/main-shell"
@@ -116,45 +120,49 @@ export function ArticleDetailClientPage({
       containerClassName="side-size-360"
       asideClassName="!h-auto self-stretch"
     >
+      <ArticleReadingProgress />
       <div className="space-y-4">
         {article.status === 2 ? (
           <div className="rounded-md border bg-muted px-3 py-2 text-sm text-muted-foreground">
             {t("pages.article.detail.pending")}
           </div>
         ) : null}
-        <article className="rounded-lg bg-background p-3">
-          <header className="border-b py-2.5">
-            <div className="flex">
-              <h1 className="w-full overflow-hidden text-lg leading-[30px] font-normal break-all text-ellipsis text-foreground">
-                {article.title}
-              </h1>
-              <div className="min-w-max">
-                <ArticleManageMenu
-                  article={article}
-                  currentUser={currentUser}
-                />
+        <ArticleActionProvider
+          articleId={article.id}
+          initialLikeCount={article.likeCount}
+          initialFavorited={article.favorited}
+          initialCommentCount={article.commentCount}
+        >
+          <ArticleSideActionBar commentCount={article.commentCount} />
+          <article className="rounded-lg bg-background p-3">
+            <ArticleCoverHero article={article} />
+            <header className="border-b py-2.5">
+              <div className="flex">
+                <h1 className="w-full overflow-hidden text-lg leading-[30px] font-normal break-all text-ellipsis text-foreground">
+                  {article.title}
+                </h1>
+                <div className="min-w-max">
+                  <ArticleManageMenu
+                    article={article}
+                    currentUser={currentUser}
+                  />
+                </div>
               </div>
-            </div>
-            <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-              {article.user ? (
-                <Link href={`/user/${article.user.id}`}>
-                  {article.user.nickname}
-                </Link>
-              ) : null}
-              {article.createTime ? (
-                <span>{prettyDate(article.createTime, t)}</span>
-              ) : null}
-            </div>
-          </header>
-          <HtmlImagePreview
-            html={article.content || ""}
-            className="bbs-content max-w-none py-4 break-words [&_h2]:scroll-mt-20 [&_h3]:scroll-mt-20 [&_h4]:scroll-mt-20 [&_img]:cursor-zoom-in"
-          />
-          <ArticleActionProvider
-            articleId={article.id}
-            initialLikeCount={article.likeCount}
-            initialFavorited={article.favorited}
-          >
+              <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                {article.user ? (
+                  <Link href={`/user/${article.user.id}`}>
+                    {article.user.nickname}
+                  </Link>
+                ) : null}
+                {article.createTime ? (
+                  <span>{prettyDate(article.createTime, t)}</span>
+                ) : null}
+              </div>
+            </header>
+            <HtmlImagePreview
+              html={article.content || ""}
+              className="bbs-content max-w-none py-4 break-words [&_h2]:scroll-mt-20 [&_h3]:scroll-mt-20 [&_h4]:scroll-mt-20 [&_img]:cursor-zoom-in"
+            />
             <ArticleTags article={article} />
             <ArticlePrevNext prev={prevNext.prev} next={prevNext.next} t={t} />
             <ArticleDetailActions
@@ -166,8 +174,8 @@ export function ArticleDetailClientPage({
                 favorite: t("pages.article.detail.favorite"),
               }}
             />
-          </ArticleActionProvider>
-        </article>
+          </article>
+        </ArticleActionProvider>
         <div id="comments">
           <ArticleComments
             entityId={article.id}
@@ -177,6 +185,7 @@ export function ArticleDetailClientPage({
             config={config}
           />
         </div>
+        <ArticleRelated article={article} />
       </div>
     </MainShell>
   )

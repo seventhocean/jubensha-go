@@ -11,6 +11,7 @@ type ArticleActionContextValue = {
   liked: boolean
   favorited: boolean
   likeCount: number
+  commentCount: number
   toggleLike: () => Promise<void>
   toggleFavorite: () => Promise<void>
 }
@@ -24,12 +25,14 @@ export function ArticleActionProvider({
   initialLiked,
   initialFavorited,
   initialLikeCount,
+  initialCommentCount,
   children,
 }: {
   articleId: number
   initialLiked?: boolean
   initialFavorited?: boolean
   initialLikeCount?: number
+  initialCommentCount?: number
   children: React.ReactNode
 }) {
   const { t } = useI18n()
@@ -37,6 +40,7 @@ export function ArticleActionProvider({
   const [liked, setLiked] = React.useState(Boolean(initialLiked))
   const [favorited, setFavorited] = React.useState(Boolean(initialFavorited))
   const [likeCount, setLikeCount] = React.useState(initialLikeCount || 0)
+  const [commentCount] = React.useState(initialCommentCount || 0)
   const [likePending, setLikePending] = React.useState(false)
   const [favoritePending, setFavoritePending] = React.useState(false)
 
@@ -98,10 +102,11 @@ export function ArticleActionProvider({
       liked,
       favorited,
       likeCount,
+      commentCount,
       toggleLike,
       toggleFavorite,
     }),
-    [articleId, favorited, likeCount, liked, toggleFavorite, toggleLike]
+    [articleId, commentCount, favorited, likeCount, liked, toggleFavorite, toggleLike]
   )
 
   return (
