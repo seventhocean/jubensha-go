@@ -3,6 +3,7 @@
 import * as React from "react"
 import { ChevronLeft, ChevronRight, X } from "lucide-react"
 
+import { useCodeBlockEnhancer } from "@/components/article/code-block-enhancer"
 import { cn } from "@/lib/utils"
 
 type PreviewImage = string | { src?: string; preview?: string }
@@ -204,6 +205,8 @@ export function HtmlImagePreview({
     images: string[]
     index: number
   } | null>(null)
+
+  useCodeBlockEnhancer(rootRef)
 
   return (
     <>

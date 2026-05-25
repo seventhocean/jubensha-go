@@ -864,6 +864,10 @@ const zhCN = {
     unknownError: "未知错误",
   },
   component: {
+    codeBlock: {
+      copy: "复制",
+      copied: "已复制",
+    },
     searchInput: {
       placeholder: "搜索帖子、文章、用户",
       searchBtn: "搜索",

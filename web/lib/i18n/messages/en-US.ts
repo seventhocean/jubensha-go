@@ -882,6 +882,10 @@ const enUS = {
     unknownError: "Unknown error",
   },
   component: {
+    codeBlock: {
+      copy: "Copy",
+      copied: "Copied",
+    },
     searchInput: {
       placeholder: "Search topics, articles, users",
       searchBtn: "Search",

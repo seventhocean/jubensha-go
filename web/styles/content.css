@@ -63,6 +63,7 @@
   }
 
   .bbs-content pre {
+    position: relative;
     margin: 1rem 0;
     overflow-x: auto;
     border-radius: var(--rounded-md);
@@ -70,6 +71,73 @@
     padding: 1rem;
     font-size: 14px;
     line-height: 1.7;
+  }
+
+  .bbs-content pre.has-line-numbers {
+    padding-left: 3.5rem;
+  }
+
+  .bbs-content pre .code-block-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: -1rem -1rem 0.75rem -1rem;
+    padding: 0.4rem 0.75rem;
+    border-bottom: 1px solid var(--color-hairline);
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+
+  .bbs-content pre.has-line-numbers .code-block-header {
+    margin-left: -3.5rem;
+  }
+
+  .bbs-content pre .code-block-lang {
+    color: var(--color-ink-muted);
+    user-select: none;
+  }
+
+  .bbs-content pre .code-block-copy-btn {
+    padding: 0.15rem 0.5rem;
+    border-radius: var(--rounded-md);
+    color: var(--color-ink-muted);
+    font-family: var(--font-sans);
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .bbs-content pre .code-block-copy-btn:hover {
+    background: var(--color-surface-3);
+    color: var(--color-ink);
+  }
+
+  .bbs-content pre .code-block-copy-btn.copied {
+    color: var(--color-semantic-success);
+  }
+
+  .bbs-content pre .code-block-line-numbers {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    padding-top: calc(1rem + 0.4rem + 0.4rem + 1px + 0.75rem);
+    padding-bottom: 1rem;
+    padding-left: 0.75rem;
+    width: 3rem;
+    text-align: right;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--color-ink-tertiary);
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .bbs-content pre .code-block-line-numbers span {
+    display: block;
+    line-height: inherit;
   }
 
   .bbs-content code {
