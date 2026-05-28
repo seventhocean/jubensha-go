@@ -35,9 +35,9 @@ Then open:
 - Admin dashboard: <http://localhost:3000/dashboard>
 - Install wizard: <http://localhost:3000/install>
 
-For production deployment options, environment variables, upgrades, and troubleshooting, see the Docker Hub page:
+For production deployment, migration guides, backups, and troubleshooting, see [DEPLOYMENT.md](DEPLOYMENT.md).
 
-<https://hub.docker.com/r/mlogclub/bbs-go>
+Docker Hub page (alternative docs): <https://hub.docker.com/r/mlogclub/bbs-go>
 
 ## Why Choose bbs-go
 
